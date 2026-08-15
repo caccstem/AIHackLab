@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A friendly Hello World webpage." />
+    <title>Hello World</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background: #f6f0e6;
+        color: #18241f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      main {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        padding: 2rem;
+        isolation: isolate;
+      }
+
+      main::before,
+      main::after {
+        position: absolute;
+        z-index: -1;
+        width: 34rem;
+        height: 34rem;
+        border-radius: 50%;
+        content: "";
+        filter: blur(2px);
+        opacity: 0.85;
+      }
+
+      main::before {
+        top: -16rem;
+        right: -10rem;
+        background: #ef8354;
+      }
+
+      main::after {
+        bottom: -19rem;
+        left: -10rem;
+        background: #7cc6a5;
+      }
+
+      .card {
+        width: min(100%, 68rem);
+        padding: clamp(1.25rem, 3vw, 2rem);
+        border: 1px solid rgb(24 36 31 / 12%);
+        border-radius: 2rem;
+        background: rgb(255 253 248 / 82%);
+        box-shadow: 0 2rem 5rem rgb(50 53 45 / 14%);
+        text-align: center;
+        backdrop-filter: blur(18px);
+        animation: arrive 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0 0 1.5rem;
+        color: #527064;
+        font-size: 0.75rem;
+        font-weight: 750;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        background: #ef8354;
+        box-shadow: 0 0 0 0.3rem rgb(239 131 84 / 14%);
+        content: "";
+      }
+
+      h1 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(3.8rem, 12vw, 7.5rem);
+        font-weight: 500;
+        letter-spacing: -0.07em;
+        line-height: 0.88;
+      }
+
+      h1 span {
+        display: block;
+        color: #e46838;
+        font-style: italic;
+      }
+
+      .message {
+        max-width: 31rem;
+        margin: 2rem auto 0;
+        color: #627068;
+        font-size: clamp(1rem, 2.5vw, 1.15rem);
+        line-height: 1.7;
+      }
+
+      .classroom-photo {
+        display: block;
+        width: 100%;
+        margin-top: 2rem;
+        border: 1px solid rgb(24 36 31 / 12%);
+        border-radius: 1.25rem;
+        box-shadow: 0 1.25rem 2.5rem rgb(50 53 45 / 16%);
+        aspect-ratio: 3 / 2;
+        object-fit: cover;
+      }
+
+      .wave {
+        display: inline-block;
+        transform-origin: 70% 70%;
+        animation: wave 1.8s ease-in-out 800ms 2;
+      }
+
+      @keyframes arrive {
+        from {
+          opacity: 0;
+          transform: translateY(1.5rem) scale(0.98);
+        }
+      }
+
+      @keyframes wave {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(18deg); }
+        50% { transform: rotate(-8deg); }
+        75% { transform: rotate(14deg); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .card,
+        .wave {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card" aria-labelledby="greeting">
+        <p class="eyebrow">Your first webpage</p>
+        <h1 id="greeting">Hello, <span>World.</span></h1>
+        <p class="message">
+          Welcome to the first day of a bright summer of learning.
+          <span class="wave" aria-hidden="true">👋</span>
+        </p>
+        <img
+          class="classroom-photo"
+          src="assets/cacc-summer-classroom-realistic.png"
+          alt="一名学生在明亮的中文暑期教室前展示作品，微笑的老师和同学们认真聆听。黑板上写着欢迎来到 CACC 和开学第一天，课桌旁挂着印有 CACC 标志的白色帆布袋。"
+        />
+      </section>
+    </main>
+  </body>
+</html>
