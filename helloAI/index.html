@@ -3,138 +3,259 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A friendly Hello CACC webpage." />
+    <meta
+      name="description"
+      content="Welcome to CACC—a bright summer of learning, sharing, and growing together."
+    />
     <title>Hello CACC</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap");
+
       :root {
         color-scheme: light;
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
-        background: #f6f0e6;
-        color: #18241f;
+        font-family: "DM Sans", system-ui, sans-serif;
+        color: #17342b;
+        background: #fffaf0;
+        --green: #246b52;
+        --orange: #f17847;
+        --yellow: #ffc95c;
+        --cream: #fffaf0;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
 
       body {
         margin: 0;
+        min-width: 320px;
         min-height: 100vh;
-        overflow-x: hidden;
+        background:
+          radial-gradient(circle at 8% 10%, rgb(255 201 92 / 24%) 0 10rem, transparent 10.1rem),
+          linear-gradient(145deg, #fffaf0 0%, #fff7e9 52%, #eef8ed 100%);
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 88px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--green);
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border-radius: 50% 50% 46% 54%;
+        color: #fff;
+        background: var(--green);
+        box-shadow: 5px 5px 0 var(--yellow);
+        transform: rotate(-5deg);
+      }
+
+      .season {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #577067;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .sun {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--orange);
+        box-shadow: 0 0 0 5px rgb(241 120 71 / 13%);
       }
 
       main {
-        position: relative;
         display: grid;
-        min-height: 100vh;
-        place-items: center;
-        padding: 2rem;
-        isolation: isolate;
+        grid-template-columns: 0.78fr 1.22fr;
+        align-items: center;
+        gap: clamp(36px, 6vw, 84px);
+        min-height: calc(100vh - 88px);
+        padding: 48px 0 76px;
       }
 
-      main::before,
-      main::after {
-        position: absolute;
-        z-index: -1;
-        width: 34rem;
-        height: 34rem;
-        border-radius: 50%;
-        content: "";
-        filter: blur(2px);
-        opacity: 0.85;
-      }
-
-      main::before {
-        top: -16rem;
-        right: -10rem;
-        background: #ef8354;
-      }
-
-      main::after {
-        bottom: -19rem;
-        left: -10rem;
-        background: #7cc6a5;
-      }
-
-      .card {
-        width: min(100%, 68rem);
-        padding: clamp(1.25rem, 3vw, 2rem);
-        border: 1px solid rgb(24 36 31 / 12%);
-        border-radius: 2rem;
-        background: rgb(255 253 248 / 82%);
-        box-shadow: 0 2rem 5rem rgb(50 53 45 / 14%);
-        text-align: center;
-        backdrop-filter: blur(18px);
-        animation: arrive 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
-      }
+      .copy { position: relative; z-index: 1; }
 
       .eyebrow {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        margin: 0 0 1.5rem;
-        color: #527064;
-        font-size: 0.75rem;
-        font-weight: 750;
+        gap: 10px;
+        margin: 0 0 24px;
+        color: var(--orange);
+        font-size: 0.78rem;
+        font-weight: 800;
         letter-spacing: 0.18em;
         text-transform: uppercase;
       }
 
       .eyebrow::before {
-        width: 0.55rem;
-        height: 0.55rem;
-        border-radius: 50%;
-        background: #ef8354;
-        box-shadow: 0 0 0 0.3rem rgb(239 131 84 / 14%);
+        width: 32px;
+        height: 2px;
+        background: currentColor;
         content: "";
       }
 
       h1 {
         margin: 0;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(3.8rem, 12vw, 7.5rem);
-        font-weight: 500;
-        letter-spacing: -0.07em;
-        line-height: 0.88;
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: clamp(4.1rem, 8vw, 7.4rem);
+        line-height: 0.86;
+        letter-spacing: -0.065em;
       }
 
       h1 span {
         display: block;
-        color: #e46838;
+        color: var(--orange);
         font-style: italic;
       }
 
-      .message {
-        max-width: 31rem;
-        margin: 2rem auto 0;
-        color: #627068;
-        font-size: clamp(1rem, 2.5vw, 1.15rem);
-        line-height: 1.7;
+      .intro {
+        max-width: 30rem;
+        margin: 32px 0 0;
+        color: #5b7068;
+        font-size: clamp(1rem, 1.5vw, 1.15rem);
+        line-height: 1.75;
+      }
+
+      .welcome {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 34px;
+        padding: 14px 20px;
+        border-radius: 999px;
+        color: #fff;
+        background: var(--green);
+        font-weight: 700;
+        box-shadow: 0 12px 28px rgb(36 107 82 / 20%);
+      }
+
+      .wave {
+        display: inline-block;
+        font-size: 1.25rem;
+        transform-origin: 75% 75%;
+        animation: wave 1.8s ease-in-out 0.7s 2;
+      }
+
+      figure {
+        position: relative;
+        margin: 0;
+      }
+
+      figure::before {
+        position: absolute;
+        inset: -18px 28px 18px -18px;
+        z-index: -1;
+        border-radius: 34px;
+        background: var(--yellow);
+        content: "";
+        transform: rotate(-2deg);
       }
 
       .classroom-photo {
         display: block;
         width: 100%;
-        margin-top: 2rem;
-        border: 1px solid rgb(24 36 31 / 12%);
-        border-radius: 1.25rem;
-        box-shadow: 0 1.25rem 2.5rem rgb(50 53 45 / 16%);
         aspect-ratio: 3 / 2;
         object-fit: cover;
+        border: 8px solid #fff;
+        border-radius: 28px;
+        box-shadow: 0 28px 70px rgb(42 66 56 / 22%);
       }
 
-      .wave {
-        display: inline-block;
-        transform-origin: 70% 70%;
-        animation: wave 1.8s ease-in-out 800ms 2;
+      figcaption {
+        position: absolute;
+        right: 22px;
+        bottom: 22px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        color: #fff;
+        background: rgb(23 52 43 / 84%);
+        font-size: 0.8rem;
+        font-weight: 600;
+        backdrop-filter: blur(8px);
       }
 
-      @keyframes arrive {
-        from {
-          opacity: 0;
-          transform: translateY(1.5rem) scale(0.98);
-        }
+      .sports {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        align-items: center;
+        gap: clamp(32px, 6vw, 76px);
+        margin-bottom: 88px;
+        padding: clamp(28px, 5vw, 58px);
+        overflow: hidden;
+        border-radius: 34px;
+        background: var(--green);
+        box-shadow: 0 24px 60px rgb(36 107 82 / 18%);
+      }
+
+      .sports-photo {
+        display: block;
+        width: 100%;
+        aspect-ratio: 3 / 2;
+        object-fit: cover;
+        border: 7px solid rgb(255 255 255 / 92%);
+        border-radius: 24px;
+        box-shadow: 0 20px 46px rgb(14 45 34 / 28%);
+        transform: rotate(-1.5deg);
+      }
+
+      .sports-copy { color: #fff; }
+
+      .sports-label {
+        margin: 0 0 18px;
+        color: var(--yellow);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .sports h2 {
+        margin: 0;
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        line-height: 0.98;
+        letter-spacing: -0.045em;
+      }
+
+      .sports-text {
+        margin: 22px 0 0;
+        color: rgb(255 255 255 / 78%);
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .sports-note {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin-top: 24px;
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 700;
       }
 
       @keyframes wave {
@@ -144,29 +265,89 @@
         75% { transform: rotate(14deg); }
       }
 
-      @media (prefers-reduced-motion: reduce) {
-        .card,
-        .wave {
-          animation: none;
+      @media (max-width: 820px) {
+        main {
+          grid-template-columns: 1fr;
+          padding-top: 32px;
         }
+
+        .copy { text-align: center; }
+        .eyebrow { justify-content: center; }
+        .intro { margin-inline: auto; }
+        h1 { font-size: clamp(4.25rem, 20vw, 7rem); }
+
+        .sports {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+
+        .sports-copy { grid-row: 1; }
+        .sports-note { justify-content: center; }
+      }
+
+      @media (max-width: 520px) {
+        .shell { width: min(100% - 28px, 1180px); }
+        header { height: 76px; }
+        .season { font-size: 0; }
+        figure::before { inset: -10px 12px 12px -10px; }
+        .classroom-photo { border-width: 5px; border-radius: 20px; }
+        figcaption { right: 12px; bottom: 12px; }
+        .sports { margin-bottom: 48px; border-radius: 24px; }
+        .sports-photo { border-width: 5px; border-radius: 18px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .wave { animation: none; }
       }
     </style>
   </head>
   <body>
-    <main>
-      <section class="card" aria-labelledby="greeting">
-        <p class="eyebrow">Your first webpage</p>
-        <h1 id="greeting">Hello, <span>CACC.</span></h1>
-        <p class="message">
-          Welcome to the first day of a bright summer of learning.
-          <span class="wave" aria-hidden="true">👋</span>
-        </p>
+    <div class="shell">
+      <header aria-label="CACC header">
+        <div class="brand"><span class="brand-mark">C</span>CACC</div>
+        <div class="season"><span class="sun" aria-hidden="true"></span>Summer learning</div>
+      </header>
+
+      <main>
+        <section class="copy" aria-labelledby="greeting">
+          <p class="eyebrow">Welcome, everyone</p>
+          <h1 id="greeting">hello <span>CACC</span></h1>
+          <p class="intro">
+            A bright place to share ideas, learn from one another, and make this
+            summer meaningful—together.
+          </p>
+          <div class="welcome">
+            Let’s learn together <span class="wave" aria-hidden="true">👋</span>
+          </div>
+        </section>
+
+        <figure>
+          <img
+            class="classroom-photo"
+            src="assets/cacc-summer-classroom-realistic.png"
+            alt="A student presents a drawing to classmates in a sunny summer classroom while a mentor looks on encouragingly."
+          />
+          <figcaption>Ideas grow when we share them.</figcaption>
+        </figure>
+      </main>
+
+      <section class="sports" aria-labelledby="sports-heading">
         <img
-          class="classroom-photo"
-          src="assets/cacc-summer-classroom-realistic.png"
-          alt="一名学生在明亮的中文暑期教室前展示作品，微笑的老师和同学们认真聆听。黑板上写着欢迎来到 CACC 和开学第一天，课桌旁挂着印有 CACC 标志的白色帆布袋。"
+          class="sports-photo"
+          src="assets/cacc-badminton-class.png"
+          alt="Students practice badminton together with a coach in a bright school gym."
         />
+        <div class="sports-copy">
+          <p class="sports-label">Beyond the classroom</p>
+          <h2 id="sports-heading">Learn, move, play.</h2>
+          <p class="sports-text">
+            Our sports classes help students build confidence, teamwork, and
+            healthy habits—with badminton bringing plenty of energy and fun.
+          </p>
+          <div class="sports-note"><span aria-hidden="true">🏸</span> Badminton classes at CACC</div>
+        </div>
       </section>
-    </main>
+    </div>
   </body>
 </html>
