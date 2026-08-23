@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A beginner-friendly Chinese vocabulary quiz." />
+    <title>Panda Words | Chinese Vocabulary Quiz</title>
+    <link rel="stylesheet" href="styles.css?v=2" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="quiz-card" aria-labelledby="game-title">
+        <header class="game-header">
+          <div class="panda" aria-hidden="true">🐼</div>
+          <div>
+            <p class="eyebrow">Beginner Chinese</p>
+            <h1 id="game-title">Panda Words</h1>
+          </div>
+          <div class="score-pill" aria-live="polite">
+            ⭐ <span id="score">0</span>
+          </div>
+          <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="true" aria-label="Mute sounds">
+            <span aria-hidden="true">🔊</span>
+          </button>
+        </header>
+
+        <div id="quiz-screen">
+          <div class="progress-row">
+            <span id="question-count">Question 1 of 5</span>
+            <span id="progress-percent">20%</span>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+
+          <div class="question-area">
+            <p class="prompt">What does this word mean?</p>
+            <div class="word-row">
+              <div id="chinese-word" class="chinese-word">苹果</div>
+              <button id="speak-button" class="speak-button" type="button" aria-label="Hear the Chinese word pronounced">
+                <span aria-hidden="true">▶</span>
+              </button>
+            </div>
+            <div id="choices" class="choices"></div>
+            <p id="feedback" class="feedback" aria-live="polite"></p>
+            <button id="next-button" class="next-button" type="button" hidden>
+              Next word <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="result-screen" class="result-screen" hidden>
+          <div class="result-emoji" aria-hidden="true">🏆</div>
+          <p class="eyebrow">Quiz complete</p>
+          <h2>太棒了!</h2>
+          <p id="final-message" class="final-message"></p>
+          <button id="restart-button" class="next-button" type="button">
+            Play again 🔄
+          </button>
+        </div>
+      </section>
+      <p class="footer-note">Learn a little every day 🌱</p>
+    </main>
+
+    <script src="script.js?v=2"></script>
+  </body>
+</html>
