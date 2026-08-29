@@ -40,6 +40,13 @@ assert.doesNotMatch(files['connect.html'], /Find your people\. Find your place\.
 assert.doesNotMatch(files['connect.html'], /demo-qr/);
 assert.equal((files['index.html'].match(/class="title-line"/g) ?? []).length, 2);
 await readFile('assets/wechat-invite-qr.png');
+const script = await readFile('script.js', 'utf8');
+assert.match(script, /mobile-dock/);
+assert.match(script, /category-jumps/);
+assert.match(styles, /@media\(max-width:640px\)/);
+assert.match(styles, /env\(safe-area-inset-bottom\)/);
+assert.match(styles, /font-size:16px/);
+assert.match(files['index.html'], /<script src="script\.js"><\/script>/);
 assert.doesNotMatch(files['connect.html'], /<h4>Christmas Parade<\/h4>|<h4>Easter Egg Hunt<\/h4>/);
 const uniqueCardAssets = [
   'community-social.png','holiday-parade-hunt.png','photography-club.png',
