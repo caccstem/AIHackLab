@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stormfall Royale</title>
+    <meta
+      name="description"
+      content="Stormfall Royale is a Fortnite-inspired battle royale landing page with mini-games and a competitive arena vibe."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav container">
+        <a href="#top" class="brand">Storm<span>Fall</span></a>
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#games">Games</a>
+          <a href="#battle-pass">Battle Pass</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section id="home" class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Drop in now</p>
+            <h1>Battle for the final circle.</h1>
+            <p class="lead">
+              Squad up, dodge the storm, and take on quick-fire challenges inspired by the energy of a battle royale arena.
+            </p>
+            <div class="hero-actions">
+              <a href="#games" class="button primary">Play now</a>
+              <a href="#battle-pass" class="button secondary">Battle pass</a>
+            </div>
+            <ul class="stats" aria-label="Battle stats">
+              <li><strong>3</strong><span>Game modes</span></li>
+              <li><strong>99</strong><span>Victory streak</span></li>
+              <li><strong>24/7</strong><span>Squad queue</span></li>
+            </ul>
+          </div>
+
+          <div class="hero-panel">
+            <div class="console-header">
+              <span class="status-dot"></span>
+              <span>Squad ready</span>
+            </div>
+            <div class="score-box">
+              <small>New season</small>
+              <strong>Ch. 9</strong>
+            </div>
+            <div class="score-box accent">
+              <small>XP boost</small>
+              <strong>+42%</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt-section">
+        <div class="container section-heading">
+          <p class="eyebrow">Squad missions</p>
+          <h2>Battle-ready modes.</h2>
+        </div>
+        <div class="container cards-grid">
+          <article class="feature-card">
+            <span class="tag">Arena</span>
+            <h3>Click Rush</h3>
+            <p>Lock on target, dodge the chaos, and stack points before the storm closes in.</p>
+          </article>
+          <article class="feature-card highlight">
+            <span class="tag">Strategy</span>
+            <h3>Guess Master</h3>
+            <p>Outsmart the lobby with sharp instincts and precise guesses under pressure.</p>
+          </article>
+          <article class="feature-card">
+            <span class="tag">Speed</span>
+            <h3>Reaction Test</h3>
+            <p>Hit the trigger at the exact moment the arena flashes green.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="games" class="section">
+        <div class="container section-heading">
+          <p class="eyebrow">Live lobby</p>
+          <h2>Pick your challenge.</h2>
+        </div>
+
+        <div class="container games-grid">
+          <div class="game-panel" data-game="click-rush">
+            <div class="panel-header">
+              <div>
+                <p class="mini-label">Match 01</p>
+                <h3>Click Rush</h3>
+              </div>
+              <button class="small-button start-btn">Start</button>
+            </div>
+            <div class="panel-meta">
+              <span>Score: <strong class="score">0</strong></span>
+              <span>Time: <strong class="timer">15</strong>s</span>
+            </div>
+            <div class="arena" aria-label="Click Rush arena">
+              <button class="target" type="button" aria-label="Target"></button>
+            </div>
+            <p class="status-text">Lock in and take the win.</p>
+          </div>
+
+          <div class="game-panel" data-game="guess-master">
+            <div class="panel-header">
+              <div>
+                <p class="mini-label">Match 02</p>
+                <h3>Guess Master</h3>
+              </div>
+              <button class="small-button reset-btn">Reset</button>
+            </div>
+            <label class="guess-label" for="guessInput">Secret number: 1 to 100</label>
+            <div class="guess-row">
+              <input id="guessInput" type="number" min="1" max="100" placeholder="1-100" />
+              <button class="small-button submit-btn">Guess</button>
+            </div>
+            <p class="guess-status">The storm is closing in. Find the number.</p>
+            <p class="guess-hint">Attempts: <strong class="attempts">0</strong></p>
+          </div>
+
+          <div class="game-panel" data-game="reaction-test">
+            <div class="panel-header">
+              <div>
+                <p class="mini-label">Match 03</p>
+                <h3>Reaction Test</h3>
+              </div>
+              <button class="small-button reaction-btn">Go</button>
+            </div>
+            <button class="reaction-box" type="button" aria-label="Reaction game box">
+              Wait for green...
+            </button>
+            <p class="reaction-status">Blaze through the trigger.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="battle-pass" class="section alt-section">
+        <div class="container section-heading">
+          <p class="eyebrow">Battle pass</p>
+          <h2>Earn rewards. Stay alive.</h2>
+        </div>
+        <div class="container leaderboard">
+          <div class="leader-item"><span>Tier 1</span><strong>Scout Pack</strong><em>XP +10</em></div>
+          <div class="leader-item"><span>Tier 5</span><strong>Glider Trail</strong><em>XP +45</em></div>
+          <div class="leader-item"><span>Tier 9</span><strong>Legend Skin</strong><em>XP +90</em></div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contact" class="site-footer">
+      <div class="container footer-wrap">
+        <div>
+          <p class="eyebrow">Squad support</p>
+          <h2>Ready for the next drop?</h2>
+        </div>
+        <a href="mailto:team@stormfall.example" class="button primary">team@stormfall.example</a>
+      </div>
+      <p class="copyright">© <span id="year"></span> Stormfall Royale</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
