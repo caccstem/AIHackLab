@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aperture House — Contemporary Art</title>
+    <meta name="description" content="A digital gallery for art photography, moving image and abstract works." />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="grain"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Aperture House home"><span>APERTURE</span><i></i><span>HOUSE</span></a>
+      <nav>
+        <a href="#collection">Collection</a><a href="#motion">Motion</a><a href="#about">About</a>
+      </nav>
+      <button class="menu" aria-label="Open menu"><span></span><span></span></button>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <p class="eyebrow">Digital exhibition · 2024—25</p>
+        <h1>Seeing is a<br /><em>way of feeling.</em></h1>
+        <div class="hero-bottom">
+          <p>A rotating collection of contemporary photography, abstract studies and moving-image works.</p>
+          <a class="round-link" href="#collection">Enter the gallery <b>↓</b></a>
+        </div>
+        <figure class="hero-image">
+          <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1600&q=90" alt="Vivid abstract painted surface" />
+          <figcaption>01 / Chromatic Field, 2024</figcaption>
+        </figure>
+        <div class="hero-mark">AH<br />25</div>
+      </section>
+
+      <section class="intro" id="about">
+        <p class="eyebrow">A note from the curators</p>
+        <p class="statement">We collect images that hold a little longer than a glance — images that turn observation into <em>atmosphere.</em></p>
+        <a href="#collection" class="text-link">Read our story <span>↗</span></a>
+      </section>
+
+      <section class="collection" id="collection">
+        <div class="section-head">
+          <p class="eyebrow">Selected works</p>
+          <h2>In the <em>frame</em></h2>
+          <div class="filters" role="group" aria-label="Filter artwork">
+            <button class="active" data-filter="all">All works</button>
+            <button data-filter="photo">Photography</button>
+            <button data-filter="abstract">Abstract</button>
+            <button data-filter="motion">Moving image</button>
+          </div>
+        </div>
+        <div class="works-grid">
+          <article class="work work-large" data-type="photo">
+            <div class="art"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1000&q=85" alt="A lone figure in the desert" /></div>
+            <div class="work-meta"><span>After the rain</span><small>Photograph · 2024</small></div>
+          </article>
+          <article class="work shift" data-type="abstract">
+            <div class="art"><img src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=900&q=85" alt="Blue abstract paint patterns" /></div>
+            <div class="work-meta"><span>Blue Notes No. 8</span><small>Abstract · 2023</small></div>
+          </article>
+          <article class="work" data-type="photo">
+            <div class="art"><img src="https://images.unsplash.com/photo-1493106641515-6b5631de4bb9?auto=format&fit=crop&w=900&q=85" alt="Shadow and sunlight through a building" /></div>
+            <div class="work-meta"><span>Soft architecture</span><small>Photograph · 2024</small></div>
+          </article>
+          <article class="work work-wide" data-type="abstract">
+            <div class="art"><img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1200&q=85" alt="Colorful graphic abstract artwork" /></div>
+            <div class="work-meta"><span>The shape of sound</span><small>Abstract · 2025</small></div>
+          </article>
+          <article class="work" data-type="photo">
+            <div class="art"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85" alt="Dramatic misty mountain landscape" /></div>
+            <div class="work-meta"><span>Where the earth ends</span><small>Photograph · 2023</small></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="motion-section" id="motion">
+        <div class="motion-title"><p class="eyebrow">Short films</p><h2>Works in <em>motion</em></h2><p class="motion-copy">Brief visual essays for your quiet hours.</p></div>
+        <div class="film-grid">
+          <article class="film-card">
+            <video muted loop playsinline poster="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=85"><source src="https://videos.pexels.com/video-files/1580507/1580507-hd_1920_1080_30fps.mp4" type="video/mp4" /></video>
+            <button class="play" aria-label="Play The Light Between"><span>▶</span></button>
+            <div class="film-info"><span>01:42</span><h3>The Light Between</h3><p>Film by N. Rhee</p></div>
+          </article>
+          <article class="film-card offset">
+            <video muted loop playsinline poster="https://images.unsplash.com/photo-1519608487953-e999c86e7454?auto=format&fit=crop&w=900&q=85"><source src="https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_25fps.mp4" type="video/mp4" /></video>
+            <button class="play" aria-label="Play Night Swimmer"><span>▶</span></button>
+            <div class="film-info"><span>02:16</span><h3>Night Swimmer</h3><p>Film by J. Voss</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="newsletter">
+        <p class="eyebrow">Stay in the loop</p>
+        <h2>New works, <em>delivered slowly.</em></h2>
+        <form><label class="sr-only" for="email">Email address</label><input id="email" type="email" placeholder="Your email address" required /><button aria-label="Subscribe">→</button></form>
+      </section>
+    </main>
+    <footer><span>© Aperture House</span><span>Made for looking</span><a href="#top">Back to top ↑</a></footer>
+    <script src="script.js"></script>
+  </body>
+</html>
