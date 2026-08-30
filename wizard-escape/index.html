@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A magical escape-room game." />
+    <title>Hogwarts Escape | The Vanishing Vault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="stars" aria-hidden="true"></div>
+    <div class="mist mist-left" aria-hidden="true"></div>
+    <div class="mist mist-right" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="The Vanishing Vault home">
+        <span class="crest" aria-hidden="true">✦</span>
+        <span>The Vanishing Vault</span>
+      </a>
+      <p class="year">Hogwarts Escape · Year VII</p>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow"><span></span> A midnight challenge awaits <span></span></p>
+        <h1 id="page-title">The door has sealed.<br /><em>Will you escape?</em></h1>
+        <p class="intro">A forbidden vault has awakened beneath Hogwarts. Follow the clues, master the magic, and find the way out before the final bell tolls.</p>
+
+        <div class="actions">
+          <button class="button button-ghost" id="instructions-button" type="button">Instructions <span aria-hidden="true">↗</span></button>
+          <button class="button button-primary" id="start-button" type="button">Start <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="hint">Best played with sound on · 1–4 players</p>
+      </section>
+
+      <section class="vault-scene" aria-label="A Hogwarts-inspired Great Hall entrance">
+        <div class="castle-wall wall-left" aria-hidden="true"></div>
+        <div class="castle-wall wall-right" aria-hidden="true"></div>
+        <div class="armor armor-left" aria-hidden="true"><span></span></div>
+        <div class="armor armor-right" aria-hidden="true"><span></span></div>
+        <div class="arch">
+          <div class="stone-crown" aria-hidden="true">✦</div>
+          <div class="door">
+            <div class="door-leaf left-leaf"><span class="carving carving-a">✿</span><span class="carving carving-b">❦</span></div>
+            <div class="door-leaf right-leaf"><span class="carving carving-a">❦</span><span class="carving carving-b">✿</span></div>
+            <div class="iron-hinge hinge-left" aria-hidden="true"></div>
+            <div class="iron-hinge hinge-right" aria-hidden="true"></div>
+            <div class="door-ring left-ring" aria-hidden="true"></div>
+            <div class="door-ring right-ring" aria-hidden="true"></div>
+          </div>
+          <div class="stone-steps" aria-hidden="true"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>Not all who enter are meant to leave.</footer>
+
+    <dialog id="instructions-dialog" aria-labelledby="instructions-title">
+      <button class="close" id="close-instructions" type="button" aria-label="Close instructions">×</button>
+      <p class="eyebrow"><span></span> Your mission <span></span></p>
+      <h2 id="instructions-title">Escape the Vanishing Vault</h2>
+      <ol>
+        <li><b>Search closely.</b> Every room conceals a clue.</li>
+        <li><b>Work together.</b> Some spells require more than one mind.</li>
+        <li><b>Beat the clock.</b> The vault locks forever at the final bell.</li>
+      </ol>
+      <button class="button button-primary modal-action" id="dialog-start" type="button">Begin the escape <span aria-hidden="true">→</span></button>
+    </dialog>
+
+    <dialog id="start-dialog" class="start-dialog" aria-labelledby="start-title">
+      <p class="eyebrow"><span></span> The vault stirs <span></span></p>
+      <h2 id="start-title">Your first clue appears...</h2>
+      <p>Find the ancient key hidden somewhere in the chamber.</p>
+      <button class="button button-primary modal-action" id="continue-button" type="button">Enter the vault <span aria-hidden="true">→</span></button>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>
