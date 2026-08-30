@@ -6,7 +6,7 @@
     <title>Stormfall Royale</title>
     <meta
       name="description"
-      content="Stormfall Royale is a Fortnite-inspired battle royale landing page with mini-games and a competitive arena vibe."
+      content="Stormfall Royale is a Fortnite-inspired battle royale game that you can play directly in the browser."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,7 +27,7 @@
         </button>
         <div class="nav-links">
           <a href="#home">Home</a>
-          <a href="#games">Games</a>
+          <a href="#game">Game</a>
           <a href="#battle-pass">Battle Pass</a>
           <a href="#contact">Contact</a>
         </div>
@@ -41,16 +41,16 @@
             <p class="eyebrow">Drop in now</p>
             <h1>Battle for the final circle.</h1>
             <p class="lead">
-              Squad up, dodge the storm, and take on quick-fire challenges inspired by the energy of a battle royale arena.
+              Survive the storm, outgun rivals, and stay alive in a fast-paced battle royale arena inspired by Fortnite.
             </p>
             <div class="hero-actions">
-              <a href="#games" class="button primary">Play now</a>
+              <a href="#game" class="button primary">Play now</a>
               <a href="#battle-pass" class="button secondary">Battle pass</a>
             </div>
             <ul class="stats" aria-label="Battle stats">
-              <li><strong>3</strong><span>Game modes</span></li>
-              <li><strong>99</strong><span>Victory streak</span></li>
-              <li><strong>24/7</strong><span>Squad queue</span></li>
+              <li><strong>1</strong><span>Playable match</span></li>
+              <li><strong>99</strong><span>Storm danger</span></li>
+              <li><strong>∞</strong><span>Momentum</span></li>
             </ul>
           </div>
 
@@ -60,95 +60,96 @@
               <span>Squad ready</span>
             </div>
             <div class="score-box">
-              <small>New season</small>
-              <strong>Ch. 9</strong>
+              <small>Current zone</small>
+              <strong>Safe</strong>
             </div>
             <div class="score-box accent">
-              <small>XP boost</small>
-              <strong>+42%</strong>
+              <small>Loadout</small>
+              <strong>AR + Shield</strong>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="section alt-section">
+      <section id="game" class="section game-section">
         <div class="container section-heading">
-          <p class="eyebrow">Squad missions</p>
-          <h2>Battle-ready modes.</h2>
-        </div>
-        <div class="container cards-grid">
-          <article class="feature-card">
-            <span class="tag">Arena</span>
-            <h3>Click Rush</h3>
-            <p>Lock on target, dodge the chaos, and stack points before the storm closes in.</p>
-          </article>
-          <article class="feature-card highlight">
-            <span class="tag">Strategy</span>
-            <h3>Guess Master</h3>
-            <p>Outsmart the lobby with sharp instincts and precise guesses under pressure.</p>
-          </article>
-          <article class="feature-card">
-            <span class="tag">Speed</span>
-            <h3>Reaction Test</h3>
-            <p>Hit the trigger at the exact moment the arena flashes green.</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="games" class="section">
-        <div class="container section-heading">
-          <p class="eyebrow">Live lobby</p>
-          <h2>Pick your challenge.</h2>
+          <p class="eyebrow">Combat arena</p>
+          <h2>Survive the storm.</h2>
         </div>
 
-        <div class="container games-grid">
-          <div class="game-panel" data-game="click-rush">
-            <div class="panel-header">
-              <div>
-                <p class="mini-label">Match 01</p>
-                <h3>Click Rush</h3>
+        <div class="container game-shell">
+          <div class="battle-layout">
+            <div class="arena-column">
+              <div class="hud-bar">
+                <div class="hud-block">
+                  <span class="label">Health</span>
+                  <div class="health-bar"><div id="healthFill"></div></div>
+                </div>
+                <div class="hud-block">
+                  <span class="label">Storm</span>
+                  <strong id="stormText">100%</strong>
+                </div>
+                <div class="hud-block">
+                  <span class="label">Score</span>
+                  <strong id="scoreText">0</strong>
+                </div>
+                <div class="hud-block">
+                  <span class="label">Enemies</span>
+                  <strong id="enemyText">0</strong>
+                </div>
               </div>
-              <button class="small-button start-btn">Start</button>
-            </div>
-            <div class="panel-meta">
-              <span>Score: <strong class="score">0</strong></span>
-              <span>Time: <strong class="timer">15</strong>s</span>
-            </div>
-            <div class="arena" aria-label="Click Rush arena">
-              <button class="target" type="button" aria-label="Target"></button>
-            </div>
-            <p class="status-text">Lock in and take the win.</p>
-          </div>
 
-          <div class="game-panel" data-game="guess-master">
-            <div class="panel-header">
-              <div>
-                <p class="mini-label">Match 02</p>
-                <h3>Guess Master</h3>
-              </div>
-              <button class="small-button reset-btn">Reset</button>
-            </div>
-            <label class="guess-label" for="guessInput">Secret number: 1 to 100</label>
-            <div class="guess-row">
-              <input id="guessInput" type="number" min="1" max="100" placeholder="1-100" />
-              <button class="small-button submit-btn">Guess</button>
-            </div>
-            <p class="guess-status">The storm is closing in. Find the number.</p>
-            <p class="guess-hint">Attempts: <strong class="attempts">0</strong></p>
-          </div>
+              <canvas id="gameCanvas" width="960" height="540" aria-label="Battle royale game area"></canvas>
 
-          <div class="game-panel" data-game="reaction-test">
-            <div class="panel-header">
-              <div>
-                <p class="mini-label">Match 03</p>
-                <h3>Reaction Test</h3>
+              <div class="controls-row">
+                <button id="startBtn" class="button primary">Drop In</button>
+                <button id="restartBtn" class="button secondary">Restart</button>
               </div>
-              <button class="small-button reaction-btn">Go</button>
+
+              <p id="statusText" class="status-text">Press Drop In to start the match.</p>
             </div>
-            <button class="reaction-box" type="button" aria-label="Reaction game box">
-              Wait for green...
-            </button>
-            <p class="reaction-status">Blaze through the trigger.</p>
+
+            <aside class="side-panel">
+              <div class="panel-card">
+                <p class="panel-label">Inventory</p>
+                <div class="inventory-grid">
+                  <button class="inventory-slot active" type="button" data-item="medkit">
+                    <span>Medkit</span>
+                    <strong>2</strong>
+                  </button>
+                  <button class="inventory-slot" type="button" data-item="shield">
+                    <span>Shield</span>
+                    <strong>1</strong>
+                  </button>
+                  <button class="inventory-slot" type="button" data-item="ammo">
+                    <span>Ammo</span>
+                    <strong>3</strong>
+                  </button>
+                  <button class="inventory-slot" type="button" data-item="grenade">
+                    <span>Grenade</span>
+                    <strong>1</strong>
+                  </button>
+                </div>
+              </div>
+
+              <div class="panel-card">
+                <p class="panel-label">Loadout</p>
+                <div class="loadout-grid">
+                  <button class="loadout-card active" type="button" data-loadout="ranger">
+                    <span>Ranger</span>
+                    <small>Balanced</small>
+                  </button>
+                  <button class="loadout-card" type="button" data-loadout="scout">
+                    <span>Scout</span>
+                    <small>Fast</small>
+                  </button>
+                  <button class="loadout-card" type="button" data-loadout="tank">
+                    <span>Tank</span>
+                    <small>Heavy</small>
+                  </button>
+                </div>
+              </div>
+            </aside>
           </div>
         </div>
       </section>
@@ -156,12 +157,12 @@
       <section id="battle-pass" class="section alt-section">
         <div class="container section-heading">
           <p class="eyebrow">Battle pass</p>
-          <h2>Earn rewards. Stay alive.</h2>
+          <h2>Earn cosmetics. Stay alive.</h2>
         </div>
-        <div class="container leaderboard">
-          <div class="leader-item"><span>Tier 1</span><strong>Scout Pack</strong><em>XP +10</em></div>
-          <div class="leader-item"><span>Tier 5</span><strong>Glider Trail</strong><em>XP +45</em></div>
-          <div class="leader-item"><span>Tier 9</span><strong>Legend Skin</strong><em>XP +90</em></div>
+        <div class="container reward-grid">
+          <div class="reward-item"><span>Tier 1</span><strong>Scout Pack</strong><em>XP +10</em></div>
+          <div class="reward-item"><span>Tier 5</span><strong>Glider Trail</strong><em>XP +45</em></div>
+          <div class="reward-item"><span>Tier 9</span><strong>Legend Skin</strong><em>XP +90</em></div>
         </div>
       </section>
     </main>
