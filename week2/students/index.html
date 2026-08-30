@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore student projects from CACC AI Hacklab.">
+  <title>CACC AI Hacklab | Student Projects</title>
+  <style>
+    :root {
+      --ink: #17233c;
+      --muted: #65708a;
+      --paper: #f7f8fc;
+      --white: #ffffff;
+      --blue: #3156e8;
+      --violet: #7437de;
+      --border: #dfe3ef;
+      --shadow: 0 18px 45px rgba(36, 48, 88, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(49, 86, 232, 0.14), transparent 30rem),
+        radial-gradient(circle at 90% 90%, rgba(116, 55, 222, 0.12), transparent 28rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0 48px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 18px;
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      box-shadow: 0 0 0 5px rgba(49, 86, 232, 0.1);
+      content: "";
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(2.65rem, 7vw, 5.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+    }
+
+    h1 span {
+      color: transparent;
+      background: linear-gradient(110deg, var(--blue), var(--violet));
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    .intro {
+      max-width: 620px;
+      margin: 24px 0 44px;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .project-link {
+      display: flex;
+      align-items: center;
+      min-height: 126px;
+      padding: 24px;
+      overflow: hidden;
+      color: inherit;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      text-decoration: none;
+      box-shadow: 0 7px 24px rgba(36, 48, 88, 0.05);
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .project-link:hover,
+    .project-link:focus-visible {
+      border-color: rgba(49, 86, 232, 0.55);
+      box-shadow: var(--shadow);
+      transform: translateY(-4px);
+      outline: none;
+    }
+
+    .initial {
+      display: grid;
+      flex: 0 0 58px;
+      width: 58px;
+      height: 58px;
+      margin-right: 18px;
+      place-items: center;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      border-radius: 17px;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .project-copy {
+      min-width: 0;
+    }
+
+    .student-name {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .project-title {
+      display: block;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 0.92rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .arrow {
+      margin-left: auto;
+      padding-left: 16px;
+      color: var(--blue);
+      font-size: 1.4rem;
+      transition: transform 180ms ease;
+    }
+
+    .project-link:hover .arrow,
+    .project-link:focus-visible .arrow {
+      transform: translateX(4px);
+    }
+
+    footer {
+      margin-top: 42px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    @media (max-width: 680px) {
+      .page {
+        width: min(100% - 28px, 1100px);
+        padding-top: 48px;
+      }
+
+      .projects {
+        grid-template-columns: 1fr;
+      }
+
+      .project-link {
+        min-height: 108px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .project-link,
+      .arrow {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <p class="eyebrow">Student Project Gallery (week 3)</p>
+    <h1>CACC <span>AI Hacklab</span></h1>
+    <p class="intro">Explore what our students have built. Select a name below to open their project.</p>
+
+    <ul class="projects" aria-label="Student projects">
+      <li>
+        <a class="project-link" href="audrey_wk3/index.html">
+          <span class="initial" aria-hidden="true">A</span>
+          <span class="project-copy">
+            <span class="student-name">Audrey</span>
+            <span class="project-title">Fivefold — A Word Game</span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li>
+        <a class="project-link" href="bingru-week3/wizard-escape/index.html">
+          <span class="initial" aria-hidden="true">B</span>
+          <span class="project-copy">
+            <span class="student-name">Bingru</span>
+            <span class="project-title">Hogwarts Escape: The Vanishing Vault</span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li>
+        <a class="project-link" href="ethan__week3/index.html">
+          <span class="initial" aria-hidden="true">E</span>
+          <span class="project-copy">
+            <span class="student-name">Ethan</span>
+            <span class="project-title">Sky Hopper</span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li>
+        <a class="project-link" href="jennifer_wk3/index.html">
+          <span class="initial" aria-hidden="true">J</span>
+          <span class="project-copy">
+            <span class="student-name">Jennifer</span>
+            <span class="project-title">Endless Wordle</span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li>
+        <a class="project-link" href="jun-week2/index.html">
+          <span class="initial" aria-hidden="true">J</span>
+          <span class="project-copy">
+            <span class="student-name">Jun</span>
+            <span class="project-title">Aperture House — Contemporary Art</span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li>
+        <a class="project-link" href="Justin-Web/index.html">
+          <span class="initial" aria-hidden="true">J</span>
+          <span class="project-copy">
+            <span class="student-name">Justin</span>
+            <span class="project-title">Stormfall Royale</span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li>
+        <a class="project-link" href="sophie_wk2/index.html">
+          <span class="initial" aria-hidden="true">S</span>
+          <span class="project-copy">
+            <span class="student-name">Sophie</span>
+            <span class="project-title">Moonlit Tower</span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+    </ul>
+
+    <footer>CACC AI Hacklab · Built by curious minds</footer>
+  </main>
+</body>
+</html>
