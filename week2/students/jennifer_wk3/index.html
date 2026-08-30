@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4efe5" />
+    <title>Endless Wordle</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <button id="new-game" class="icon-button" aria-label="Start a new puzzle" title="New puzzle">
+          <span aria-hidden="true">&#8635;</span>
+        </button>
+        <div class="brand">
+          <span class="eyebrow">ENDLESS</span>
+          <h1>WORDLE</h1>
+        </div>
+        <button id="stats-button" class="icon-button" aria-label="Open statistics" title="Statistics">
+          <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+      </header>
+
+      <section class="game" aria-label="Wordle puzzle">
+        <div id="message" class="message" role="status" aria-live="polite"></div>
+        <div id="board" class="board" aria-label="Guess board"></div>
+        <div id="keyboard" class="keyboard" aria-label="On-screen keyboard"></div>
+      </section>
+
+      <p class="hint">Guess the five-letter word in six tries.</p>
+    </main>
+
+    <dialog id="stats-dialog">
+      <button id="close-stats" class="close" aria-label="Close statistics">&times;</button>
+      <span class="eyebrow">YOUR RECORD</span>
+      <h2>STATISTICS</h2>
+      <div class="stat-grid">
+        <div><strong id="played-stat">0</strong><span>Played</span></div>
+        <div><strong id="win-stat">0%</strong><span>Win</span></div>
+        <div><strong id="loss-stat">0%</strong><span>Lose</span></div>
+        <div><strong id="average-stat">—</strong><span>Avg. tries</span></div>
+      </div>
+      <button id="dialog-new-game" class="primary-button">PLAY ANOTHER</button>
+    </dialog>
+    <div id="loading" class="loading">Opening the dictionary…</div>
+    <script src="script.js"></script>
+  </body>
+</html>
