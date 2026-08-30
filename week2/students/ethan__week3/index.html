@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sky Hopper</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Mini arcade</p>
+          <h1>Sky Hopper</h1>
+        </div>
+        <button id="restartButton" type="button">Restart</button>
+      </header>
+
+      <main class="game-panel">
+        <div class="hud">
+          <div class="hud-item"><span>Height</span><strong id="coinCount">0 m</strong></div>
+          <div class="hud-item"><span>Lives</span><strong id="livesCount">3</strong></div>
+          <div class="hud-item"><span>Boost</span><strong id="goalText">None</strong></div>
+        </div>
+
+        <canvas id="gameCanvas" width="960" height="540" aria-label="Platformer game"></canvas>
+
+        <div class="controls">
+          <span>Move: A / D or ← / →</span>
+          <span>Jump: W / ↑ / Space</span>
+          <span>Dash: Shift</span>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
