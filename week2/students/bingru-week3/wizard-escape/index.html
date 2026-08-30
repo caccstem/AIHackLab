@@ -54,6 +54,24 @@
           <div class="stone-steps" aria-hidden="true"></div>
         </div>
       </section>
+
+      <section class="dining-hall" id="dining-hall" aria-labelledby="hall-title" hidden>
+        <p class="hall-kicker">Challenge 1 · Find the missing place setting</p>
+        <h2 id="hall-title">The Dining Hall</h2>
+        <div class="ceiling-candles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="portraits" aria-label="Animated old portraits watching from the walls">
+          <div class="portrait portrait-one"><div class="frame"><div class="canvas"><span class="person person-a"><i></i></span></div></div></div>
+          <div class="portrait portrait-two"><div class="frame"><div class="canvas"><span class="person person-b"><i></i></span></div></div></div>
+          <div class="portrait portrait-three"><div class="frame"><div class="canvas"><span class="person person-c"><i></i></span></div></div></div>
+          <div class="portrait portrait-four"><div class="frame"><div class="canvas"><span class="person person-d"><i></i></span></div></div></div>
+        </div>
+        <div class="long-table" aria-label="A long dining table with four candles">
+          <div class="tabletop"><span class="plate plate-one"></span><span class="plate plate-two"></span><span class="plate plate-three"></span><span class="plate plate-four"></span></div>
+          <div class="candle candle-short"><i></i></div><div class="candle candle-tall"><i></i></div><div class="candle candle-medium"><i></i></div><div class="candle candle-small"><i></i></div>
+          <div class="tablecloth"></div>
+        </div>
+        <button class="return-button" id="return-button" type="button">Return to entrance</button>
+      </section>
     </main>
 
     <footer>Not all who enter are meant to leave.</footer>
@@ -70,12 +88,9 @@
       <button class="button button-primary modal-action" id="dialog-start" type="button">Begin the escape <span aria-hidden="true">→</span></button>
     </dialog>
 
-    <dialog id="start-dialog" class="start-dialog" aria-labelledby="start-title">
-      <p class="eyebrow"><span></span> The vault stirs <span></span></p>
-      <h2 id="start-title">Your first clue appears...</h2>
-      <p>Find the ancient key hidden somewhere in the chamber.</p>
-      <button class="button button-primary modal-action" id="continue-button" type="button">Enter the vault <span aria-hidden="true">→</span></button>
-    </dialog>
+    <div class="challenge-screen" id="challenge-screen" aria-live="assertive" aria-hidden="true">
+      <p>Challenge 1:</p><h2>The Dining Hall</h2>
+    </div>
 
     <script src="script.js"></script>
   </body>
