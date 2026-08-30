@@ -1,0 +1,39 @@
+:root { color-scheme: light; font-family: "DM Sans", sans-serif; --ink:#314c4b; --cream:#fffaf0; --coral:#e98268; --sage:#668e75; }
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { margin:0; overflow:hidden; color:var(--ink); background:#d9e6dc; }
+button { font:inherit; }
+.game-wrap { min-height:100svh; display:grid; place-items:center; padding:clamp(0px, 2vw, 20px); }
+.game-card { position:relative; width:min(1180px, 100vw); aspect-ratio:3/2; max-height:100svh; overflow:hidden; isolation:isolate; background:#b9d8d2; box-shadow:0 25px 70px #496b5d42; }
+canvas { display:block; width:100%; height:100%; touch-action:none; }
+.topbar { position:absolute; z-index:3; inset:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:clamp(16px, 2.4vw, 30px) clamp(18px, 3.2vw, 44px); pointer-events:none; }
+.brand { display:flex; align-items:center; gap:9px; font-family:"Fraunces",serif; color:#fffdf4; text-shadow:0 2px 12px #31575055; font-size:clamp(.9rem,1.6vw,1.25rem); }
+.brand b { color:#f7d58d; font-weight:700; }
+.brand-flower { display:grid; place-items:center; width:31px; height:31px; border-radius:50%; color:#fff9df; background:#de8a70; }
+.controls { display:flex; gap:10px; pointer-events:auto; }
+.icon-btn { width:42px; height:42px; border:1px solid #ffffff7a; border-radius:50%; color:white; background:#476e6580; backdrop-filter:blur(8px); cursor:pointer; font-weight:700; }
+.icon-btn:hover { background:#365e55aa; transform:translateY(-1px); }
+.scoreboard { position:absolute; z-index:3; top:clamp(66px, 10vw, 94px); left:50%; display:flex; gap:17px; align-items:center; padding:9px 18px; border:1px solid #fff8; border-radius:18px; color:white; background:#486c6380; backdrop-filter:blur(8px); transform:translateX(-50%); text-align:center; text-shadow:0 1px 5px #37564f; }
+.scoreboard div { display:grid; min-width:45px; }
+.scoreboard span { font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; opacity:.82; }
+.scoreboard strong { font:700 1.35rem/1 "Fraunces",serif; }
+.scoreboard i { width:1px; height:28px; background:#fff6; }
+.panel { position:absolute; z-index:2; left:50%; top:52%; width:min(90%, 560px); transform:translate(-50%,-50%); text-align:center; color:#fffdf5; text-shadow:0 2px 18px #35564d80; }
+.panel[hidden], [hidden] { display:none !important; }
+.kicker { margin:0 0 10px; color:#fae2a9; text-transform:uppercase; letter-spacing:.2em; font-size:clamp(.64rem,1vw,.78rem); font-weight:700; }
+h1,h2 { margin:0; font:700 clamp(2.6rem,6.5vw,5.6rem)/.9 "Fraunces",serif; letter-spacing:-.045em; }
+h1 em { color:#f5cc8a; font-style:italic; }
+h2 { font-size:clamp(3rem,7vw,5rem); }
+.panel > p:not(.kicker) { margin:20px auto; line-height:1.65; font-size:clamp(.85rem,1.4vw,1.05rem); }
+.primary-btn { display:inline-flex; gap:25px; align-items:center; margin-top:4px; padding:14px 20px 14px 24px; border:1px solid #fff7e0; border-radius:999px; color:#45655d; background:#fffaf0; box-shadow:0 10px 30px #2f514a55; cursor:pointer; font-weight:700; }
+.primary-btn span { display:grid; place-items:center; width:25px; height:25px; border-radius:50%; color:white; background:var(--coral); }
+.primary-btn:hover { transform:translateY(-2px) scale(1.02); box-shadow:0 13px 35px #2f514a66; }
+.hint { display:flex; justify-content:center; align-items:center; gap:10px; margin-top:20px; font-size:.72rem; opacity:.85; }
+kbd { padding:5px 9px; border:1px solid #fff9; border-radius:6px; background:#496a6288; font:600 .6rem "DM Sans",sans-serif; letter-spacing:.12em; }
+.footer-tip { position:absolute; z-index:2; right:28px; bottom:15px; margin:0; color:#fffce8; font:italic clamp(.58rem,1vw,.75rem) "Fraunces",serif; opacity:.8; }
+.pause-label { position:absolute; z-index:5; inset:50% auto auto 50%; transform:translate(-50%,-50%); padding:22px 40px; border:1px solid #fff8; border-radius:20px; color:white; background:#365d55cc; backdrop-filter:blur(12px); text-align:center; font:700 2rem "Fraunces",serif; }
+.pause-label small { font:500 .7rem "DM Sans",sans-serif; text-transform:uppercase; letter-spacing:.12em; }
+.result-panel strong { color:#f7d58d; }
+@media (max-aspect-ratio: 3/2) { .game-card { width:100vw; height:100svh; aspect-ratio:auto; } }
+@media (max-width:600px) { .desktop{display:none}.scoreboard{top:70px}.footer-tip{display:none}.panel{top:55%}.topbar{padding-top:14px}.brand-flower{width:27px;height:27px}.icon-btn{width:38px;height:38px} }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; } }
