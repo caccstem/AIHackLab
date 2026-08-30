@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <title>Fivefold — A Word Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500&family=Libre+Franklin:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <button class="icon-button" id="helpButton" aria-label="How to play">?</button>
+        <div class="brand">
+          <span class="eyebrow">A DAILY WORD GAME</span>
+          <h1>FIVEFOLD</h1>
+        </div>
+        <button class="icon-button" id="newGameButton" aria-label="Start a new game">↻</button>
+      </header>
+
+      <section class="game-area" aria-label="Word game">
+        <div class="status-row">
+          <p id="gameStatus" aria-live="polite">Guess the hidden five-letter word.</p>
+          <span id="attemptCounter">1 / 6</span>
+        </div>
+
+        <div class="board" id="board" aria-label="Guess board"></div>
+        <div class="toast" id="toast" role="status" aria-live="assertive"></div>
+        <div class="keyboard" id="keyboard" aria-label="On-screen keyboard"></div>
+
+        <div class="legend" aria-label="Tile color legend">
+          <span><i class="legend-tile correct"></i>Right spot</span>
+          <span><i class="legend-tile present"></i>Wrong spot</span>
+          <span><i class="legend-tile absent"></i>Not in word</span>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="helpDialog">
+      <button class="dialog-close" aria-label="Close instructions">×</button>
+      <span class="eyebrow">HOW TO PLAY</span>
+      <h2>Find the word in six tries.</h2>
+      <p>Each guess must be five letters. After you submit, the tiles reveal how close your guess was.</p>
+      <div class="examples">
+        <div><b class="mini correct">S</b><b class="mini">T</b><b class="mini">E</b><b class="mini">A</b><b class="mini">M</b><span>S is in the right spot.</span></div>
+        <div><b class="mini">P</b><b class="mini present">L</b><b class="mini">A</b><b class="mini">N</b><b class="mini">T</b><span>L is in the word, elsewhere.</span></div>
+      </div>
+      <button class="primary-button" id="playButton">LET'S PLAY</button>
+    </dialog>
+
+    <script src="game.js"></script>
+  </body>
+</html>
