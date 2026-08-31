@@ -9,8 +9,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <script type="importmap">
+      {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"}}
+    </script>
   </head>
   <body>
+    <canvas id="three-game" aria-label="3D Hogwarts dining hall game" hidden></canvas>
     <div class="stars" aria-hidden="true"></div>
     <div class="mist mist-left" aria-hidden="true"></div>
     <div class="mist mist-right" aria-hidden="true"></div>
@@ -44,8 +48,14 @@
         <div class="arch">
           <div class="stone-crown" aria-hidden="true">✦</div>
           <div class="door">
-            <div class="door-leaf left-leaf"><span class="carving carving-a">✿</span><span class="carving carving-b">❦</span></div>
-            <div class="door-leaf right-leaf"><span class="carving carving-a">❦</span><span class="carving carving-b">✿</span></div>
+            <div class="door-leaf left-leaf">
+              <div class="house-sigil gryffindor" role="img" aria-label="Gryffindor lion sigil"><span class="house-animal" aria-hidden="true">♌</span><span>Gryffindor</span></div>
+              <div class="house-sigil hufflepuff" role="img" aria-label="Hufflepuff badger sigil"><span class="house-animal" aria-hidden="true">🦡</span><span>Hufflepuff</span></div>
+            </div>
+            <div class="door-leaf right-leaf">
+              <div class="house-sigil ravenclaw" role="img" aria-label="Ravenclaw eagle sigil"><span class="house-animal" aria-hidden="true">🦅</span><span>Ravenclaw</span></div>
+              <div class="house-sigil slytherin" role="img" aria-label="Slytherin serpent sigil"><span class="house-animal" aria-hidden="true">🐍</span><span>Slytherin</span></div>
+            </div>
             <div class="iron-hinge hinge-left" aria-hidden="true"></div>
             <div class="iron-hinge hinge-right" aria-hidden="true"></div>
             <div class="door-ring left-ring" aria-hidden="true"></div>
@@ -56,8 +66,11 @@
       </section>
 
       <section class="dining-hall" id="dining-hall" aria-labelledby="hall-title" hidden>
+        <button class="home-button" id="home-button" type="button">← Home</button>
         <p class="hall-kicker">Challenge 1 · Find the missing place setting</p>
         <h2 id="hall-title">The Dining Hall</h2>
+        <div class="hall-floor" aria-hidden="true"></div>
+        <div class="hall-vanishing-point" aria-hidden="true"></div>
         <div class="ceiling-candles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
         <div class="portraits" aria-label="Animated old portraits watching from the walls">
           <div class="portrait portrait-one"><div class="frame"><div class="canvas"><span class="person person-a"><i></i></span></div></div></div>
@@ -70,7 +83,13 @@
           <div class="candle candle-short"><i></i></div><div class="candle candle-tall"><i></i></div><div class="candle candle-medium"><i></i></div><div class="candle candle-small"><i></i></div>
           <div class="tablecloth"></div>
         </div>
-        <button class="return-button" id="return-button" type="button">Return to entrance</button>
+        <div class="player-stage" aria-label="Your wizard character">
+          <div class="player-cube" id="player-cube">
+            <div class="cube-face cube-front"><span class="cube-hair"></span><span class="cube-scar">ϟ</span><span class="cube-glasses"></span><span class="cube-robe"></span></div>
+            <div class="cube-face cube-back"></div><div class="cube-face cube-right"></div><div class="cube-face cube-left"></div><div class="cube-face cube-top"></div><div class="cube-face cube-bottom"></div>
+          </div>
+        </div>
+        <p class="movement-tip"><b>W A S D</b> or <b>arrow keys</b> explore</p>
       </section>
     </main>
 
@@ -93,5 +112,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script type="module" src="game.js"></script>
   </body>
 </html>
