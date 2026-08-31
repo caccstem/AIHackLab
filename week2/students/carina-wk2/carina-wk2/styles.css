@@ -128,9 +128,9 @@ h1 { margin:0; font:clamp(19px,2.4vw,27px)/1.1 "MinecraftSeven",monospace; text-
 .hunger-row { justify-content:flex-start; }
 .hunger-row { flex-direction:row-reverse; }
 .hud-icon { width:27px; height:27px; display:block; image-rendering:pixelated; background-repeat:no-repeat; background-position:center; background-size:27px 27px; }
-.heart-icon { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/heart/container_hardcore.png'); }
-.heart-icon.full { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/heart/hardcore_full.png'); }
-.heart-icon.half { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/heart/hardcore_half.png'); }
+.heart-icon { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/heart/container.png'); }
+.heart-icon.full { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/heart/full.png'); }
+.heart-icon.half { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/heart/half.png'); }
 .armor-icon.empty { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/armor_empty.png'); }
 .armor-icon.full { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/armor_full.png'); }
 .armor-icon.half { background-image:url('https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.8/gui/sprites/hud/armor_half.png'); }
@@ -165,12 +165,29 @@ body.damage-flash::after { content:""; position:fixed; inset:0; pointer-events:n
 .trophy { font-size:55px; color:#d7a52f; text-shadow:4px 4px #7c5e1e; }
 .game-over-icon { width:70px; height:70px; display:grid; place-items:center; margin:0 auto 18px; color:#fff; background:#9d493d; border:5px solid #c87562; box-shadow:5px 5px #552b25; font:38px "MinecraftSeven"; }
 .game-over-card .eyebrow { color:#9d493d; }
-.death-screen { position:fixed; inset:0; z-index:60; display:grid; place-items:center; color:#fff; text-align:center; background:linear-gradient(rgba(125,0,0,.72),rgba(35,0,0,.86)); backdrop-filter:blur(2px); }
+.death-screen { position:fixed; inset:0; z-index:60; display:grid; place-items:center; overflow:hidden; color:#fff; text-align:center; background:rgba(92,0,0,.67); backdrop-filter:blur(2px) grayscale(.2); animation:death-tint .7s ease-out both; }
 .death-screen[hidden] { display:none; }
-.death-content h2 { margin:0 0 24px; font:54px "MinecraftSeven"; text-shadow:4px 4px #2b0000; }
-.death-content p { font-size:22px; text-shadow:2px 2px #222; }
-.respawn-button { min-width:260px; margin-top:18px; padding:12px 24px; color:#fff; background:#777; border:3px solid; border-color:#ddd #292929 #292929 #ddd; box-shadow:0 0 0 2px #000; cursor:pointer; }
+.death-content { position:relative; z-index:2; width:min(520px,calc(100% - 32px)); transform:translateY(-3vh); animation:death-menu-in .55s .2s ease-out both; }
+.death-content h2 { margin:0 0 18px; color:#fff; font:54px "MinecraftSeven"; text-shadow:4px 4px #3f3f3f; }
+.death-content p { margin:0 0 25px; font:20px "MinecraftSeven"; text-shadow:2px 2px #222; }
+.death-content p b { color:#ffff55; font-weight:normal; }
+.respawn-button { width:min(400px,100%); min-height:46px; margin-top:8px; padding:10px 24px; color:#fff; font:17px "MinecraftSeven"; text-shadow:2px 2px #222; background:#777; border:3px solid; border-color:#aaa #333 #333 #aaa; box-shadow:0 0 0 2px #000; cursor:pointer; }
 .respawn-button:hover { outline:3px solid #fff; background:#898989; }
+.death-particles { position:absolute; inset:0; z-index:1; pointer-events:none; }
+.death-particle { position:absolute; left:calc(50% + var(--x)); top:calc(50% + var(--y)); width:var(--size); height:var(--size); opacity:0; background:url('assets/particles/generic_7.png') center/contain no-repeat; image-rendering:pixelated; animation:death-particle var(--duration) var(--delay) ease-out both,poof-frames .42s var(--delay) step-end both; }
+@keyframes death-tint { from{background:rgba(255,0,0,.18);backdrop-filter:blur(0) grayscale(0)} to{background:rgba(92,0,0,.67);backdrop-filter:blur(2px) grayscale(.2)} }
+@keyframes death-menu-in { from{opacity:0;transform:translateY(1vh) scale(.96)} to{opacity:1;transform:translateY(-3vh) scale(1)} }
+@keyframes death-particle { 0%{opacity:0;transform:translate(-50%,-50%) scale(.6)} 7%{opacity:.9} 58%{opacity:.8} 100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale))} }
+@keyframes poof-frames {
+  0%{background-image:url('assets/particles/generic_7.png')}
+  14%{background-image:url('assets/particles/generic_6.png')}
+  28%{background-image:url('assets/particles/generic_5.png')}
+  42%{background-image:url('assets/particles/generic_4.png')}
+  56%{background-image:url('assets/particles/generic_3.png')}
+  70%{background-image:url('assets/particles/generic_2.png')}
+  84%{background-image:url('assets/particles/generic_1.png')}
+  100%{background-image:url('assets/particles/generic_0.png')}
+}
 @media (max-width:760px) { .topbar{grid-template-columns:1fr auto}.progress-wrap{grid-column:1/-1;grid-row:2}.scoreboard{grid-column:2;grid-row:1}.quest-card{align-items:flex-start}.reward{display:none}.workbench{grid-template-columns:1fr}.craft-arrow{transform:rotate(90deg);height:50px}.panel{min-height:auto}.result-slot{margin:20px auto}.crafting-grid{grid-template-columns:repeat(3,70px)}.slot{width:70px;height:70px}.hotbar-section{padding-bottom:20px}.hotbar{margin-left:auto;margin-right:auto}}
 @media (min-width:761px) and (max-height:900px) {
   .game-shell{padding:38px 0 16px}.topbar{margin-bottom:12px}.quest-card{padding:8px 18px}

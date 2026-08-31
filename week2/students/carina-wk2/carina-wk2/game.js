@@ -18,7 +18,14 @@ const ITEM_ZH = { plank:'橡木木板',stick:'木棍',cobble:'圆石',coal:'煤�
 const RESULT_ZH = { 'Wooden Pickaxe':'木镐','Stone Axe':'石斧','Torch':'火把','Iron Pickaxe':'铁镐','Diamond Sword':'钻石剑','Crafting Table':'工作台','Bread':'面包','Chest':'箱子','Furnace':'熔炉','Iron Chestplate':'铁胸甲','Iron Leggings':'铁护腿','Bow':'弓','Fishing Rod':'钓鱼竿','Shield':'盾牌','Clock':'时钟','Compass':'指南针','Book':'书','Redstone Repeater':'红石中继器','Piston':'活塞','Respawn Anchor':'重生锚','Enchanting Table':'附魔台','Redstone Lamp':'红石灯','Bookshelf':'书架','Observer':'侦测器','Dispenser':'发射器','Pumpkin Pie':'南瓜派','Mushroom Stew':'蘑菇煲' };
 const ARMOR_VALUES = { 'Iron Chestplate':6, 'Iron Leggings':5 };
 const FOOD_VALUES = { 'Pumpkin Pie':{hunger:8,saturation:4.8}, 'Mushroom Stew':{hunger:6,saturation:7.2} };
-const HURT_SOUND = 'https://resources.download.minecraft.net/e7/e72ee78cbc57a43a37ba6db660d9e1eeb0d75f88';
+const HURT_SOUNDS = [1,2,3].map(number=>`assets/sounds/player-hurt-${number}.ogg`);
+const HURT_AUDIO = HURT_SOUNDS.map(source=>{
+  const audio=new Audio(source);
+  audio.preload='auto';
+  audio.volume=.55;
+  return audio;
+});
+let lastHurtSound=-1;
 
 const RECIPES = [
   { difficulty:2, title:'Craft a Wooden Pickaxe', description:'Every great adventure starts with the right tool.', result:'Wooden Pickaxe', resultIcon:'wooden_pickaxe', xp:100, stock:{plank:3,stick:2,cobble:2,coal:2}, pattern:['plank','plank','plank',null,'stick',null,null,'stick',null] },
@@ -53,6 +60,14 @@ const RECIPES = [
   { difficulty:4, title:'Craft a Dispenser', description:'Encase a bow and redstone mechanism in cobblestone.', result:'Dispenser', resultIcon:'dispenser', xp:325, stock:{cobble:7,bow:1,redstone:1,iron:2}, pattern:['cobble','cobble','cobble','cobble','bow','cobble','cobble','redstone','cobble'] }
 ];
 
+// The large vanilla catalog is generated separately to keep this gameplay file
+// readable. Existing hand-tuned challenges win when a result appears in both.
+if(typeof VANILLA_RECIPE_CATALOG !== 'undefined') {
+  Object.assign(ITEMS,VANILLA_RECIPE_CATALOG.items);
+  const curatedResults=new Set(RECIPES.map(recipe=>recipe.result));
+  RECIPES.push(...VANILLA_RECIPE_CATALOG.recipes.filter(recipe=>!curatedResults.has(recipe.result)));
+}
+
 let level = 0, score = 0, recipes = [], recipeBags = {}, lastOpeningResult = null;
 let grid = Array(9).fill(null), gridCounts = Array(9).fill(0), stock = {}, cursorStack = null, soundOn = true;
 let spreadDrag = { active:false, mode:null, start:null, slots:new Set() };
@@ -64,8 +79,8 @@ let hunger = 20, saturation = 5, exhaustion = 0, regenTimer = null;
 const $ = s => document.querySelector(s);
 const gridEl = $('#craftingGrid'), hotbarEl = $('#hotbar');
 
-function itemName(item) { return language==='zh' ? ITEM_ZH[item] : ITEMS[item].name; }
-function resultName(recipe) { return language==='zh' ? RESULT_ZH[recipe.result] : recipe.result; }
+function itemName(item) { return language==='zh' ? (ITEM_ZH[item] || ITEMS[item]?.name || item) : (ITEMS[item]?.name || item); }
+function resultName(recipe) { return language==='zh' ? (RESULT_ZH[recipe.result] || recipe.result) : recipe.result; }
 function applyLanguage() {
   document.documentElement.lang=language==='zh'?'zh-CN':'en';
   document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=el.dataset[language]);
@@ -102,7 +117,8 @@ function resetRecipeBags() {
 }
 
 function addNextRecipe() {
-  const difficulty = level < 2 ? 1 : level < 5 ? 2 : level < 9 ? 3 : 4;
+  const nextRound=recipes.length;
+  const difficulty = nextRound < 2 ? 1 : nextRound < 5 ? 2 : nextRound < 9 ? 3 : 4;
   const previous=recipes.at(-1);
   if(!recipeBags[difficulty]?.length) {
     recipeBags[difficulty]=shuffled(RECIPES.filter(recipe=>recipe.difficulty===difficulty));
@@ -113,12 +129,39 @@ function addNextRecipe() {
   recipes.push(recipeBags[difficulty].shift());
 }
 
+const preloadedTextures=new Set();
+function textureUrl(item) {
+  const asset=ITEMS[item]?.icon || item;
+  return `https://mc-api.bisai.dev/v1/assets/items/${asset}/texture.png`;
+}
+function preloadRecipeTextures(recipe) {
+  if(!recipe) return;
+  [...Object.keys(recipe.stock),recipe.resultIcon].forEach(item=>{
+    const url=textureUrl(item);
+    if(preloadedTextures.has(url)) return;
+    preloadedTextures.add(url);
+    const image=new Image();
+    image.decoding='async';
+    image.src=url;
+  });
+}
+function preloadUpcomingRecipes() {
+  while(recipes.length<=level+2) addNextRecipe();
+  recipes.slice(level+1,level+3).forEach(preloadRecipeTextures);
+}
+
 function icon(item, count) {
-  return `<div class="item-icon ${ITEMS[item]?.icon || item}" aria-hidden="true"></div>${count ? `<span class="count">${count}</span>` : ''}`;
+  const asset=ITEMS[item]?.icon || item;
+  // minecraft-assets only publishes a flat sprite for some inventory items.
+  // This endpoint returns that sprite for items and a rendered model for blocks,
+  // so newly generated catalog entries never disappear behind a 404 response.
+  const texture=textureUrl(item);
+  return `<div class="item-icon ${asset}" style="background-image:url('${texture}')" aria-hidden="true"></div>${count ? `<span class="count">${count}</span>` : ''}`;
 }
 function initLevel() {
   if(!recipes[level]) addNextRecipe();
   const r = recipes[level]; grid.fill(null); gridCounts.fill(0); cursorStack = null; stock = {...r.stock};
+  preloadRecipeTextures(r);
   $('#recipeTitle').textContent = language==='zh'?`制作${resultName(r)}`:r.title;
   $('#recipeDescription').textContent = language==='zh'?'按照正确配方摆放材料，完成这次合成挑战。':r.description;
   const difficultyName=language==='zh'?['','简单','熟练','专家','大师']:['','EASY','SKILLED','EXPERT','MASTER'];
@@ -126,6 +169,8 @@ function initLevel() {
   $('#scoreText').textContent = String(score).padStart(3,'0');
   $('#progressFill').style.width = `${Math.min(100,(level+1)/10*100)}%`;
   render();
+  if(window.requestIdleCallback) window.requestIdleCallback(preloadUpcomingRecipes,{timeout:1200});
+  else setTimeout(preloadUpcomingRecipes,200);
 }
 function render() {
   hotbarOrder=Object.keys(stock);
@@ -354,7 +399,13 @@ function playTone(freq) {
 }
 function playHurtSound() {
   if(!soundOn) return;
-  const audio=new Audio(HURT_SOUND); audio.volume=.55;
+  let soundIndex=Math.floor(Math.random()*HURT_AUDIO.length);
+  if(soundIndex===lastHurtSound) soundIndex=(soundIndex+1+Math.floor(Math.random()*2))%HURT_AUDIO.length;
+  lastHurtSound=soundIndex;
+  const audio=HURT_AUDIO[soundIndex];
+  audio.pause();
+  audio.currentTime=0;
+  audio.playbackRate=.9+Math.random()*.2;
   audio.play().catch(()=>playTone(105));
 }
 function addExhaustion(amount) {
@@ -395,7 +446,24 @@ function takeDamage() {
   else setTimeout(startNaturalRegeneration,650);
 }
 function showDeathScreen() {
-  dead=true; $('#deathScore').textContent=score; $('#deathModal').hidden=false;
+  dead=true; $('#deathScore').textContent=score;
+  const particles=$('#deathParticles');
+  particles.innerHTML='';
+  // Java Edition emits 20 POOF particles across the entity as it dies.
+  for(let index=0;index<20;index++) {
+    const particle=document.createElement('i');
+    particle.className='death-particle';
+    particle.style.setProperty('--x',`${(Math.random()-.5)*230}px`);
+    particle.style.setProperty('--y',`${(Math.random()-.5)*170}px`);
+    particle.style.setProperty('--dx',`${(Math.random()-.5)*55}px`);
+    particle.style.setProperty('--dy',`${-25-Math.random()*70}px`);
+    particle.style.setProperty('--size',`${24+Math.floor(Math.random()*17)}px`);
+    particle.style.setProperty('--scale',`${1.15+Math.random()*.55}`);
+    particle.style.setProperty('--delay',`${Math.random()*.16}s`);
+    particle.style.setProperty('--duration',`${.42+Math.random()*.18}s`);
+    particles.appendChild(particle);
+  }
+  $('#deathModal').hidden=false;
 }
 function toast(message) { const t=$('#toast');t.textContent=message;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800); }
 $('#clearButton').addEventListener('click',()=>{

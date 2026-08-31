@@ -4,14 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#101711" />
-    <title>Crafting Quest</title>
+    <title>CraftMine</title>
+    <link rel="preconnect" href="https://mc-api.bisai.dev" crossorigin />
+    <link rel="dns-prefetch" href="https://mc-api.bisai.dev" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <button id="languageButton" class="language-button" aria-label="Switch language">中文</button>
     <main class="game-shell">
       <header class="topbar">
-        <div class="brand"><span class="brand-cube"></span><span>CRAFTING<br /><b>QUEST</b></span></div>
+        <div class="brand"><span class="brand-cube"></span><span>CRAFT<br /><b>MINE</b></span></div>
         <div class="progress-wrap">
           <div class="progress-copy"><span data-i18n data-en="ADVENTURE PROGRESS" data-zh="冒险进度">ADVENTURE PROGRESS</span><strong id="progressText">ROUND 1</strong></div>
           <div class="progress-track"><div id="progressFill"></div></div>
@@ -84,12 +86,14 @@
       </div>
     </div>
     <div id="deathModal" class="death-screen" hidden>
+      <div id="deathParticles" class="death-particles" aria-hidden="true"></div>
       <div class="death-content">
-        <h2 data-i18n data-en="You died!" data-zh="你死了！">You died!</h2>
+        <h2 data-i18n data-en="You Died!" data-zh="你死了！">You Died!</h2>
         <p><span data-i18n data-en="Score" data-zh="分数">Score</span>: <b id="deathScore">0</b></p>
         <button id="respawnButton" class="respawn-button" data-i18n data-en="Respawn" data-zh="重生">Respawn</button>
       </div>
     </div>
+    <script src="recipe-catalog.js"></script>
     <script src="game.js"></script>
   </body>
 </html>
