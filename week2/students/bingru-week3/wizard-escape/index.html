@@ -48,18 +48,8 @@
         <div class="arch">
           <div class="stone-crown" aria-hidden="true">✦</div>
           <div class="door">
-            <div class="door-leaf left-leaf">
-              <div class="house-sigil gryffindor" role="img" aria-label="Gryffindor lion sigil"><span class="house-animal" aria-hidden="true">♌</span><span>Gryffindor</span></div>
-              <div class="house-sigil hufflepuff" role="img" aria-label="Hufflepuff badger sigil"><span class="house-animal" aria-hidden="true">🦡</span><span>Hufflepuff</span></div>
-            </div>
-            <div class="door-leaf right-leaf">
-              <div class="house-sigil ravenclaw" role="img" aria-label="Ravenclaw eagle sigil"><span class="house-animal" aria-hidden="true">🦅</span><span>Ravenclaw</span></div>
-              <div class="house-sigil slytherin" role="img" aria-label="Slytherin serpent sigil"><span class="house-animal" aria-hidden="true">🐍</span><span>Slytherin</span></div>
-            </div>
-            <div class="iron-hinge hinge-left" aria-hidden="true"></div>
-            <div class="iron-hinge hinge-right" aria-hidden="true"></div>
-            <div class="door-ring left-ring" aria-hidden="true"></div>
-            <div class="door-ring right-ring" aria-hidden="true"></div>
+            <div class="door-leaf left-leaf" aria-hidden="true"></div>
+            <div class="door-leaf right-leaf" aria-hidden="true"></div>
           </div>
           <div class="stone-steps" aria-hidden="true"></div>
         </div>
@@ -67,6 +57,14 @@
 
       <section class="dining-hall" id="dining-hall" aria-labelledby="hall-title" hidden>
         <button class="home-button" id="home-button" type="button">← Home</button>
+        <p class="game-instructions" id="game-instructions">Find the note.</p>
+        <div class="note-overlay" id="note-overlay" hidden>
+          <div class="note-card" role="dialog" aria-modal="true" aria-labelledby="note-title">
+            <button class="note-close" id="close-note" type="button" aria-label="Close note">X</button>
+            <p class="note-label" id="note-title">You found a note</p>
+            <p class="note-code">code: KOSP</p>
+          </div>
+        </div>
         <p class="hall-kicker">Challenge 1 · Find the missing place setting</p>
         <h2 id="hall-title">The Dining Hall</h2>
         <div class="hall-floor" aria-hidden="true"></div>
@@ -89,7 +87,7 @@
             <div class="cube-face cube-back"></div><div class="cube-face cube-right"></div><div class="cube-face cube-left"></div><div class="cube-face cube-top"></div><div class="cube-face cube-bottom"></div>
           </div>
         </div>
-        <p class="movement-tip"><b>W A S D</b> or <b>arrow keys</b> explore</p>
+        <p class="movement-tip"><b>W A S D</b> move · <b>arrow keys</b> change the camera view</p>
       </section>
     </main>
 
@@ -112,6 +110,6 @@
     </div>
 
     <script src="script.js"></script>
-    <script type="module" src="game.js"></script>
+    <script type="module" src="game.js?v=KOSP2"></script>
   </body>
 </html>

@@ -14,15 +14,13 @@ function openStart() {
   if (instructions.open) instructions.close();
   challengeScreen.setAttribute("aria-hidden", "false");
   document.body.classList.add("show-challenge");
+  document.body.classList.add("enter-hall");
+  diningHall.hidden = false;
+  window.startDiningHall3D?.();
   window.setTimeout(() => {
-    document.body.classList.add("enter-hall");
-    diningHall.hidden = false;
-    window.startDiningHall3D?.();
-    window.setTimeout(() => {
-      document.body.classList.remove("show-challenge");
-      challengeScreen.setAttribute("aria-hidden", "true");
-    }, 1000);
-  }, 2600);
+    document.body.classList.remove("show-challenge");
+    challengeScreen.setAttribute("aria-hidden", "true");
+  }, 700);
 }
 
 startButton.addEventListener("click", openStart);
