@@ -14,6 +14,14 @@ const ITEMS = {
   bowl: { name:'Bowl', icon:'bowl' }
 };
 
+// Vanilla Java Edition stack limits for items used by the recipe catalog.
+// Everything not listed here uses Minecraft's usual maximum of 64.
+const NONSTACKABLE_ITEMS = new Set('shulker_box saddle white_harness orange_harness magenta_harness light_blue_harness yellow_harness lime_harness pink_harness gray_harness light_gray_harness cyan_harness purple_harness blue_harness brown_harness green_harness red_harness black_harness minecart chest_minecart furnace_minecart tnt_minecart hopper_minecart oak_boat spruce_boat birch_boat jungle_boat acacia_boat cherry_boat dark_oak_boat pale_oak_boat mangrove_boat bamboo_raft turtle_helmet wolf_armor bow wooden_sword wooden_shovel wooden_pickaxe wooden_axe wooden_hoe stone_sword stone_shovel stone_pickaxe stone_axe stone_hoe golden_sword golden_shovel golden_pickaxe golden_axe golden_hoe iron_sword iron_shovel iron_pickaxe iron_axe iron_hoe diamond_sword diamond_shovel diamond_pickaxe diamond_axe diamond_hoe mushroom_stew leather_boots iron_helmet iron_chestplate iron_leggings iron_boots diamond_helmet diamond_chestplate diamond_leggings diamond_boots golden_helmet golden_chestplate golden_leggings golden_boots milk_bucket bundle fishing_rod spyglass cake white_bed orange_bed magenta_bed light_blue_bed yellow_bed lime_bed pink_bed gray_bed light_gray_bed cyan_bed purple_bed blue_bed brown_bed green_bed red_bed black_bed shears writable_book mace rabbit_stew leather_horse_armor beetroot_soup shield music_disc_5 crossbow suspicious_stew field_masoned_banner_pattern bordure_indented_banner_pattern brush'.split(' '));
+const SIXTEEN_STACK_ITEMS = new Set('oak_sign spruce_sign birch_sign jungle_sign acacia_sign cherry_sign dark_oak_sign pale_oak_sign mangrove_sign bamboo_sign crimson_sign warped_sign oak_hanging_sign spruce_hanging_sign birch_hanging_sign jungle_hanging_sign acacia_hanging_sign cherry_hanging_sign dark_oak_hanging_sign pale_oak_hanging_sign mangrove_hanging_sign bamboo_hanging_sign crimson_hanging_sign warped_hanging_sign bucket snowball egg blue_egg brown_egg ender_pearl armor_stand white_banner orange_banner magenta_banner light_blue_banner yellow_banner lime_banner pink_banner gray_banner light_gray_banner cyan_banner purple_banner blue_banner brown_banner green_banner red_banner black_banner honey_bottle'.split(' '));
+function maxStackSize(item) {
+  return ITEMS[item]?.stackSize || (NONSTACKABLE_ITEMS.has(item) || item.endsWith('_bucket') ? 1 : SIXTEEN_STACK_ITEMS.has(item) ? 16 : 64);
+}
+
 const ITEM_ZH = { plank:'橡木木板',stick:'木棍',cobble:'圆石',coal:'煤炭',iron:'铁锭',diamond:'钻石',redstone:'红石粉',redstoneTorch:'红石火把',stone:'石头',paper:'纸',leather:'皮革',obsidian:'黑曜石',cryingObsidian:'哭泣的黑曜石',glowstone:'荧石',book:'书',wheat:'小麦',string:'线',gold:'金锭',quartz:'下界石英',bow:'弓',pumpkin:'南瓜',sugar:'糖',egg:'鸡蛋',redMushroom:'红色蘑菇',brownMushroom:'棕色蘑菇',bowl:'碗' };
 const RESULT_ZH = { 'Wooden Pickaxe':'木镐','Stone Axe':'石斧','Torch':'火把','Iron Pickaxe':'铁镐','Diamond Sword':'钻石剑','Crafting Table':'工作台','Bread':'面包','Chest':'箱子','Furnace':'熔炉','Iron Chestplate':'铁胸甲','Iron Leggings':'铁护腿','Bow':'弓','Fishing Rod':'钓鱼竿','Shield':'盾牌','Clock':'时钟','Compass':'指南针','Book':'书','Redstone Repeater':'红石中继器','Piston':'活塞','Respawn Anchor':'重生锚','Enchanting Table':'附魔台','Redstone Lamp':'红石灯','Bookshelf':'书架','Observer':'侦测器','Dispenser':'发射器','Pumpkin Pie':'南瓜派','Mushroom Stew':'蘑菇煲' };
 const ARMOR_VALUES = { 'Iron Chestplate':6, 'Iron Leggings':5 };
@@ -70,7 +78,9 @@ if(typeof VANILLA_RECIPE_CATALOG !== 'undefined') {
 
 let level = 0, score = 0, recipes = [], recipeBags = {}, lastOpeningResult = null;
 let grid = Array(9).fill(null), gridCounts = Array(9).fill(0), stock = {}, cursorStack = null, soundOn = true;
-let spreadDrag = { active:false, mode:null, start:null, slots:new Set() };
+let spreadDrag = { active:false, mode:null, start:null, slots:new Set(), doubleClick:false };
+let lastPrimaryClick = { key:null, time:0 };
+const DOUBLE_CLICK_LIMIT_MS = 400;
 let hoveredGridSlot = null, hotbarOrder = [];
 let recipeReady = false, completingCraft = false;
 let language = localStorage.getItem('crafting-language') || 'en';
@@ -207,7 +217,11 @@ function renderStatus() {
 }
 function bindInteractions() {
   document.querySelectorAll('.hotbar-slot').forEach(el => {
-    el.addEventListener('click', () => { if(el.dataset.item) grabInventoryStack(el.dataset.item); });
+    el.addEventListener('click', event => {
+      if(!el.dataset.item) return;
+      if(event.detail>0 && isDoublePrimaryClick(`hotbar:${el.dataset.item}`) && cursorStack?.item===el.dataset.item) collectMatchingStacks(el.dataset.item);
+      else grabInventoryStack(el.dataset.item);
+    });
     el.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); el.click(); }});
     el.addEventListener('dragover', e => { if(e.dataTransfer.types.includes('application/x-crafted-result')) { e.preventDefault();el.classList.add('result-drop'); } });
     el.addEventListener('dragleave', () => el.classList.remove('result-drop'));
@@ -240,23 +254,56 @@ function grabInventoryStack(item) {
     stock[item]=(stock[item]||0)+cursorStack.count; cursorStack=null; playTone(220); render(); return;
   }
   if(!stock[item]) return;
-  returnCursorToInventory(); cursorStack={item,count:stock[item]}; stock[item]=0; playTone(300); render();
+  returnCursorToInventory();
+  const count=Math.min(stock[item],maxStackSize(item));
+  cursorStack={item,count}; stock[item]-=count; playTone(300); render();
+}
+function collectMatchingStacks(item) {
+  if(!cursorStack || cursorStack.item!==item) return;
+  let capacity=maxStackSize(item)-cursorStack.count;
+  if(capacity<=0) return;
+
+  grid.forEach((gridItem,index)=>{
+    if(gridItem!==item || capacity<=0) return;
+    const moved=Math.min(gridCounts[index],capacity);
+    cursorStack.count+=moved;
+    gridCounts[index]-=moved;
+    capacity-=moved;
+    if(gridCounts[index]===0) grid[index]=null;
+  });
+
+  if(capacity>0 && stock[item]>0) {
+    const moved=Math.min(stock[item],capacity);
+    cursorStack.count+=moved;
+    stock[item]-=moved;
+  }
+  playTone(420); render();
+}
+function isDoublePrimaryClick(key) {
+  const now=performance.now();
+  const isDouble=lastPrimaryClick.key===key && now-lastPrimaryClick.time<=DOUBLE_CLICK_LIMIT_MS;
+  lastPrimaryClick=isDouble ? {key:null,time:0} : {key,time:now};
+  return isDouble;
 }
 function hotkeyPlace(item,index) {
   returnCursorToInventory();
-  const count=stock[item]||0;
+  const count=Math.min(stock[item]||0,maxStackSize(item));
   if(!count) return render();
   const sameItem=grid[index]===item;
   if(grid[index] && grid[index]!==item) stock[grid[index]]=(stock[grid[index]]||0)+gridCounts[index];
-  grid[index]=item; gridCounts[index]=sameItem?gridCounts[index]+count:count;
-  stock[item]=0; playTone(360); render();
+  const addition=sameItem?Math.min(count,maxStackSize(item)-gridCounts[index]):count;
+  grid[index]=item; gridCounts[index]=sameItem?gridCounts[index]+addition:addition;
+  stock[item]-=addition; playTone(360); render();
   hoveredGridSlot=index;
   document.querySelector(`[data-slot="${index}"]`)?.classList.add('hotkey-flash');
 }
 function leftClickSlot(index) {
   if(cursorStack) {
     if(!grid[index] || grid[index]===cursorStack.item) {
-      grid[index]=cursorStack.item; gridCounts[index]+=cursorStack.count; cursorStack=null;
+      const capacity=maxStackSize(cursorStack.item)-gridCounts[index];
+      const moved=Math.min(capacity,cursorStack.count);
+      if(moved) { grid[index]=cursorStack.item; gridCounts[index]+=moved; cursorStack.count-=moved; }
+      if(cursorStack.count===0) cursorStack=null;
     } else {
       const held=cursorStack; cursorStack={item:grid[index],count:gridCounts[index]};
       grid[index]=held.item; gridCounts[index]=held.count;
@@ -277,6 +324,7 @@ function shiftReturnStack(index) {
 }
 function placeOne(index) {
   if(!cursorStack || (grid[index] && grid[index]!==cursorStack.item)) return;
+  if(gridCounts[index]>=maxStackSize(cursorStack.item)) return;
   grid[index]=cursorStack.item; gridCounts[index]++; cursorStack.count--;
   if(cursorStack.count===0) cursorStack=null;
   playTone(360); render();
@@ -284,18 +332,19 @@ function placeOne(index) {
 function beginSlotAction(event,index) {
   if(event.button!==0 && event.button!==2) return;
   event.preventDefault();
+  const doubleClick=event.button===0 && isDoublePrimaryClick(`grid:${index}`) && Boolean(cursorStack);
   if(event.button===0 && event.shiftKey && grid[index]) {
     shiftReturnStack(index); return;
   }
   if(cursorStack) {
     const compatible=!grid[index]||grid[index]===cursorStack.item;
-    spreadDrag={active:true,mode:event.button===2?'single':'even',start:index,slots:new Set(compatible?[index]:[])};
+    spreadDrag={active:true,mode:event.button===2?'single':'even',start:index,slots:new Set(compatible?[index]:[]),doubleClick};
     if(compatible) document.querySelector(`[data-slot="${index}"]`)?.classList.add('spread-target');
   } else if(event.button===0) leftClickSlot(index);
 }
 function addSpreadSlot(index) {
   if(!spreadDrag.active || !cursorStack) return;
-  if(!grid[index] || grid[index]===cursorStack.item) {
+  if((!grid[index] || grid[index]===cursorStack.item) && gridCounts[index]<maxStackSize(cursorStack.item)) {
     spreadDrag.slots.add(index);
     document.querySelector(`[data-slot="${index}"]`)?.classList.add('spread-target');
   }
@@ -304,12 +353,15 @@ function finishSpread() {
   if(!spreadDrag.active) return;
   const mode=spreadDrag.mode;
   const start=spreadDrag.start;
-  const slots=[...spreadDrag.slots].filter(index=>!grid[index]||grid[index]===cursorStack?.item);
-  spreadDrag={active:false,mode:null,start:null,slots:new Set()};
+  const doubleClick=spreadDrag.doubleClick;
+  const slots=[...spreadDrag.slots].filter(index=>(!grid[index]||grid[index]===cursorStack?.item) && gridCounts[index]<maxStackSize(cursorStack?.item));
+  spreadDrag={active:false,mode:null,start:null,slots:new Set(),doubleClick:false};
   if(!cursorStack) return render();
+  if(doubleClick && slots.length<=1) return collectMatchingStacks(cursorStack.item);
   if(mode==='single') {
     slots.forEach(index=>{
       if(!cursorStack) return;
+      if(gridCounts[index]>=maxStackSize(cursorStack.item)) return;
       grid[index]=cursorStack.item; gridCounts[index]++; cursorStack.count--;
       if(cursorStack.count===0) cursorStack=null;
     });
@@ -320,11 +372,13 @@ function finishSpread() {
   if(slots.length===1) return leftClickSlot(slots[0]);
   const amount=Math.floor(cursorStack.count/slots.length), remainder=cursorStack.count%slots.length;
   slots.forEach((index,position)=>{
-    const addition=amount+(position<remainder?1:0);
+    const addition=Math.min(amount+(position<remainder?1:0),maxStackSize(cursorStack.item)-gridCounts[index]);
     if(!addition) return;
     grid[index]=cursorStack.item; gridCounts[index]+=addition;
+    cursorStack.count-=addition;
   });
-  cursorStack=null; playTone(360); render();
+  if(cursorStack.count===0) cursorStack=null;
+  playTone(360); render();
 }
 document.addEventListener('mouseup',finishSpread);
 document.addEventListener('mousemove',event=>{
