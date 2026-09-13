@@ -93,6 +93,39 @@ let onlineMode = false;
 let multiplayerSocket = null;
 let localOnlinePlayer = null;
 let onlinePlayers = [];
+let audioContext = null;
+let musicTimer = null;
+let footstepTimer = 0;
+
+function startAudio() {
+  if (!audioContext) audioContext = new AudioContext();
+  if (audioContext.state === 'suspended') audioContext.resume();
+  if (musicTimer === null) {
+    const notes = [196, 247, 294, 247, 220, 277, 330, 277];
+    let noteIndex = 0;
+    musicTimer = window.setInterval(() => {
+      playTone(notes[noteIndex++ % notes.length], .035, 1.1, 'sine');
+    }, 720);
+  }
+}
+
+function playTone(frequency, volume, duration, type = 'square') {
+  if (!audioContext) return;
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  oscillator.type = type;
+  oscillator.frequency.value = frequency;
+  gain.gain.setValueAtTime(volume, audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + duration);
+  oscillator.connect(gain).connect(audioContext.destination);
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + duration);
+}
+
+function playJumpSound() { playTone(520, .12, .12, 'square'); playTone(780, .08, .16, 'square'); }
+function playMoveSound() { playTone(120, .045, .06, 'triangle'); }
+function playDeathSound() { playTone(180, .14, .18, 'sawtooth'); playTone(90, .1, .3, 'sawtooth'); }
+function playClickSound() { playTone(420, .08, .06, 'square'); }
 let best = Number(localStorage.getItem('skybound-best') || 0);
 bestDisplay.textContent = String(best).padStart(4, '0');
 
@@ -159,7 +192,7 @@ function resetGame() {
 }
 
 function startGame() {
-  resetGame(); running = true; updateFreezeButton(); startOverlay.hidden = true; resultOverlay.hidden = true; lastTime = performance.now(); requestAnimationFrame(loop);
+  startAudio(); resetGame(); running = true; updateFreezeButton(); startOverlay.hidden = true; resultOverlay.hidden = true; lastTime = performance.now(); requestAnimationFrame(loop);
 }
 
 function sendOnlineState() {
@@ -215,6 +248,7 @@ function advanceLevel() {
 }
 
 function respawnAtCheckpoint() {
+  playDeathSound();
   const checkpoint = checkpoints[activeCheckpoint];
   player.x = checkpoint.x;
   player.y = checkpoint.groundY - player.height;
@@ -239,9 +273,15 @@ function update(delta) {
   }
   const moveLeft = keys.ArrowLeft || keys.KeyA;
   const moveRight = keys.ArrowRight || keys.KeyD;
+  const wasGrounded = player.grounded;
+  const isMoving = moveLeft || moveRight;
   player.vx = moveLeft ? -4.8 : moveRight ? 4.8 : player.vx * 0.82;
   player.vy += 0.52 * delta;
-  if ((keys.Space || keys.ArrowUp || keys.KeyW) && player.grounded) { player.vy = -12.5; player.grounded = false; }
+  if ((keys.Space || keys.ArrowUp || keys.KeyW) && player.grounded) { playJumpSound(); player.vy = -12.5; player.grounded = false; }
+  if (isMoving && wasGrounded) {
+    footstepTimer -= delta;
+    if (footstepTimer <= 0) { playMoveSound(); footstepTimer = 18; }
+  } else if (!isMoving) footstepTimer = 0;
   const previousBottom = player.y + player.height;
   player.x += player.vx * delta;
   player.x = Math.max(0, Math.min(world.width - player.width, player.x));
@@ -394,4 +434,8 @@ joinButton.addEventListener('click', () => {
   vaultMessage.classList.remove('vault-success');
   connectToOnlineVault(code);
 });
+[
+  startButton, restartButton, instructionsButton, instructionsClose,
+  onlineVaultButton, onlineVaultClose, joinButton, freezeButton
+].forEach((button) => button.addEventListener('click', () => { startAudio(); playClickSound(); }));
 resetGame(); draw();
