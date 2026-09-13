@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5ecda" />
+    <title>Sidequest — Endless Runner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header>
+        <a class="brand" href="#" aria-label="Sidequest home">
+          <span class="brand-mark">S</span>
+          <span>SIDEQUEST</span>
+        </a>
+        <div class="top-actions">
+          <span class="status" id="zoneStatus"><i></i> OPEN ROAD</span>
+          <button class="icon-button" id="soundButton" aria-label="Mute sound" title="Mute sound">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Zm4.5 4.5a4 4 0 0 1 0 5m2-7a7 7 0 0 1 0 9"/></svg>
+          </button>
+          <button class="icon-button" id="pauseButton" aria-label="Pause game" title="Pause (P)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="score-row" aria-label="Game statistics">
+        <div><span class="eyebrow">SCORE</span><strong><span id="score">00000</span> <small>PTS</small></strong></div>
+        <div class="high-score"><span class="eyebrow">BEST SCORE</span><strong><span id="best">00000</span> <small>PTS</small></strong></div>
+        <div class="pace"><span class="eyebrow">PACE</span><strong id="pace">1.0×</strong></div>
+      </section>
+
+      <section class="canvas-wrap" id="canvasWrap">
+        <canvas id="gameCanvas" aria-label="Endless runner game. Jump over obstacles to score points."></canvas>
+        <button class="duck-button" id="duckButton" aria-label="Hold to duck">↓ <span>DUCK</span></button>
+        <div class="start-card" id="startCard">
+          <p class="card-kicker" id="cardKicker">READY?</p>
+          <h1 id="cardTitle">RUN THE<br><em>DISTANCE.</em></h1>
+          <p id="cardText">Enemies join after 400m. At 800m, the canyon brings<br>ground holes and low rock overhangs.</p>
+          <button class="primary-button" id="startButton"><span id="buttonText">START RUN</span><span class="arrow">→</span></button>
+          <div class="control-hint"><kbd>SPACE</kbd><span>JUMP</span><kbd>↓</kbd><span>DUCK</span></div>
+        </div>
+        <div class="pause-card" id="pauseCard" hidden>
+          <span class="eyebrow">TAKE A BREATH</span>
+          <h2>PAUSED</h2>
+          <p>Press P or tap below when you're ready.</p>
+          <button class="primary-button" id="resumeButton">KEEP RUNNING <span class="arrow">→</span></button>
+        </div>
+      </section>
+
+      <footer>
+        <div class="tip"><span>↗</span><p><b>PRO TIP</b> Short taps make short jumps. Hold for extra height.</p></div>
+        <p class="credit">BUILT FOR THE LONG RUN <span>●</span> 2026</p>
+      </footer>
+    </main>
+    <script src="game.js"></script>
+  </body>
+</html>
