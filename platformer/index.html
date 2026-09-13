@@ -47,6 +47,15 @@
               <p><b>Power:</b> you can freeze the turned on kitties two time every single round.</p>
               <p><b>Your kitten's name:</b> Nico.</p>
             </div>
+            <button class="online-vault-button" id="online-vault-button" type="button">ONLINE VAULT</button>
+            <div class="online-vault-panel" id="online-vault-panel" hidden>
+              <button class="instructions-close" id="online-vault-close" type="button" aria-label="Close online vault">X</button>
+              <p class="overlay-kicker">Join an online game</p>
+              <label for="vault-code">CODE:</label>
+              <input id="vault-code" name="vault-code" type="password" inputmode="numeric" maxlength="4" placeholder="ENTER CODE" autocomplete="off" />
+              <button class="join-button" id="join-button" type="button">JOIN GAME</button>
+              <p class="vault-message" id="vault-message" aria-live="polite"></p>
+            </div>
           </div>
           <div class="result-overlay" id="result-overlay" hidden>
             <p class="overlay-kicker" id="result-kicker">RUN COMPLETE</p>

@@ -7,6 +7,12 @@ const restartButton = document.querySelector('#restart-button');
 const instructionsButton = document.querySelector('#instructions-button');
 const instructionsPanel = document.querySelector('#instructions-panel');
 const instructionsClose = document.querySelector('#instructions-close');
+const onlineVaultButton = document.querySelector('#online-vault-button');
+const onlineVaultPanel = document.querySelector('#online-vault-panel');
+const onlineVaultClose = document.querySelector('#online-vault-close');
+const vaultCode = document.querySelector('#vault-code');
+const joinButton = document.querySelector('#join-button');
+const vaultMessage = document.querySelector('#vault-message');
 const freezeButton = document.querySelector('#freeze-button');
 const freezeUsesDisplay = document.querySelector('#freeze-uses');
 const resultKicker = document.querySelector('#result-kicker');
@@ -68,7 +74,7 @@ const levelPlacementProfiles = [
   { platformX: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], platformY: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], obstacleX: [0, 0, 0, 0, 0, 0, 0], monsterX: [0, 0, 0], checkpointX: [0, 0, 0, 0] },
   { platformX: [0, 28, -32, 42, -24, 36, -28, 30, -36, 42, -24, 28], platformY: [0, 14, -12, 20, -14, 18, -12, 12, -10, 14, -8, 0], obstacleX: [24, -24, 30, -32, 22, -24, 28], monsterX: [30, -28, 24], checkpointX: [0, 24, -20, -28] },
   { platformX: [0, -34, 46, -40, 38, -44, 34, -32, 48, -38, 28, -24], platformY: [0, 24, 18, -16, 20, -13, 18, -15, 13, -10, 10, 0], obstacleX: [-20, 30, -36, 32, -24, 30, -34], monsterX: [-24, 36, -30], checkpointX: [0, -30, 30, 24] },
-  { platformX: [0, 70, -80, 55, -75, 80, -60, 70, -85, 55, -65, 45], platformY: [0, 35, -35, 45, -35, 40, -30, 35, -25, 30, -15, 0], obstacleX: [50, -55, 60, -65, 45, -50, 55], monsterX: [60, -55, 50], checkpointX: [0, 55, -50, -45] },
+  { platformX: [0, 70, -80, 55, -75, 80, -60, 250, -85, 55, -65, 45], platformY: [0, 35, -35, 45, -35, 40, -30, 35, -25, 30, -15, 0], obstacleX: [50, -55, 60, -65, 45, -50, 55], monsterX: [60, -55, 50], checkpointX: [0, 55, -50, -45] },
   { platformX: [0, -80, 90, -75, 85, -90, 70, -80, 95, -70, 60, -50], platformY: [0, -35, 45, -40, 50, -35, 45, -35, 35, -25, 25, 0], obstacleX: [-45, 60, -70, 65, -50, 55, -65], monsterX: [-50, 70, -60], checkpointX: [0, -60, 60, 50] }
 ];
 let shards = [];
@@ -83,6 +89,10 @@ let activeCheckpoint = 0;
 let levelIndex = 0;
 let freezeUses = 2;
 let freezeTimer = 0;
+let onlineMode = false;
+let multiplayerSocket = null;
+let localOnlinePlayer = null;
+let onlinePlayers = [];
 let best = Number(localStorage.getItem('skybound-best') || 0);
 bestDisplay.textContent = String(best).padStart(4, '0');
 
@@ -152,9 +162,45 @@ function startGame() {
   resetGame(); running = true; updateFreezeButton(); startOverlay.hidden = true; resultOverlay.hidden = true; lastTime = performance.now(); requestAnimationFrame(loop);
 }
 
+function sendOnlineState() {
+  if (!onlineMode || !multiplayerSocket || multiplayerSocket.readyState !== WebSocket.OPEN || !localOnlinePlayer) return;
+  multiplayerSocket.send(JSON.stringify({ type: 'state', x: player.x, y: player.y, level: levelIndex + 1 }));
+}
+
+function connectToOnlineVault(code) {
+  if (multiplayerSocket) multiplayerSocket.close();
+  const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+  multiplayerSocket = new WebSocket(`${protocol}://${location.hostname}:8080`);
+  multiplayerSocket.addEventListener('open', () => multiplayerSocket.send(JSON.stringify({ type: 'join', code })));
+  multiplayerSocket.addEventListener('message', (event) => {
+    const message = JSON.parse(event.data);
+    if (message.type === 'join-error') {
+      vaultMessage.textContent = message.message;
+      return;
+    }
+    if (message.type === 'joined') {
+      onlineMode = true;
+      localOnlinePlayer = message.player;
+      onlinePlayers = message.players;
+      vaultMessage.textContent = `JOINED AS ${localOnlinePlayer.name}!`;
+      startGame();
+      return;
+    }
+    if (message.type === 'players') onlinePlayers = message.players;
+    if (message.type === 'winner' && message.winner.id !== localOnlinePlayer?.id) {
+      resultKicker.textContent = 'ONLINE RACE';
+      resultTitle.textContent = `${message.winner.name} WINS!`;
+      resultCopy.textContent = 'They reached the highest point first.';
+      resultOverlay.hidden = false;
+    }
+  });
+  multiplayerSocket.addEventListener('error', () => { vaultMessage.textContent = 'Online vault is offline right now.'; });
+}
+
 function finishGame(won) {
   running = false;
   updateFreezeButton();
+  if (won && onlineMode && multiplayerSocket?.readyState === WebSocket.OPEN) multiplayerSocket.send(JSON.stringify({ type: 'finish' }));
   resultKicker.textContent = won ? 'RUN COMPLETE' : 'SIGNAL LOST';
   resultTitle.textContent = won ? 'YOU WIN!!' : 'Keep climbing.';
   resultCopy.textContent = won ? 'All five levels conquered.' : 'The cloudline is still waiting. Try a different route.';
@@ -217,7 +263,7 @@ function update(delta) {
   shards.forEach((shard) => {
     if (!shard.collected && player.x < shard.x + 22 && player.x + player.width > shard.x - 22 && player.y < shard.y + 22 && player.y + player.height > shard.y - 22) { shard.collected = true; score += 125; }
   });
-  if (shards.every((shard) => shard.collected)) { advanceLevel(); return; }
+  if (shards.every((shard) => shard.collected)) { advanceLevel(); sendOnlineState(); return; }
   checkpoints.forEach((checkpoint, index) => {
     if (!checkpoint.reached && player.x > checkpoint.x && Math.abs((player.y + player.height) - checkpoint.groundY) < 100) {
       checkpoint.reached = true;
@@ -229,6 +275,7 @@ function update(delta) {
   if (hitObstacle || hitMonster) { respawnAtCheckpoint(); return; }
   if (player.y > world.height + 100) { respawnAtCheckpoint(); return; }
   if (player.x > 275 && player.y < 60) finishGame(true);
+  sendOnlineState();
   camera.x += ((player.x - view.width * .38) - camera.x) * .08;
   camera.y += ((player.y - view.height * .52) - camera.y) * .08;
   camera.x = Math.max(0, Math.min(world.width - view.width, camera.x));
@@ -293,6 +340,18 @@ function draw() {
     context.fillStyle = isFrozen ? '#ffffff' : '#f6e37a'; context.fillRect(monster.x + 7, monster.y + 16, 4, 5); context.fillRect(monster.x + 19, monster.y + 16, 4, 5);
     context.fillStyle = isFrozen ? '#9bddec' : '#6c3d8f'; context.fillRect(monster.x + 5, monster.y + 3, 7, 10); context.fillRect(monster.x + 18, monster.y + 3, 7, 10);
   });
+  onlinePlayers.forEach((remotePlayer) => {
+    if (remotePlayer.id === localOnlinePlayer?.id) return;
+    context.fillStyle = remotePlayer.color;
+    context.fillRect(remotePlayer.x + 4, remotePlayer.y + 8, 22, 24);
+    context.fillRect(remotePlayer.x, remotePlayer.y + 13, 30, 15);
+    context.fillStyle = '#fff0a8';
+    context.fillRect(remotePlayer.x + 7, remotePlayer.y + 16, 4, 5);
+    context.fillRect(remotePlayer.x + 19, remotePlayer.y + 16, 4, 5);
+    context.fillStyle = '#17262b';
+    context.font = '500 11px DM Mono';
+    context.fillText(remotePlayer.name, remotePlayer.x - 3, remotePlayer.y - 8);
+  });
   obstacles.forEach((obstacle) => {
     context.fillStyle = obstacle.type === 'rock' ? '#6d7460' : '#f0d66c';
     if (obstacle.type === 'rock') {
@@ -322,4 +381,17 @@ restartButton.addEventListener('click', startGame);
 freezeButton.addEventListener('click', freezeMonsters);
 instructionsButton.addEventListener('click', () => { instructionsPanel.hidden = false; });
 instructionsClose.addEventListener('click', () => { instructionsPanel.hidden = true; });
+onlineVaultButton.addEventListener('click', () => { onlineVaultPanel.hidden = false; vaultCode.focus(); });
+onlineVaultClose.addEventListener('click', () => { onlineVaultPanel.hidden = true; });
+joinButton.addEventListener('click', () => {
+  const code = vaultCode.value.trim();
+  if (code !== '6147') {
+    vaultMessage.textContent = 'That code is not available.';
+    vaultMessage.classList.remove('vault-success');
+    return;
+  }
+  vaultMessage.textContent = 'CONNECTING...';
+  vaultMessage.classList.remove('vault-success');
+  connectToOnlineVault(code);
+});
 resetGame(); draw();
