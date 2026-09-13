@@ -1,6 +1,7 @@
 const COLS = 5;
 const MODES = {
   normal: { boards: 1, rows: 6, hint: "Guess the five-letter word in six tries." },
+  medium: { boards: 2, rows: 7, hint: "Solve both words with the same guesses in seven tries." },
   hard: { boards: 4, rows: 9, hint: "Solve all four words with the same guesses in nine tries." }
 };
 const KEYS = ["QWERTYUIOP", "ASDFGHJKL", ["ENTER", ..."ZXCVBNM", "⌫"]];
@@ -26,6 +27,8 @@ const hint = document.querySelector("#hint");
 
 function buildBoard() {
   board.innerHTML = "";
+  board.classList.toggle("multi", mode !== "normal");
+  board.classList.toggle("dordle", mode === "medium");
   board.classList.toggle("quordle", mode === "hard");
   for (let puzzle = 0; puzzle < MODES[mode].boards; puzzle++) {
     const puzzleEl = document.createElement("div");
@@ -188,7 +191,8 @@ function newGame() {
   guesses = []; current = ""; gameOver = false; locked = false; keyStates = {};
   message.textContent = "";
   hint.textContent = MODES[mode].hint;
-  document.querySelector(".game").setAttribute("aria-label", mode === "hard" ? "Four-word puzzle" : "Wordle puzzle");
+  const boardCount = MODES[mode].boards;
+  document.querySelector(".game").setAttribute("aria-label", boardCount === 1 ? "Wordle puzzle" : `${boardCount}-word puzzle`);
   buildBoard(); buildKeyboard();
   if (dialog.open) dialog.close();
 }
