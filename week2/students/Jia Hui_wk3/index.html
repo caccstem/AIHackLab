@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blackwood Archive Escape</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="screen-glow"></div>
+
+    <section class="character-screen" id="characterScreen">
+      <div class="character-card">
+        <p class="eyebrow">CREATE YOUR PROFILE</p>
+        <h2>Choose Your Investigator</h2>
+
+        <div class="custom-row">
+          <label for="playerName">Name</label>
+          <input id="playerName" type="text" maxlength="16" value="Agent Voss" placeholder="Enter your name" />
+        </div>
+
+        <div class="custom-row">
+          <label>Role</label>
+          <div class="trait-options">
+            <label class="option-pill"><input type="radio" name="role" value="Detective" checked /> Detective</label>
+            <label class="option-pill"><input type="radio" name="role" value="Archivist" /> Archivist</label>
+            <label class="option-pill"><input type="radio" name="role" value="Psychic" /> Psychic</label>
+          </div>
+        </div>
+
+        <div class="custom-row">
+          <label for="playerColor">Color</label>
+          <select id="playerColor">
+            <option value="amber" selected>Amber</option>
+            <option value="crimson">Crimson</option>
+            <option value="teal">Teal</option>
+            <option value="violet">Violet</option>
+          </select>
+        </div>
+
+        <button id="startGameBtn" class="start-button">Enter the Archive</button>
+      </div>
+
+      <div class="preview-card">
+        <p class="preview-label">Investigator Preview</p>
+        <div class="avatar" id="avatarPreview">V</div>
+        <h3 id="previewName">Agent Voss</h3>
+        <p id="previewRole">Detective</p>
+        <p class="preview-note">A calm mind. A sharp eye. A dangerous curiosity.</p>
+      </div>
+    </section>
+
+    <div class="game-shell hidden" id="gameShell">
+      <header class="topbar">
+        <div class="title-wrap">
+          <p class="eyebrow">CASE FILE // BLACKWOOD ARCHIVE</p>
+          <h1 id="gameTitle">THE FIFTH LAMP</h1>
+          <p id="playerIdentity">Investigator: Agent Voss</p>
+        </div>
+        <div class="room-badge" id="roomBadge">ROOM 1</div>
+        <div class="status-box">
+          <span class="status-label">LOCK STATUS</span>
+          <span id="lockStatus">SEALED</span>
+        </div>
+      </header>
+
+      <main class="game-layout">
+        <aside class="panel left-panel">
+          <h2>Evidence Log</h2>
+          <ul id="evidenceList">
+            <li>Initial report: missing.</li>
+          </ul>
+        </aside>
+
+        <section class="scene-panel">
+          <div class="room">
+            <button class="scene-item" data-scene="board">Evidence Board</button>
+            <button class="scene-item" data-scene="desk">Bloody Desk</button>
+            <button class="scene-item" data-scene="lamp">Flickering Lamp</button>
+            <button class="scene-item" data-scene="cabinet">Hidden Cabinet</button>
+            <button class="scene-item" data-scene="door">Exit Door</button>
+          </div>
+
+          <div class="journal">
+            <p class="journal-label">CASE NOTE</p>
+            <div id="sceneText">
+              The room smells of damp paper, rust, and old blood. A single bulb hums above you,
+              flickering like a nervous heartbeat. The steel door is locked from the outside, and the
+              walls have no windows. A distant clock keeps ticking long after the power died.
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel right-panel">
+          <h2>Inventory</h2>
+          <ul id="inventoryList">
+            <li>Empty hands</li>
+          </ul>
+
+          <div class="timer-box">
+            <span class="timer-label">TIME LEFT</span>
+            <span id="timer">06:00</span>
+          </div>
+
+          <div class="door-box">
+            <h3>Door keypad</h3>
+            <input id="codeInput" type="text" maxlength="4" placeholder="ENTER 4 DIGITS" />
+            <button id="submitCode">Unlock</button>
+            <p id="doorMessage">The keypad is cold and unresponsive. No exit. No window. No way out.</p>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

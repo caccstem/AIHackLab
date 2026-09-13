@@ -50,11 +50,29 @@ button { font: inherit; color: inherit; }
 .bars i:nth-child(2) { height: 17px; }
 .bars i:nth-child(3) { height: 24px; }
 
+.difficulty {
+  margin: 14px auto 0; padding: 3px; border: 1px solid var(--empty); border-radius: 5px;
+  display: flex; gap: 3px; background: rgba(255,255,255,.25);
+}
+.difficulty legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.difficulty label { cursor: pointer; }
+.difficulty input { position: absolute; opacity: 0; pointer-events: none; }
+.difficulty span { display: block; padding: 7px 16px; border-radius: 3px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.difficulty input:checked + span { background: var(--ink); color: #fff; }
+.difficulty input:focus-visible + span { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
 .game { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 18px 10px 12px; }
 .message { height: 34px; font-size: 13px; font-weight: 800; letter-spacing: .06em; }
 .message.show { animation: pop .18s ease-out; }
 
 .board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 6px; }
+.board:not(.multi) { display: block; }
+.board:not(.multi) + .keyboard { margin-top: 12px; }
+.board.dordle { width: min(100%, 570px); grid-template-columns: repeat(2, auto); gap: 12px; justify-content: center; }
+.board.dordle + .keyboard { margin-top: 12px; }
+.board.quordle { width: min(100%, 650px); grid-template: repeat(2, auto) / repeat(2, auto); gap: 14px; justify-content: center; }
+.puzzle-board { display: grid; gap: 6px; }
+.puzzle-board.solved { opacity: .72; }
 .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .tile {
   width: clamp(48px, 14vw, 62px); aspect-ratio: 1; border: 2px solid var(--empty);
@@ -68,6 +86,10 @@ button { font: inherit; color: inherit; }
 .tile.absent { background: var(--gray); }
 .tile.reveal { animation: flip .5s ease both; }
 .row.shake { animation: shake .35s; }
+.dordle .puzzle-board, .dordle .row { gap: 4px; }
+.dordle .tile { width: clamp(29px, 8vw, 46px); font-size: clamp(17px, 4.5vw, 26px); }
+.quordle .puzzle-board, .quordle .row { gap: 3px; }
+.quordle .tile { width: clamp(25px, 6.4vw, 38px); border-width: 1px; font-size: clamp(15px, 3.6vw, 21px); }
 
 .keyboard { width: min(100%, 540px); margin-top: 26px; display: grid; gap: 7px; }
 .key-row { display: flex; justify-content: center; gap: 5px; }
@@ -108,4 +130,7 @@ dialog::backdrop { background: rgba(30,28,25,.62); }
   .tile { width: min(12vw, 50px); }
   .keyboard { margin-top: 14px; }
   .key { height: 43px; }
+  .dordle .tile { width: min(7vh, 40px); }
+  .board.quordle { gap: 8px; }
+  .quordle .tile { width: min(5.1vh, 32px); }
 }
