@@ -92,6 +92,7 @@ def main():
         by_id[item_id]["name"]: {
             "name": by_id[item_id]["displayName"],
             "icon": by_id[item_id]["name"],
+            "stackSize": by_id[item_id]["stackSize"],
         }
         for item_id in sorted(used_ids)
     }

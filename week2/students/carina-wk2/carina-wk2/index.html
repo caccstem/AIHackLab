@@ -10,16 +10,16 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <button id="languageButton" class="language-button" aria-label="Switch language">中文</button>
+    <button id="languageButton" class="language-button" aria-label="Switch language">English</button>
     <main class="game-shell">
       <header class="topbar">
         <div class="brand"><span class="brand-cube"></span><span>CRAFT<br /><b>MINE</b></span></div>
         <div class="progress-wrap">
-          <div class="progress-copy"><span data-i18n data-en="ADVENTURE PROGRESS" data-zh="冒险进度">ADVENTURE PROGRESS</span><strong id="progressText">ROUND 1</strong></div>
+          <div class="progress-copy"><span data-i18n data-en="ADVENTURE PROGRESS" data-zh="冒险进度" data-no="EVENTYRFREMDRIFT">ADVENTURE PROGRESS</span><strong id="progressText">ROUND 1</strong></div>
           <div class="progress-track"><div id="progressFill"></div></div>
         </div>
         <div class="scoreboard" aria-label="Scoreboard">
-          <span data-i18n data-en="SCORE" data-zh="分数">SCORE</span>
+          <span data-i18n data-en="SCORE" data-zh="分数" data-no="POENG">SCORE</span>
           <strong id="scoreText">000</strong>
           <button id="soundButton" class="icon-button" aria-label="Toggle sound">♪</button>
         </div>
@@ -27,33 +27,33 @@
 
       <section class="quest-card">
         <div>
-          <p class="eyebrow" data-i18n data-en="TODAY'S QUEST" data-zh="今日任务">TODAY'S QUEST</p>
+          <p class="eyebrow" data-i18n data-en="TODAY'S QUEST" data-zh="今日任务" data-no="DAGENS OPPDRAG">TODAY'S QUEST</p>
           <h1 id="recipeTitle">Craft a Wooden Pickaxe</h1>
           <p id="recipeDescription">Every great adventure starts with the right tool.</p>
         </div>
-        <div class="reward"><span data-i18n data-en="REWARD" data-zh="奖励">REWARD</span><strong>+<span id="rewardXp">100</span> XP</strong></div>
+        <div class="reward"><span data-i18n data-en="REWARD" data-zh="奖励" data-no="BELØNNING">REWARD</span><strong>+<span id="rewardXp">100</span> XP</strong></div>
       </section>
 
       <section class="workbench" aria-label="Crafting table">
         <div class="panel inventory-panel">
-          <div class="panel-title"><span data-i18n data-en="CRAFTING TABLE" data-zh="工作台">CRAFTING TABLE</span><small>3 × 3</small></div>
+          <div class="panel-title"><span data-i18n data-en="CRAFTING TABLE" data-zh="工作台" data-no="ARBEIDSBENK">CRAFTING TABLE</span><small>3 × 3</small></div>
           <div id="craftingGrid" class="crafting-grid" aria-label="Crafting grid"></div>
-          <p class="tip" data-i18n data-en="<b>TIP</b> Shift-click a grid stack to return it to the rightmost hotbar slot." data-zh="<b>提示</b> 按住 Shift 点击合成格，可将整组物品移回快捷栏最右侧。"><b>TIP</b> Shift-click a grid stack to return it to the rightmost hotbar slot.</p>
-          <button id="clearButton" class="text-button" data-i18n data-en="↻ CLEAR GRID" data-zh="↻ 清空合成格">↻ CLEAR GRID</button>
+          <p class="tip" data-i18n data-en="<b>TIP</b> Shift-click a grid stack to return it to the rightmost hotbar slot." data-zh="<b>提示</b> 按住 Shift 点击合成格，可将整组物品移回快捷栏最右侧。" data-no="<b>TIPS</b> Shift-klikk på en stabel for å flytte den til sporet lengst til høyre."><b>TIP</b> Shift-click a grid stack to return it to the rightmost hotbar slot.</p>
+          <button id="clearButton" class="text-button" data-i18n data-en="↻ CLEAR GRID" data-zh="↻ 清空合成格" data-no="↻ TØM RUTENETT">↻ CLEAR GRID</button>
         </div>
 
         <div class="craft-arrow"><i></i><i></i><i></i></div>
 
         <div class="panel result-panel">
-          <div class="panel-title"><span data-i18n data-en="RESULT" data-zh="成品">RESULT</span></div>
+          <div class="panel-title"><span data-i18n data-en="RESULT" data-zh="成品" data-no="RESULTAT">RESULT</span></div>
           <div id="resultSlot" class="result-slot empty"><span class="lock">?</span></div>
           <p id="resultHint">Arrange the ingredients<br />to unlock your creation.</p>
-          <p class="result-action" data-i18n data-en="SHIFT-CLICK RESULT<br>OR DRAG TO HOTBAR" data-zh="按 SHIFT 点击成品<br>或拖到快捷栏">SHIFT-CLICK RESULT<br />OR DRAG TO HOTBAR</p>
+          <p class="result-action" data-i18n data-en="SHIFT-CLICK RESULT<br>OR DRAG TO HOTBAR" data-zh="按 SHIFT 点击成品<br>或拖到快捷栏" data-no="SHIFT-KLIKK RESULTATET<br>ELLER DRA TIL HURTIGLINJEN">SHIFT-CLICK RESULT<br />OR DRAG TO HOTBAR</p>
         </div>
       </section>
 
       <section class="hotbar-section">
-        <div class="section-heading"><span data-i18n data-en="YOUR ITEMS" data-zh="你的物品">YOUR ITEMS</span><small data-i18n data-en="DRAG TO CRAFT" data-zh="拖动以合成">DRAG TO CRAFT</small></div>
+        <div class="section-heading"><span data-i18n data-en="YOUR ITEMS" data-zh="你的物品" data-no="DINE GJENSTANDER">YOUR ITEMS</span><small data-i18n data-en="DRAG TO CRAFT" data-zh="拖动以合成" data-no="DRA FOR Å LAGE">DRAG TO CRAFT</small></div>
         <div id="survivalHud" class="survival-hud" aria-label="Health and armor">
           <div id="armorBar" class="status-row armor-row"></div>
           <div class="hud-main-row">
@@ -88,9 +88,9 @@
     <div id="deathModal" class="death-screen" hidden>
       <div id="deathParticles" class="death-particles" aria-hidden="true"></div>
       <div class="death-content">
-        <h2 data-i18n data-en="You Died!" data-zh="你死了！">You Died!</h2>
-        <p><span data-i18n data-en="Score" data-zh="分数">Score</span>: <b id="deathScore">0</b></p>
-        <button id="respawnButton" class="respawn-button" data-i18n data-en="Respawn" data-zh="重生">Respawn</button>
+        <h2 data-i18n data-en="You Died!" data-zh="你死了！" data-no="Du døde!">You Died!</h2>
+        <p><span data-i18n data-en="Score" data-zh="分数" data-no="Poeng">Score</span>: <b id="deathScore">0</b></p>
+        <button id="respawnButton" class="respawn-button" data-i18n data-en="Respawn" data-zh="重生" data-no="Gjenoppstå">Respawn</button>
       </div>
     </div>
     <script src="recipe-catalog.js"></script>

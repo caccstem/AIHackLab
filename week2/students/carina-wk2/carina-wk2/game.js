@@ -24,6 +24,8 @@ function maxStackSize(item) {
 
 const ITEM_ZH = { plank:'橡木木板',stick:'木棍',cobble:'圆石',coal:'煤炭',iron:'铁锭',diamond:'钻石',redstone:'红石粉',redstoneTorch:'红石火把',stone:'石头',paper:'纸',leather:'皮革',obsidian:'黑曜石',cryingObsidian:'哭泣的黑曜石',glowstone:'荧石',book:'书',wheat:'小麦',string:'线',gold:'金锭',quartz:'下界石英',bow:'弓',pumpkin:'南瓜',sugar:'糖',egg:'鸡蛋',redMushroom:'红色蘑菇',brownMushroom:'棕色蘑菇',bowl:'碗' };
 const RESULT_ZH = { 'Wooden Pickaxe':'木镐','Stone Axe':'石斧','Torch':'火把','Iron Pickaxe':'铁镐','Diamond Sword':'钻石剑','Crafting Table':'工作台','Bread':'面包','Chest':'箱子','Furnace':'熔炉','Iron Chestplate':'铁胸甲','Iron Leggings':'铁护腿','Bow':'弓','Fishing Rod':'钓鱼竿','Shield':'盾牌','Clock':'时钟','Compass':'指南针','Book':'书','Redstone Repeater':'红石中继器','Piston':'活塞','Respawn Anchor':'重生锚','Enchanting Table':'附魔台','Redstone Lamp':'红石灯','Bookshelf':'书架','Observer':'侦测器','Dispenser':'发射器','Pumpkin Pie':'南瓜派','Mushroom Stew':'蘑菇煲' };
+const ITEM_NO = { plank:'Eikeplanker',stick:'Pinne',cobble:'Brostein',coal:'Kull',iron:'Jernbarre',diamond:'Diamant',redstone:'Rødstein',redstoneTorch:'Rødsteinsfakkel',stone:'Stein',paper:'Papir',leather:'Lær',obsidian:'Obsidian',cryingObsidian:'Gråtende obsidian',glowstone:'Glødestein',book:'Bok',wheat:'Hvete',string:'Tråd',gold:'Gullbarre',quartz:'Netherkvarts',bow:'Bue',pumpkin:'Gresskar',sugar:'Sukker',egg:'Egg',redMushroom:'Rød sopp',brownMushroom:'Brun sopp',bowl:'Bolle' };
+const RESULT_NO = { 'Wooden Pickaxe':'Trehakke','Stone Axe':'Steinøks','Torch':'Fakkel','Iron Pickaxe':'Jernhakke','Diamond Sword':'Diamantsverd','Crafting Table':'Arbeidsbenk','Bread':'Brød','Chest':'Kiste','Furnace':'Smelteovn','Iron Chestplate':'Jernbrystplate','Iron Leggings':'Jernbukser','Bow':'Bue','Fishing Rod':'Fiskestang','Shield':'Skjold','Clock':'Klokke','Compass':'Kompass','Book':'Bok','Redstone Repeater':'Rødsteinsforsterker','Piston':'Stempel','Respawn Anchor':'Gjenoppstandelsesanker','Enchanting Table':'Fortryllelsesbord','Redstone Lamp':'Rødsteinslampe','Bookshelf':'Bokhylle','Observer':'Observatør','Dispenser':'Utkaster','Pumpkin Pie':'Gresskarpai','Mushroom Stew':'Soppstuing' };
 const ARMOR_VALUES = { 'Iron Chestplate':6, 'Iron Leggings':5 };
 const FOOD_VALUES = { 'Pumpkin Pie':{hunger:8,saturation:4.8}, 'Mushroom Stew':{hunger:6,saturation:7.2} };
 const HURT_SOUNDS = [1,2,3].map(number=>`assets/sounds/player-hurt-${number}.ogg`);
@@ -76,6 +78,33 @@ if(typeof VANILLA_RECIPE_CATALOG !== 'undefined') {
   RECIPES.push(...VANILLA_RECIPE_CATALOG.recipes.filter(recipe=>!curatedResults.has(recipe.result)));
 }
 
+// Curated familiarity ratings for typical survival play, not crafting telemetry.
+// Apply after merging so generated and hand-written recipes use the same rules.
+const COMMON_CRAFTS = new Set(`
+  crafting_table stick torch chest furnace bread bowl ladder bucket shears shield
+  bow arrow fishing_rod paper book glass_pane campfire lantern barrel
+  cobblestone_slab cobblestone_stairs cobblestone_wall stone_bricks
+`.trim().split(/\s+/));
+const RARE_CRAFTS = new Set(`
+  end_crystal respawn_anchor beacon conduit recovery_compass lodestone
+  calibrated_sculk_sensor creaking_heart dried_ghast mace music_disc_5
+  turtle_helmet wolf_armor leather_horse_armor suspicious_stew rabbit_stew
+  fire_charge tnt_minecart furnace_minecart spectral_arrow daylight_detector
+`.trim().split(/\s+/));
+
+function craftingDifficulty(item) {
+  if(RARE_CRAFTS.has(item) || /_(armor_trim_smithing_template|banner_pattern|harness)$/.test(item)) return 3;
+  if(COMMON_CRAFTS.has(item)
+    || /^(wooden|stone|iron|diamond)_(pickaxe|axe|shovel|hoe|sword)$/.test(item)
+    || /^iron_(helmet|chestplate|leggings|boots)$/.test(item)
+    || /_(planks|bed|boat)$/.test(item) || item==='bamboo_raft'
+    || /^(oak|spruce|birch|jungle|acacia|dark_oak|mangrove|cherry|pale_oak|bamboo|crimson|warped)_(slab|stairs|door|trapdoor|fence|fence_gate|sign|button|pressure_plate)$/.test(item)) return 1;
+  // Occasional utility, progression, and decorative crafts, including enchanting tables.
+  return 2;
+}
+
+for(const recipe of RECIPES) recipe.difficulty=craftingDifficulty(recipe.resultIcon);
+
 let level = 0, score = 0, recipes = [], recipeBags = {}, lastOpeningResult = null;
 let grid = Array(9).fill(null), gridCounts = Array(9).fill(0), stock = {}, cursorStack = null, soundOn = true;
 let spreadDrag = { active:false, mode:null, start:null, slots:new Set(), doubleClick:false };
@@ -83,25 +112,27 @@ let lastPrimaryClick = { key:null, time:0 };
 const DOUBLE_CLICK_LIMIT_MS = 400;
 let hoveredGridSlot = null, hotbarOrder = [];
 let recipeReady = false, completingCraft = false;
-let language = localStorage.getItem('crafting-language') || 'en';
+const LANGUAGES=['en','zh','no'];
+let language = localStorage.getItem('crafting-language');
+if(!LANGUAGES.includes(language)) language='en';
 let health = 20, armorPoints = 0, equippedArmor = new Set(), dead = false;
 let hunger = 20, saturation = 5, exhaustion = 0, regenTimer = null;
 const $ = s => document.querySelector(s);
 const gridEl = $('#craftingGrid'), hotbarEl = $('#hotbar');
 
-function itemName(item) { return language==='zh' ? (ITEM_ZH[item] || ITEMS[item]?.name || item) : (ITEMS[item]?.name || item); }
-function resultName(recipe) { return language==='zh' ? (RESULT_ZH[recipe.result] || recipe.result) : recipe.result; }
+function itemName(item) { return language==='zh' ? (ITEM_ZH[item] || ITEMS[item]?.name || item) : language==='no' ? (ITEM_NO[item] || ITEMS[item]?.name || item) : (ITEMS[item]?.name || item); }
+function resultName(recipe) { return language==='zh' ? (RESULT_ZH[recipe.result] || recipe.result) : language==='no' ? (RESULT_NO[recipe.result] || recipe.result) : recipe.result; }
 function applyLanguage() {
-  document.documentElement.lang=language==='zh'?'zh-CN':'en';
+  document.documentElement.lang=language==='zh'?'zh-CN':language==='no'?'nb':'en';
   document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=el.dataset[language]);
-  $('#languageButton').textContent=language==='en'?'中文':'EN';
+  $('#languageButton').textContent=language==='en'?'English':language==='zh'?'中文':'Norsk';
   localStorage.setItem('crafting-language',language);
   if(recipes[level]) {
     const r=recipes[level];
-    const difficultyName=language==='zh'?['','简单','熟练','专家','大师']:['','EASY','SKILLED','EXPERT','MASTER'];
-    $('#recipeTitle').textContent=language==='zh'?`制作${resultName(r)}`:r.title;
-    $('#recipeDescription').textContent=language==='zh'?'按照正确配方摆放材料，完成这次合成挑战。':r.description;
-    $('#progressText').textContent=language==='zh'?`第 ${level+1} 轮 • ${difficultyName[r.difficulty]}`:`ROUND ${level+1} • ${difficultyName[r.difficulty]}`;
+    const difficultyName=language==='zh'?['','简单','中等','困难']:language==='no'?['','LETT','MIDDELS','VANSKELIG']:['','EASY','MEDIUM','HARD'];
+    $('#recipeTitle').textContent=language==='zh'?`制作${resultName(r)}`:language==='no'?`Lag ${resultName(r)}`:r.title;
+    $('#recipeDescription').textContent=language==='zh'?'按照正确配方摆放材料，完成这次合成挑战。':language==='no'?'Plasser materialene i riktig mønster for å fullføre oppskriften.':r.description;
+    $('#progressText').textContent=language==='zh'?`第 ${level+1} 轮 • ${difficultyName[r.difficulty]}`:language==='no'?`RUNDE ${level+1} • ${difficultyName[r.difficulty]}`:`ROUND ${level+1} • ${difficultyName[r.difficulty]}`;
     render();
   }
 }
@@ -115,10 +146,33 @@ function shuffled(items) {
   return result;
 }
 
+function recipeAppearanceChance(recipe) {
+  const patterns=recipe.patterns || [recipe.pattern];
+  const dyesObject=!recipe.resultIcon.endsWith('_dye') && patterns.some(pattern=>
+    pattern.some(item=>item?.endsWith('_dye')));
+  const uncommonVariant=/_(armor_trim_smithing_template|harness|banner_pattern)$/.test(recipe.resultIcon);
+  return uncommonVariant || dyesObject ? 0.2 : 1;
+}
+
+function isWearableArmor(recipe) {
+  return /_(helmet|chestplate|leggings|boots)$/.test(recipe.resultIcon);
+}
+
+function makeRecipeBag(difficulty) {
+  const candidates=RECIPES.filter(recipe=>recipe.difficulty===difficulty);
+  // Admit uncommon challenges to only 20% of bags. Merely moving them later
+  // in every bag would leave their long-term frequency unchanged.
+  const selected=candidates.filter(recipe=>Math.random()<recipeAppearanceChance(recipe));
+  const admitted=selected.length ? selected : candidates;
+  // Armor is useful for surviving mistakes, so give each wearable piece three
+  // chances to appear while retaining variety across materials and armor slots.
+  return shuffled(admitted.flatMap(recipe=>Array(isWearableArmor(recipe)?3:1).fill(recipe)));
+}
+
 function resetRecipeBags() {
   recipeBags={};
-  for(let difficulty=1;difficulty<=4;difficulty++) {
-    recipeBags[difficulty]=shuffled(RECIPES.filter(recipe=>recipe.difficulty===difficulty));
+  for(let difficulty=1;difficulty<=3;difficulty++) {
+    recipeBags[difficulty]=makeRecipeBag(difficulty);
   }
   const easyBag=recipeBags[1];
   if(lastOpeningResult && easyBag.length>1 && easyBag[0].result===lastOpeningResult) {
@@ -128,13 +182,14 @@ function resetRecipeBags() {
 
 function addNextRecipe() {
   const nextRound=recipes.length;
-  const difficulty = nextRound < 2 ? 1 : nextRound < 5 ? 2 : nextRound < 9 ? 3 : 4;
+  const difficulty = nextRound < 2 ? 1 : nextRound < 5 ? 2 : 3;
   const previous=recipes.at(-1);
   if(!recipeBags[difficulty]?.length) {
-    recipeBags[difficulty]=shuffled(RECIPES.filter(recipe=>recipe.difficulty===difficulty));
-    if(previous && recipeBags[difficulty].length>1 && recipeBags[difficulty][0].result===previous.result) {
-      [recipeBags[difficulty][0],recipeBags[difficulty][1]]=[recipeBags[difficulty][1],recipeBags[difficulty][0]];
-    }
+    recipeBags[difficulty]=makeRecipeBag(difficulty);
+  }
+  if(previous && recipeBags[difficulty].length>1 && recipeBags[difficulty][0].result===previous.result) {
+    const alternateIndex=recipeBags[difficulty].findIndex(recipe=>recipe.result!==previous.result);
+    if(alternateIndex>0) [recipeBags[difficulty][0],recipeBags[difficulty][alternateIndex]]=[recipeBags[difficulty][alternateIndex],recipeBags[difficulty][0]];
   }
   recipes.push(recipeBags[difficulty].shift());
 }
@@ -172,10 +227,10 @@ function initLevel() {
   if(!recipes[level]) addNextRecipe();
   const r = recipes[level]; grid.fill(null); gridCounts.fill(0); cursorStack = null; stock = {...r.stock};
   preloadRecipeTextures(r);
-  $('#recipeTitle').textContent = language==='zh'?`制作${resultName(r)}`:r.title;
-  $('#recipeDescription').textContent = language==='zh'?'按照正确配方摆放材料，完成这次合成挑战。':r.description;
-  const difficultyName=language==='zh'?['','简单','熟练','专家','大师']:['','EASY','SKILLED','EXPERT','MASTER'];
-  $('#rewardXp').textContent = r.xp; $('#progressText').textContent = language==='zh'?`第 ${level+1} 轮 • ${difficultyName[r.difficulty]}`:`ROUND ${level+1} • ${difficultyName[r.difficulty]}`;
+  $('#recipeTitle').textContent = language==='zh'?`制作${resultName(r)}`:language==='no'?`Lag ${resultName(r)}`:r.title;
+  $('#recipeDescription').textContent = language==='zh'?'按照正确配方摆放材料，完成这次合成挑战。':language==='no'?'Plasser materialene i riktig mønster for å fullføre oppskriften.':r.description;
+  const difficultyName=language==='zh'?['','简单','中等','困难']:language==='no'?['','LETT','MIDDELS','VANSKELIG']:['','EASY','MEDIUM','HARD'];
+  $('#rewardXp').textContent = r.xp; $('#progressText').textContent = language==='zh'?`第 ${level+1} 轮 • ${difficultyName[r.difficulty]}`:language==='no'?`RUNDE ${level+1} • ${difficultyName[r.difficulty]}`:`ROUND ${level+1} • ${difficultyName[r.difficulty]}`;
   $('#scoreText').textContent = String(score).padStart(3,'0');
   $('#progressFill').style.width = `${Math.min(100,(level+1)/10*100)}%`;
   render();
@@ -184,13 +239,16 @@ function initLevel() {
 }
 function render() {
   hotbarOrder=Object.keys(stock);
-  gridEl.innerHTML = grid.map((item,i) => `<div class="slot" data-slot="${i}" role="button" tabindex="0" aria-label="${language==='zh'?'合成格':'Crafting slot'} ${i+1}${item ? `, ${gridCounts[i]} ${itemName(item)}`:''}">${item ? icon(item,gridCounts[i]>1?gridCounts[i]:0) : ''}</div>`).join('');
+  const craftingSlotLabel=language==='zh'?'合成格':language==='no'?'Lagerute':'Crafting slot';
+  const emptyHotbarLabel=language==='zh'?'空快捷栏':language==='no'?'Tomt hurtigspor':'Empty hotbar slot';
+  const hotkeyLabel=language==='zh'?'快捷键':language==='no'?'Hurtigtast':'Hotkey';
+  gridEl.innerHTML = grid.map((item,i) => `<div class="slot" data-slot="${i}" role="button" tabindex="0" aria-label="${craftingSlotLabel} ${i+1}${item ? `, ${gridCounts[i]} ${itemName(item)}`:''}">${item ? icon(item,gridCounts[i]>1?gridCounts[i]:0) : ''}</div>`).join('');
   const hotbarEntries=Object.entries(stock);
   hotbarEl.innerHTML = Array.from({length:9},(_,index)=>{
     const entry=hotbarEntries[index];
-    if(!entry) return `<div class="hotbar-slot empty" data-hotkey="${index+1}" aria-label="${language==='zh'?'空快捷栏':'Empty hotbar slot'} ${index+1}"><span class="hotkey">${index+1}</span></div>`;
+    if(!entry) return `<div class="hotbar-slot empty" data-hotkey="${index+1}" aria-label="${emptyHotbarLabel} ${index+1}"><span class="hotkey">${index+1}</span></div>`;
     const [item,count]=entry;
-    return `<div class="hotbar-slot ${cursorStack?.item===item?'selected':''} ${count===0?'used-up':''}" data-item="${item}" role="button" tabindex="0" title="${itemName(item)}" aria-label="${language==='zh'?'快捷键':'Hotkey'} ${index+1}, ${itemName(item)}, ${count}"><span class="hotkey">${index+1}</span>${icon(item,count)}</div>`;
+    return `<div class="hotbar-slot ${cursorStack?.item===item?'selected':''} ${count===0?'used-up':''}" data-item="${item}" role="button" tabindex="0" title="${itemName(item)}" aria-label="${hotkeyLabel} ${index+1}, ${itemName(item)}, ${count}"><span class="hotkey">${index+1}</span>${icon(item,count)}</div>`;
   }).join('');
   renderCursor();
   renderStatus();
@@ -435,8 +493,8 @@ function checkRecipe() {
     : validPatterns.some(pattern => sameShape(trimmedPattern(pattern),placedShape));
   const result=$('#resultSlot');
   recipeReady=good;
-  if(good) { result.className='result-slot ready'; result.innerHTML=icon(recipes[level].resultIcon); result.draggable=true; $('#resultHint').innerHTML=language==='zh'?`可以制作 <b>${resultName(recipes[level])}</b>！`:`Ready to craft a <b>${recipes[level].result}</b>!`; }
-  else { result.className='result-slot empty'; result.innerHTML='<span class="lock">?</span>'; $('#resultHint').innerHTML=language==='zh'?'正确摆放材料<br>即可显示成品。':'Arrange the ingredients<br>to reveal the result.'; }
+  if(good) { result.className='result-slot ready'; result.innerHTML=icon(recipes[level].resultIcon); result.draggable=true; $('#resultHint').innerHTML=language==='zh'?`可以制作 <b>${resultName(recipes[level])}</b>！`:language==='no'?`Klar til å lage <b>${resultName(recipes[level])}</b>!`:`Ready to craft a <b>${recipes[level].result}</b>!`; }
+  else { result.className='result-slot empty'; result.innerHTML='<span class="lock">?</span>'; $('#resultHint').innerHTML=language==='zh'?'正确摆放材料<br>即可显示成品。':language==='no'?'Plasser materialene riktig<br>for å vise resultatet.':'Arrange the ingredients<br>to reveal the result.'; }
   result.draggable=good;
   result.onmousedown=event=>{
     if(event.shiftKey && event.button===0) { event.preventDefault();recipeReady?completeCraft():takeDamage(); }
@@ -487,7 +545,8 @@ function applyFood(food) {
 }
 function takeDamage() {
   if(dead || completingCraft) return;
-  const baseDamage=2;
+  completingCraft=true;
+  const baseDamage=5;
   const effectiveArmor=Math.min(20,Math.max(armorPoints/5,armorPoints-(4*baseDamage/8)));
   const damage=baseDamage*(1-effectiveArmor/25);
   health=Math.max(0,health-damage);
@@ -495,9 +554,12 @@ function takeDamage() {
   playHurtSound(); renderStatus();
   const hud=$('#survivalHud'); hud.classList.remove('damaged'); void hud.offsetWidth; hud.classList.add('damaged');
   document.body.classList.remove('damage-flash'); void document.body.offsetWidth; document.body.classList.add('damage-flash');
-  toast(language==='zh'?`配方错误！失去 ${(damage/2).toFixed(1)} 颗心`:`Wrong recipe! Lost ${(damage/2).toFixed(1)} hearts`);
+  toast(language==='zh'?`配方错误！失去 ${(damage/2).toFixed(1)} 颗心`:language==='no'?`Feil oppskrift! Mistet ${(damage/2).toFixed(1)} hjerter`:`Wrong recipe! Lost ${(damage/2).toFixed(1)} hearts`);
   if(health<=0) { dead=true;clearInterval(regenTimer);setTimeout(showDeathScreen,450); }
-  else setTimeout(startNaturalRegeneration,650);
+  else {
+    level++;
+    setTimeout(()=>{completingCraft=false;initLevel();startNaturalRegeneration()},650);
+  }
 }
 function showDeathScreen() {
   dead=true; $('#deathScore').textContent=score;
@@ -537,20 +599,20 @@ function completeCraft() {
   const foodValue=FOOD_VALUES[recipes[level].result];
   if(foodValue) applyFood(foodValue);
   score += recipes[level].xp; $('#scoreText').textContent=String(score).padStart(3,'0');
-  playTone(620); toast(language==='zh'?`+${recipes[level].xp} 分 • 已制作 ${resultName(recipes[level])}！`:`+${recipes[level].xp} points • ${recipes[level].result} crafted!`); level++;
+  playTone(620); toast(language==='zh'?`+${recipes[level].xp} 分 • 已制作 ${resultName(recipes[level])}！`:language==='no'?`+${recipes[level].xp} poeng • ${resultName(recipes[level])} laget!`:`+${recipes[level].xp} points • ${recipes[level].result} crafted!`); level++;
   setTimeout(()=>{completingCraft=false;initLevel()},650);
 }
 function restartGame() {
   lastOpeningResult=recipes[0]?.result || null;
   clearInterval(regenTimer);regenTimer=null;
-  level=0;score=0;recipes=[];health=20;armorPoints=0;equippedArmor=new Set();dead=false;
+  level=0;score=0;recipes=[];health=20;armorPoints=0;equippedArmor=new Set();dead=false;completingCraft=false;
   hunger=20;saturation=5;exhaustion=0;resetRecipeBags();
   $('#winModal').hidden=true;$('#gameOverModal').hidden=true;initLevel();
 }
 $('#playAgainButton').addEventListener('click',restartGame);
 $('#retryButton').addEventListener('click',restartGame);
 $('#respawnButton').addEventListener('click',()=>{$('#deathModal').hidden=true;restartGame()});
-$('#languageButton').addEventListener('click',()=>{language=language==='en'?'zh':'en';applyLanguage()});
+$('#languageButton').addEventListener('click',()=>{language=LANGUAGES[(LANGUAGES.indexOf(language)+1)%LANGUAGES.length];applyLanguage()});
 resetRecipeBags();
 applyLanguage();
 initLevel();

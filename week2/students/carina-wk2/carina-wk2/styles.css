@@ -171,7 +171,7 @@ body.damage-flash::after { content:""; position:fixed; inset:0; pointer-events:n
 .death-content h2 { margin:0 0 18px; color:#fff; font:54px "MinecraftSeven"; text-shadow:4px 4px #3f3f3f; }
 .death-content p { margin:0 0 25px; font:20px "MinecraftSeven"; text-shadow:2px 2px #222; }
 .death-content p b { color:#ffff55; font-weight:normal; }
-.respawn-button { width:min(400px,100%); min-height:46px; margin-top:8px; padding:10px 24px; color:#fff; font:17px "MinecraftSeven"; text-shadow:2px 2px #222; background:#777; border:3px solid; border-color:#aaa #333 #333 #aaa; box-shadow:0 0 0 2px #000; cursor:pointer; }
+.respawn-button { display:inline-grid; place-items:center; width:min(400px,100%); min-height:46px; margin-top:8px; padding:10px 24px; color:#fff; font:17px "MinecraftSeven"; text-align:center; text-shadow:2px 2px #222; background:#777; border:3px solid; border-color:#aaa #333 #333 #aaa; box-shadow:0 0 0 2px #000; cursor:pointer; }
 .respawn-button:hover { outline:3px solid #fff; background:#898989; }
 .death-particles { position:absolute; inset:0; z-index:1; pointer-events:none; }
 .death-particle { position:absolute; left:calc(50% + var(--x)); top:calc(50% + var(--y)); width:var(--size); height:var(--size); opacity:0; background:url('assets/particles/generic_7.png') center/contain no-repeat; image-rendering:pixelated; animation:death-particle var(--duration) var(--delay) ease-out both,poof-frames .42s var(--delay) step-end both; }
