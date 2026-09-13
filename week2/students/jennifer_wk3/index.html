@@ -22,13 +22,19 @@
         </button>
       </header>
 
+      <fieldset class="difficulty" aria-label="Difficulty level">
+        <legend>DIFFICULTY</legend>
+        <label><input type="radio" name="difficulty" value="normal" checked /><span>Normal</span></label>
+        <label><input type="radio" name="difficulty" value="hard" /><span>Hard</span></label>
+      </fieldset>
+
       <section class="game" aria-label="Wordle puzzle">
         <div id="message" class="message" role="status" aria-live="polite"></div>
         <div id="board" class="board" aria-label="Guess board"></div>
         <div id="keyboard" class="keyboard" aria-label="On-screen keyboard"></div>
       </section>
 
-      <p class="hint">Guess the five-letter word in six tries.</p>
+      <p id="hint" class="hint">Guess the five-letter word in six tries.</p>
     </main>
 
     <dialog id="stats-dialog">
