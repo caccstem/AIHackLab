@@ -113,8 +113,7 @@ const DOUBLE_CLICK_LIMIT_MS = 400;
 let hoveredGridSlot = null, hotbarOrder = [];
 let recipeReady = false, completingCraft = false;
 const LANGUAGES=['en','zh','no'];
-let language = localStorage.getItem('crafting-language');
-if(!LANGUAGES.includes(language)) language='en';
+let language = 'en';
 let health = 20, armorPoints = 0, equippedArmor = new Set(), dead = false;
 let hunger = 20, saturation = 5, exhaustion = 0, regenTimer = null;
 const $ = s => document.querySelector(s);
@@ -126,7 +125,6 @@ function applyLanguage() {
   document.documentElement.lang=language==='zh'?'zh-CN':language==='no'?'nb':'en';
   document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=el.dataset[language]);
   $('#languageButton').textContent=language==='en'?'English':language==='zh'?'中文':'Norsk';
-  localStorage.setItem('crafting-language',language);
   if(recipes[level]) {
     const r=recipes[level];
     const difficultyName=language==='zh'?['','简单','中等','困难']:language==='no'?['','LETT','MIDDELS','VANSKELIG']:['','EASY','MEDIUM','HARD'];
