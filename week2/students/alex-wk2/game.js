@@ -20,8 +20,8 @@
 
   let width = 0, height = 0, dpr = 1, groundY = 0;
   let state = 'ready';
-  let lastTime = 0, distance = 0, bonus = 0, speed = 380, spawnTimer = 0;
-  let obstacles = [], particles = [], popups = [], clouds = [], hills = [], warning = 0, canyonAnnounced = false;
+  let lastTime = 0, distance = 0, bonus = 0, speed = 380, spawnTimer = 0, platformTimer = 0;
+  let obstacles = [], platforms = [], particles = [], popups = [], clouds = [], hills = [], warning = 0, canyonAnnounced = false, lavaAnnounced = false;
   let muted = false, audioCtx = null, shake = 0;
   let best = Number(localStorage.getItem('sidequest-best') || 0);
 
@@ -46,7 +46,7 @@
   }
 
   function reset() {
-    distance = 0; bonus = 0; speed = 380; obstacles = []; particles = []; popups = []; spawnTimer = 1.35; canyonAnnounced = false;
+    distance = 0; bonus = 0; speed = 380; obstacles = []; platforms = []; particles = []; popups = []; spawnTimer = 1.35; platformTimer = 0; canyonAnnounced = false; lavaAnnounced = false;
     player.y = groundY - player.h; player.vy = 0; player.grounded = true; player.hold = false; player.ducking = false; warning = 0;
     scoreEl.textContent = '00000'; paceEl.textContent = '1.0×';
     zoneStatus.innerHTML = '<i></i> OPEN ROAD';
@@ -94,6 +94,29 @@
     spawnTimer = minGap + Math.random() * Math.max(.25, .72 - difficulty * .25);
   }
 
+  function enterLavaZone() {
+    lavaAnnounced = true; warning = 2.6; obstacles = [];
+    zoneStatus.innerHTML = '<i></i> THE LAVA REACHES';
+    platforms = [];
+    let x = player.x - 50;
+    while (x < width + 220) {
+      const w = x < player.x ? 150 : 105 + Math.random() * 55;
+      const y = groundY - 30 - Math.random() * 28;
+      platforms.push({ x, y, w, h: 24, phase: Math.random() * 6 });
+      x += w + 65 + Math.random() * 45;
+    }
+    const first = platforms[0];
+    player.y = first.y - player.h; player.vy = 0; player.grounded = true;
+    platformTimer = .28; shake = 12;
+    beep(120, .28, 'sawtooth', .055);
+  }
+
+  function spawnPlatform() {
+    const w = 105 + Math.random() * 60;
+    platforms.push({ x: width + 35, y: groundY - 32 - Math.random() * 55, w, h: 24, phase: Math.random() * 6 });
+    platformTimer = .25 + Math.random() * .1;
+  }
+
   function burst(x, y, count, color) {
     for (let i = 0; i < count; i++) particles.push({ x, y, vx: -30 - Math.random() * 130, vy: -20 - Math.random() * 100, life: .45 + Math.random() * .3, size: 2 + Math.random() * 4, color });
   }
@@ -106,22 +129,47 @@
       canyonAnnounced = true; warning = 2.2; zoneStatus.innerHTML = '<i></i> CINDER CANYON';
       beep(175, .18, 'sawtooth', .035);
     }
+    if (distance >= 2000 && !lavaAnnounced) enterLavaZone();
     speed = Math.min(770, 380 + distance * .17);
     const pace = speed / 380;
     scoreEl.textContent = (Math.floor(distance) + bonus).toString().padStart(5, '0');
     paceEl.textContent = pace.toFixed(1) + '×';
 
+    for (const p of platforms) { p.x -= speed * dt; p.phase += dt * 2; }
+    platforms = platforms.filter(p => p.x + p.w > -40);
+    if (lavaAnnounced) {
+      platformTimer -= dt;
+      if (platformTimer <= 0) spawnPlatform();
+      if (player.grounded) {
+        const feet = player.y + player.h;
+        const hasSupport = platforms.some(p => player.x + player.w - 8 > p.x && player.x + 8 < p.x + p.w && Math.abs(feet - p.y) < 12);
+        if (!hasSupport) player.grounded = false;
+      }
+    }
+
     if (!player.grounded) player.ducking = false;
     player.vy += (player.hold && player.vy < 0 ? 1550 : 2100) * dt;
     player.y += player.vy * dt;
+    if (lavaAnnounced && player.vy >= 0) {
+      for (const p of platforms) {
+        const crossesTop = previousBottom <= p.y + 10 && player.y + player.h >= p.y;
+        const aboveRock = player.x + player.w - 8 > p.x && player.x + 8 < p.x + p.w;
+        if (crossesTop && aboveRock) {
+          player.y = p.y - player.h; player.vy = 0; player.grounded = true;
+          burst(player.x + player.w / 2, p.y, 4, '#ffcf66');
+          break;
+        }
+      }
+    }
     if (player.y >= groundY - player.h) {
+      if (lavaAnnounced) { gameOver(); return; }
       if (!player.grounded && player.vy > 200) burst(player.x + player.w / 2, groundY, 4, palette.ink);
       player.y = groundY - player.h; player.vy = 0; player.grounded = true;
     }
     player.runFrame += dt * speed * .045;
 
     spawnTimer -= dt;
-    if (spawnTimer <= 0) spawnObstacle();
+    if (spawnTimer <= 0 && !lavaAnnounced) spawnObstacle();
     for (const o of obstacles) {
       if (o.destroyed) continue;
       o.x -= speed * dt;
@@ -133,8 +181,8 @@
         if (horizontalOverlap && player.grounded) gameOver();
         continue;
       }
-      const playerTop = player.ducking ? groundY - 29 : player.y + 5;
-      const playerBottom = player.ducking ? groundY - 2 : player.y + player.h - 2;
+      const playerTop = player.ducking ? player.y + player.h - 29 : player.y + 5;
+      const playerBottom = player.y + player.h - 2;
       const overlaps = horizontalOverlap && playerTop < o.y + o.h && playerBottom > o.y;
       if (overlaps) {
         const isEnemy = o.kind === 'runner' || o.kind === 'drone';
@@ -232,7 +280,7 @@
     const x = player.x, y = player.y, running = player.grounded && state === 'running';
     const swing = running ? Math.sin(player.runFrame) * 9 : 3;
     ctx.save();
-    if (player.ducking) { ctx.translate(x + player.w / 2 + 5, groundY - 17); ctx.scale(1.18, .62); }
+    if (player.ducking) { ctx.translate(x + player.w / 2 + 5, player.y + player.h - 17); ctx.scale(1.18, .62); }
     else ctx.translate(x + player.w / 2, y + player.h / 2);
     if (state === 'gameover') ctx.rotate(-.25);
     ctx.strokeStyle = palette.ink; ctx.fillStyle = palette.ink; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
@@ -257,9 +305,27 @@
     ctx.fillStyle = canyonBlend > .5 ? '#a94e37' : palette.light;
     for (const h of hills) { ctx.beginPath(); ctx.moveTo(h.x, groundY); ctx.quadraticCurveTo(h.x + h.w / 2, groundY - h.h, h.x + h.w, groundY); ctx.fill(); }
     ctx.strokeStyle = 'rgba(32,33,29,.14)'; ctx.lineWidth = 1; ctx.setLineDash([3, 8]); ctx.beginPath(); ctx.moveTo(0, groundY - 88); ctx.lineTo(width, groundY - 88); ctx.stroke(); ctx.setLineDash([]);
-    ctx.strokeStyle = palette.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(width, groundY); ctx.stroke();
-    const dashOffset = -((distance * 5) % 70); ctx.fillStyle = 'rgba(32,33,29,.22)';
-    for (let x = dashOffset; x < width; x += 70) ctx.fillRect(x, groundY + 13, 38, 2);
+    if (lavaAnnounced) {
+      const wave = (distance * 7) % 32;
+      ctx.fillStyle = '#e83f24'; ctx.fillRect(0, groundY, width, height - groundY);
+      ctx.fillStyle = '#ff9b35';
+      ctx.beginPath(); ctx.moveTo(-32 + wave, groundY);
+      for (let x = -32 + wave; x <= width + 32; x += 32) ctx.quadraticCurveTo(x + 8, groundY - 7, x + 16, groundY);
+      ctx.lineTo(width, groundY + 13); ctx.lineTo(0, groundY + 13); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(255,215,93,.7)';
+      for (let x = 18 - wave; x < width; x += 75) ctx.beginPath(), ctx.arc(x, groundY + 28 + Math.sin(x) * 8, 3, 0, 7), ctx.fill();
+    } else {
+      ctx.strokeStyle = palette.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(width, groundY); ctx.stroke();
+      const dashOffset = -((distance * 5) % 70); ctx.fillStyle = 'rgba(32,33,29,.22)';
+      for (let x = dashOffset; x < width; x += 70) ctx.fillRect(x, groundY + 13, 38, 2);
+    }
+    for (const p of platforms) {
+      ctx.save(); ctx.translate(p.x, p.y + Math.sin(p.phase) * 1.5);
+      ctx.fillStyle = '#302a26'; ctx.strokeStyle = '#171815'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(0, 2); ctx.lineTo(12, -7); ctx.lineTo(p.w - 14, -5); ctx.lineTo(p.w, 3); ctx.lineTo(p.w - 18, p.h); ctx.lineTo(21, p.h + 5); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = '#e07145'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(12, 0); ctx.lineTo(p.w * .42, 3); ctx.moveTo(p.w * .62, 0); ctx.lineTo(p.w - 16, 1); ctx.stroke();
+      ctx.restore();
+    }
     for (const o of obstacles) drawObstacle(o);
     for (const p of particles) { ctx.globalAlpha = Math.max(0, p.life * 1.7); ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size); }
     for (const p of popups) {
@@ -269,7 +335,7 @@
     ctx.globalAlpha = 1; drawPlayer();
     if (warning > 0) {
       ctx.globalAlpha = Math.min(1, warning * 2); ctx.fillStyle = palette.red; ctx.textAlign = 'center'; ctx.font = '500 11px DM Mono, monospace';
-      const alertText = distance >= 795 ? '⚠ CINDER CANYON — WATCH THE GROUND' : '⚠ ENEMIES INCOMING — JUMP OR DUCK';
+      const alertText = distance >= 1995 ? '⚠ THE FLOOR IS LAVA — STAY ON THE ROCKS' : distance >= 795 ? '⚠ CINDER CANYON — WATCH THE GROUND' : '⚠ ENEMIES INCOMING — JUMP OR DUCK';
       ctx.fillText(alertText, width / 2, groundY - 125); ctx.globalAlpha = 1;
     }
     ctx.restore();
