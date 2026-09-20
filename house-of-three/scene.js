@@ -8,6 +8,9 @@ function materialTexture(type){
  else if(type==='stone'){for(let i=0;i<18;i++){g.strokeStyle=`rgba(70,80,78,${random()*.13})`;g.lineWidth=random()*1.3;g.beginPath();let x=random()*128;g.moveTo(x,0);for(let y=0;y<=128;y+=12){x+=(random()-.5)*30;g.lineTo(x,y);}g.stroke();}}
  else if(type==='fabric'){for(let i=0;i<128;i+=3){g.fillStyle='rgba(255,255,255,.08)';g.fillRect(i,0,1,128);g.fillStyle='rgba(0,0,0,.10)';g.fillRect(0,i,128,1);}}
  for(let i=0;i<1800;i++){g.fillStyle=random()>.5?'rgba(255,255,255,.035)':'rgba(0,0,0,.045)';g.fillRect(random()*128,random()*128,1,1);}
+ // Generations of damp, dust and neglect are baked into every surface.
+ for(let i=0;i<35;i++){const x=random()*128,y=random()*128,r=3+random()*16;const stain=g.createRadialGradient(x,y,0,x,y,r);stain.addColorStop(0,`rgba(${random()>.55?'35,55,36':'39,29,20'},${.05+random()*.12})`);stain.addColorStop(1,'rgba(20,30,20,0)');g.fillStyle=stain;g.fillRect(x-r,y-r,r*2,r*2);}
+ for(let i=0;i<14;i++){g.strokeStyle=`rgba(25,22,18,${.08+random()*.12})`;g.lineWidth=.5;g.beginPath();let x=random()*128,y=random()*128;g.moveTo(x,y);for(let j=0;j<4;j++){x+=(random()-.5)*15;y+=5+random()*10;g.lineTo(x,y);}g.stroke();}
  surfaceCache.set(type,c);return c;
 }
 function decorateRoom(room,box,objects){
@@ -111,7 +114,8 @@ function createRoomRenderer(canvas){
  void main(){vec3 c=vColor;
  if(vMaterial>=0.0){vec2 t=fract(vUv)*0.98+0.01;vec4 grain=texture2D(atlas,vec2((vMaterial+t.x)/4.0,t.y));c=mix(c,grain.rgb,grain.a);}
  vec2 screen=gl_FragCoord.xy/viewport;float edge=smoothstep(0.2,0.8,length((screen-vec2(0.5,0.54))*vec2(1.0,0.8)));
- c*=1.0-edge*0.30;c=mix(c,vec3(0.07,0.12,0.12),min(0.20,max(0.0,vDepth-5.0)*0.015));gl_FragColor=vec4(c,1.0);}`;
+ c*=0.72-edge*0.38;c=mix(c,vec3(0.055,0.075,0.065),min(0.34,max(0.0,vDepth-3.0)*0.028));
+ float dust=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);c+=vec3(dust*0.018);c=mix(c,vec3(dot(c,vec3(.30,.56,.14))),.18);gl_FragColor=vec4(c,1.0);}`;
  function init(){
   function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
   const vs=shader(gl.VERTEX_SHADER,vertex),fs=shader(gl.FRAGMENT_SHADER,fragment),program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));
@@ -128,7 +132,7 @@ function drawRoom(renderer,canvas,objects,camera,room,playing,time){
  if(renderer.lost)return;
  const gl=renderer.gl,w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,1.5);
  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
- gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(.1,.15,.15,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(renderer.program);gl.bindBuffer(gl.ARRAY_BUFFER,renderer.buffer);
+ gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(.035,.055,.05,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(renderer.program);gl.bindBuffer(gl.ARRAY_BUFFER,renderer.buffer);
  if(renderer.scene!==objects){
   const data=[],faces=[[[0,1,2,3],.67],[[4,5,6,7],.96],[[0,4,7,3],.73],[[1,5,6,2],.82],[[3,2,6,7],1.13],[[0,1,5,4],.55]];
   for(const b of objects){const vertices=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]].map(([x,y,z])=>[b.x+x*b.w/2,b.y+y*b.h/2,b.z+z*b.d/2]);const n=parseInt(b.color.slice(1),16),rgb=[n>>16,(n>>8)&255,n&255].map(v=>v/255),mat=['wood','stone','fabric'].indexOf(b.material);
@@ -168,6 +172,13 @@ function decorateMansionInterior(room,box,objects){
   detail(x,.5,11,1.8,1,1.6,room===0?'#b6b8a5':'#8b7e6b','fabric');detail(x,1.1,11.65,1.8,1.3,.28,'#8e846f','fabric');
   detail(x,.85,6,1.9,1.7,.85,wood,'wood');box(x,1.75,6,2.05,.12,1,stone);box(x,2.05,6,.35,.5,.35,'#b49766');
  }
+ // Water damage, fallen plaster, dust sheets and cobwebs mark decades of neglect.
+ const rot=['#485044','#3d493e','#596052'];
+ for(const [x,y,w,h] of [[-7.2,6.7,2.6,1.1],[-2.8,7.25,1.4,.55],[4.8,6.8,3.1,.85]])detail(x,y,-.31,w,h,.035,rot[Math.abs(Math.round(x))%3],'stone');
+ for(const [x,z,s] of [[-8.6,2,.7],[-6.8,15,.9],[5.9,4,.6],[7.7,13,.8],[-2,16,.5]]){detail(x,.06,z,s,.08,s*.45,'#777262','stone');detail(x+.35,.1,z+.22,s*.35,.12,s*.22,'#4b4439','wood');}
+ for(const x of [-7.8,7.8]){detail(x,1.35,11,2.05,2.4,1.8,'#77796d','fabric');detail(x,2.58,11.1,1.55,.2,1.25,'#676b61','fabric');}
+ for(const [x,z] of [[-9.55,4],[-9.55,9],[9.55,14]])for(let i=0;i<5;i++)detail(x+(x<0?.08:-.08),3+i*.68,z+(i%2?.5:-.45),.035,1.15,.035,'#5b674c','wood');
+ for(const x of [-9.35,9.35])for(let i=0;i<4;i++){detail(x,7.05-i*.18,.35+i*.22,.018,.018,1.3+i*.35,'#a7aaa0','fabric');detail(x+(x<0?.25:-.25),7.3,.45+i*.27,.5+i*.25,.018,.018,'#a7aaa0','fabric');}
 }
 function createMansionExterior(){
  const objects=[];const add=(x,y,z,w,h,d,color,material)=>objects.push({x,y,z,w,h,d,color,material});
@@ -195,6 +206,12 @@ function createMansionExterior(){
  add(0,.4,17,3.5,.65,3.5,'#858e82','stone');add(0,.76,17,3.05,.08,3.05,'#718f8b');add(0,1.35,17,.35,1.2,.35,'#a6a58e');add(0,1.95,17,1.4,.17,1.4,'#aaa78f');
  for(const x of [-4.5,4.5])for(const z of [10,23]){add(x,1.3,z,.09,2.6,.09,'#34403a');add(x,2.75,z,.45,.5,.45,'#d4bd85');}
  for(const x of [-20,20])for(const z of [-8,1,12]){add(x,2,z,.6,4,.6,'#625941');add(x,5,z,4.5,5,4.5,'#293f32');}
+ // Nature has reclaimed the facade: boarded panes, dead vines and a collapsed approach.
+ for(const x of [-6,-3,3,6])for(const y of [2.2,5.7]){add(x,y,2.42,2.05,.22,.1,'#574b39','wood');add(x,y,2.45,.2,2.85,.08,'#4a4033','wood');}
+ for(const x of [-14,-11,11,14]){add(x,5.7,8.35,1.4,.18,.08,'#514636','wood');add(x,5.7,8.37,.16,2,.07,'#463d31','wood');}
+ for(const side of [-1,1])for(let i=0;i<9;i++){const y=.5+i*1.25,x=side*(7.5+i*.45);add(x,y,2.5,.18,1.8,.16,i%2?'#334332':'#405039','wood');add(x+side*.45,y+.35,2.53,1,.15,.12,'#3b4935','wood');}
+ for(const [x,z,w] of [[-2.8,6.1,1.7],[1.4,6.8,1.2],[3.7,5.5,1.4],[-.4,9,1]]){add(x,.08,z,w,.16,.45,'#716b5b','stone');add(x+.35,.16,z+.15,.55,.22,.35,'#4b453a','stone');}
+ for(const x of [-9,-5,5,9])for(let i=0;i<4;i++)add(x+(i%2?.55:0),.45+i*.55,8+i*.45,.12,1.2,.12,'#314332','wood');
  return objects;
 }
 

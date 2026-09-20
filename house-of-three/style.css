@@ -10,3 +10,16 @@
 .brand .brand-name{display:flex;flex-direction:column;gap:5px}.brand-name b{font-weight:600;font-size:15px;letter-spacing:4px}.brand-name small{font-size:8px;letter-spacing:1.5px;color:#b9c1ad}@media(max-width:700px){.brand-name b{font-size:12px;letter-spacing:2px}.brand-name small{font-size:7px;letter-spacing:.6px}.brand{gap:10px}}
 
 .home-copy h1{font-size:clamp(64px,7.5vw,108px)}.brand-name b{font-size:13px;letter-spacing:2px}@media(max-width:700px){.brand-name b{font-size:10px;letter-spacing:1px}.home-copy h1{font-size:67px}.home-lede{max-width:300px}}
+
+/* Film grain, damp haze and faded fittings reinforce the abandoned estate. */
+:root{color:#ded8c8;background:#080d0c}canvas{filter:saturate(.63) contrast(1.12) brightness(.78)}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 52% 35%,transparent 8%,rgba(4,9,7,.2) 48%,rgba(0,3,2,.72) 100%),linear-gradient(112deg,rgba(80,91,62,.08),transparent 35%,rgba(33,44,38,.18));mix-blend-mode:multiply}
+body::after{content:"";position:fixed;inset:-50%;z-index:0;pointer-events:none;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");animation:dust-film .35s steps(2) infinite}
+#homepage,#gameUI,dialog{z-index:1}.home-lede{color:#9da79b}.eyebrow{color:#a58f63}.primary{background:#a59169}.home-copy h1 em{color:#a88f62}.edition,.home-bottom{color:#7f897b}aside,dialog{border-color:#756d554f;background:#0a1312e8}.marker{border-color:#b29b6b70;color:#c2aa76;background:#101c19e8;box-shadow:0 0 24px #8d77442c}button{border-color:#73796940;background:#101917d4}
+@keyframes dust-film{0%{transform:translate(1%,0)}25%{transform:translate(-1%,1%)}50%{transform:translate(0,-1%)}75%{transform:translate(1%,1%)}100%{transform:translate(-1%,0)}}
+@media(prefers-reduced-motion:reduce){body::after{animation:none}}
+
+body.room-entering canvas{animation:cross-threshold .7s ease-out}body.room-entering #gameUI{animation:room-title .7s ease-out}
+@keyframes cross-threshold{0%{filter:saturate(.35) contrast(1.3) brightness(.12);transform:scale(1.035)}100%{filter:saturate(.63) contrast(1.12) brightness(.78);transform:none}}
+@keyframes room-title{0%{opacity:0}35%{opacity:0}100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){body.room-entering canvas,body.room-entering #gameUI{animation:none}}
