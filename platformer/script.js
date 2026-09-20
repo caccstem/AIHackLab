@@ -122,10 +122,22 @@ function playTone(frequency, volume, duration, type = 'square') {
   oscillator.stop(audioContext.currentTime + duration);
 }
 
-function playJumpSound() { playTone(520, .12, .12, 'square'); playTone(780, .08, .16, 'square'); }
+function playJumpSound() {
+  playTone(330, .08, .1, 'triangle');
+  window.setTimeout(() => playTone(494, .07, .12, 'triangle'), 45);
+  window.setTimeout(() => playTone(659, .06, .18, 'sine'), 90);
+}
 function playMoveSound() { playTone(120, .045, .06, 'triangle'); }
 function playDeathSound() { playTone(180, .14, .18, 'sawtooth'); playTone(90, .1, .3, 'sawtooth'); }
 function playClickSound() { playTone(420, .08, .06, 'square'); }
+function playJewelSound() {
+  playTone(880, .09, .1, 'sine');
+  window.setTimeout(() => playTone(1320, .07, .16, 'sine'), 55);
+}
+function playCheckpointSound() {
+  playTone(392, .1, .12, 'triangle');
+  window.setTimeout(() => playTone(587, .08, .2, 'triangle'), 70);
+}
 let best = Number(localStorage.getItem('skybound-best') || 0);
 bestDisplay.textContent = String(best).padStart(4, '0');
 
@@ -301,13 +313,14 @@ function update(delta) {
     if (overlapsX && crossesTop && player.vy >= 0) { player.y = platform.y - player.height; player.vy = 0; player.grounded = true; }
   });
   shards.forEach((shard) => {
-    if (!shard.collected && player.x < shard.x + 22 && player.x + player.width > shard.x - 22 && player.y < shard.y + 22 && player.y + player.height > shard.y - 22) { shard.collected = true; score += 125; }
+    if (!shard.collected && player.x < shard.x + 22 && player.x + player.width > shard.x - 22 && player.y < shard.y + 22 && player.y + player.height > shard.y - 22) { shard.collected = true; score += 125; playJewelSound(); }
   });
   if (shards.every((shard) => shard.collected)) { advanceLevel(); sendOnlineState(); return; }
   checkpoints.forEach((checkpoint, index) => {
     if (!checkpoint.reached && player.x > checkpoint.x && Math.abs((player.y + player.height) - checkpoint.groundY) < 100) {
       checkpoint.reached = true;
       activeCheckpoint = index;
+      playCheckpointSound();
     }
   });
   const hitObstacle = obstacles.some((obstacle) => player.x < obstacle.x + obstacle.width && player.x + player.width > obstacle.x && player.y < obstacle.y + obstacle.height && player.y + player.height > obstacle.y);
