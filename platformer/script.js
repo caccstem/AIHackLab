@@ -24,6 +24,8 @@ const shardsDisplay = document.querySelector('#shards');
 const shardCounter = document.querySelector('#shard-counter');
 const levelDisplay = document.querySelector('#level');
 const bestDisplay = document.querySelector('#best');
+const timerDisplay = document.querySelector('#timer');
+const timerHud = document.querySelector('#timer-hud');
 
 const view = { width: 960, height: 560 };
 const keys = {};
@@ -58,24 +60,30 @@ const baseCheckpoints = [
 ];
 const levelShardSets = [
   [[590, 1190], [960, 1060], [1330, 940], [1690, 800], [2060, 650], [2290, 480], [1500, 250]],
-  [[300, 1340], [700, 1190], [1100, 1060], [1370, 940], [1770, 800], [2130, 650], [2330, 480]],
+  [[390, 1340], [700, 1190], [1100, 1060], [1370, 940], [1770, 800], [2130, 650], [2330, 480]],
   [[590, 1190], [1010, 1060], [1430, 940], [1740, 800], [2010, 650], [2320, 480], [1110, 160]],
-  [[280, 1340], [620, 1190], [930, 1060], [1310, 940], [1640, 800], [2050, 650], [1470, 250]],
-  [[580, 1190], [980, 1060], [1290, 940], [1700, 800], [2080, 650], [2310, 480], [730, 40]]
+  [[390, 1340], [620, 1190], [930, 1060], [1310, 940], [1640, 800], [2050, 650], [1470, 250]],
+  [[500, 1190], [980, 1060], [1290, 940], [1700, 800], [2080, 650], [2310, 480], [730, 40]],
+  [[560, 1210], [920, 1080], [1280, 960], [1600, 830], [1910, 700], [2170, 570], [1540, 310]],
+  [[590, 1200], [960, 1070], [1350, 940], [1670, 810], [2040, 680], [2240, 550], [1600, 290]]
 ];
 const levelThemes = [
   { skyTop: '#66c9f2', skyBottom: '#e7f6d5', hill: '#8ed39a', leaf: '#2f824b', leafLight: '#73c965', grass: '#4f9a50', shard: '#ff896d' },
   { skyTop: '#54aeda', skyBottom: '#f6d9a0', hill: '#a7b86d', leaf: '#9d5d38', leafLight: '#e38a4d', grass: '#668e43', shard: '#ffe36e' },
   { skyTop: '#3d5eaf', skyBottom: '#d6b9e8', hill: '#7182b5', leaf: '#315b76', leafLight: '#5f9fc0', grass: '#3f7954', shard: '#b8f4ff' },
   { skyTop: '#4aaec4', skyBottom: '#f5e4a5', hill: '#b8c76c', leaf: '#4d7b39', leafLight: '#9dc84e', grass: '#598d3f', shard: '#ff9f4d' },
-  { skyTop: '#72cbe4', skyBottom: '#f7c4c8', hill: '#a1c997', leaf: '#4c7655', leafLight: '#8ebf6b', grass: '#4b985c', shard: '#e88cff' }
+  { skyTop: '#72cbe4', skyBottom: '#f7c4c8', hill: '#a1c997', leaf: '#4c7655', leafLight: '#8ebf6b', grass: '#4b985c', shard: '#e88cff' },
+  { skyTop: '#6c78cf', skyBottom: '#f0d8ff', hill: '#8891bd', leaf: '#4d4f91', leafLight: '#8a8fe0', grass: '#555ca5', shard: '#9cffde' },
+  { skyTop: '#e47c75', skyBottom: '#ffe5a8', hill: '#c49365', leaf: '#9b493b', leafLight: '#ed9360', grass: '#a9603f', shard: '#72e4ff' }
 ];
 const levelPlacementProfiles = [
-  { platformX: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], platformY: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], obstacleX: [0, 0, 0, 0, 0, 0, 0], monsterX: [0, 0, 0], checkpointX: [0, 0, 0, 0] },
-  { platformX: [0, 28, -32, 42, -24, 36, -28, 30, -36, 42, -24, 28], platformY: [0, 14, -12, 20, -14, 18, -12, 12, -10, 14, -8, 0], obstacleX: [24, -24, 30, -32, 22, -24, 28], monsterX: [30, -28, 24], checkpointX: [0, 24, -20, -28] },
-  { platformX: [0, -34, 46, -40, 38, -44, 34, -32, 48, -38, 28, -24], platformY: [0, 24, 18, -16, 20, -13, 18, -15, 13, -10, 10, 0], obstacleX: [-20, 30, -36, 32, -24, 30, -34], monsterX: [-24, 36, -30], checkpointX: [0, -30, 30, 24] },
-  { platformX: [0, 70, -80, 55, -75, 80, -60, 250, -85, 55, -65, 45], platformY: [0, 35, -35, 45, -35, 40, -30, 35, -25, 30, -15, 0], obstacleX: [50, -55, 60, -65, 45, -50, 55], monsterX: [60, -55, 50], checkpointX: [0, 55, -50, -45] },
-  { platformX: [0, -80, 90, -75, 85, -90, 70, -80, 95, -70, 60, -50], platformY: [0, -35, 45, -40, 50, -35, 45, -35, 35, -25, 25, 0], obstacleX: [-45, 60, -70, 65, -50, 55, -65], monsterX: [-50, 70, -60], checkpointX: [0, -60, 60, 50] }
+  { platformX: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], platformY: [0, 0, 0, 0, 0, 10, 40, 10, 0, 0, 0, 0], obstacleX: [0, 0, 0, 0, 0, 0, 0], monsterX: [0, 0, 0], checkpointX: [0, 0, 0, 0] },
+  { platformX: [0, 28, -32, 42, -24, 36, -28, 30, -16, 42, -13, 28], platformY: [0, 14, 4, 20, 20, 30, 60, 30, 10, 14, -8, 0], obstacleX: [24, -24, 30, -32, 22, -24, 28], monsterX: [30, -28, 24], checkpointX: [0, 24, -20, -28] },
+  { platformX: [0, -34, 46, -40, 38, -44, 34, 8, 48, 22, 28, -24], platformY: [0, 24, 18, -2, 20, 30, 60, 30, 13, -10, 10, 0], obstacleX: [-20, 30, -36, 32, -24, 30, -34], monsterX: [-24, 36, -30], checkpointX: [0, 46, 30, 24] },
+  { platformX: [0, 70, -80, -20, -75, -19, -60, 250, 274, 164, 158, 45], platformY: [0, 35, 25, 45, 45, 55, 85, 55, 35, 30, -10, 0], platformWidth: [0, 60, -40, 80, -50, 70, -60, 90, -70, 50, -30, 80], obstacleX: [50, -55, 60, -65, 45, -50, 55], monsterX: [60, -55, 50], checkpointX: [0, 55, -50, -45] },
+  { platformX: [0, -80, 29, -75, -25, -90, 46, 80, 95, 109, 60, 30], platformY: [0, 0, 45, 25, 50, 60, 90, 60, 40, 10, 25, 0], platformWidth: [0, -30, 80, -60, 90, -70, 100, -80, 70, -50, 60, -30], obstacleX: [-45, 60, -70, 65, -50, 55, -65], monsterX: [-50, 70, -60], checkpointX: [0, -60, 60, 50] },
+  { platformX: [0, -30, -30, -70, -80, -130, -90, -10, 30, 90, 90, 90], platformY: [0, 20, 20, 20, 30, 50, 90, 70, 60, 40, 20, 0], platformWidth: [0, 40, -20, 60, -30, 20, -40, 50, -50, 30, -20, 70], obstacleX: [0, 0, -30, -30, -70, -80, -130], monsterX: [0, -30, -130], checkpointX: [0, -30, -80, -90] },
+  { platformX: [0, 30, 50, 50, 40, 30, -20, 90, 80, 78, 40, 20], platformY: [0, 10, 10, 0, 10, 30, 70, 50, 40, 20, 0, 0], platformWidth: [0, -20, 50, -30, 60, -40, 70, -50, 40, -20, 60, -30], obstacleX: [0, 0, 30, 50, 50, 40, 30], monsterX: [0, 50, 30], checkpointX: [0, 50, 40, -20] }
 ];
 let shards = [];
 let platforms = [];
@@ -96,6 +104,7 @@ let onlinePlayers = [];
 let audioContext = null;
 let musicTimer = null;
 let footstepTimer = 0;
+let levelTimeLeft = 60;
 
 function startAudio() {
   if (!audioContext) audioContext = new AudioContext();
@@ -148,7 +157,8 @@ function loadLevel(index) {
   platforms = basePlatforms.map((platform, platformIndex) => ({
     ...platform,
     x: platform.x + profile.platformX[platformIndex],
-    y: platform.y + profile.platformY[platformIndex]
+    y: platform.y + profile.platformY[platformIndex],
+    width: platform.width + (profile.platformWidth?.[platformIndex] || 0)
   }));
   const hazardPlatforms = [0, 0, 1, 2, 3, 4, 5];
   obstacles = baseObstacles.map((obstacle, obstacleIndex) => ({
@@ -174,14 +184,30 @@ function loadLevel(index) {
   activeCheckpoint = 0;
   freezeUses = 2;
   freezeTimer = 0;
+  levelTimeLeft = 60;
   player.x = 100;
   player.y = checkpoints[0].groundY - player.height;
   player.vx = 0;
   player.vy = 0;
   camera.x = 0;
   camera.y = 900;
-  levelDisplay.textContent = `${levelIndex + 1}/5`;
+  levelDisplay.textContent = `${levelIndex + 1}/${levelShardSets.length}`;
+  updateTimer();
   updateFreezeButton();
+}
+
+function updateTimer() {
+  timerDisplay.textContent = String(Math.ceil(levelTimeLeft)).padStart(2, '0');
+  timerHud.classList.toggle('is-low', levelTimeLeft <= 10);
+}
+
+function timeOutLevel() {
+  running = false;
+  updateFreezeButton();
+  resultKicker.textContent = 'TIME UP';
+  resultTitle.textContent = 'OUT OF TIME';
+  resultCopy.textContent = 'This level needs a faster route. Try again.';
+  resultOverlay.hidden = false;
 }
 
 function updateFreezeButton() {
@@ -248,13 +274,13 @@ function finishGame(won) {
   if (won && onlineMode && multiplayerSocket?.readyState === WebSocket.OPEN) multiplayerSocket.send(JSON.stringify({ type: 'finish' }));
   resultKicker.textContent = won ? 'RUN COMPLETE' : 'SIGNAL LOST';
   resultTitle.textContent = won ? 'YOU WIN!!' : 'Keep climbing.';
-  resultCopy.textContent = won ? 'All five levels conquered.' : 'The cloudline is still waiting. Try a different route.';
+  resultCopy.textContent = won ? 'All seven levels conquered.' : 'The cloudline is still waiting. Try a different route.';
   resultOverlay.hidden = false;
   if (score > best) { best = score; localStorage.setItem('skybound-best', String(best)); bestDisplay.textContent = String(best).padStart(4, '0'); }
 }
 
 function advanceLevel() {
-  if (levelIndex === 4) { finishGame(true); return; }
+  if (levelIndex === levelShardSets.length - 1) { finishGame(true); return; }
   loadLevel(levelIndex + 1);
   updateHud();
 }
@@ -275,10 +301,13 @@ function updateHud() {
   const collectedShards = shards.filter((shard) => shard.collected).length;
   shardsDisplay.textContent = `${collectedShards}/7`;
   shardCounter.textContent = `${collectedShards}/7`;
-  levelDisplay.textContent = `${levelIndex + 1}/5`;
+  levelDisplay.textContent = `${levelIndex + 1}/${levelShardSets.length}`;
 }
 
 function update(delta) {
+  levelTimeLeft = Math.max(0, levelTimeLeft - delta / 60);
+  updateTimer();
+  if (levelTimeLeft === 0) { timeOutLevel(); return; }
   if (freezeTimer > 0) {
     freezeTimer = Math.max(0, freezeTimer - delta / 60);
     updateFreezeButton();
