@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skybound</title>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="#game" aria-label="Skybound home"><span class="brand-mark">+</span> SKYBOUND</a>
+        <div class="status-line"><span class="status-dot"></span> LIVE RUN <span class="divider"></span> SECTOR 07</div>
+      </header>
+
+      <section class="game-panel" id="game" aria-label="Skybound platformer">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Vertical expedition</p>
+            <h1>Reach the <em>upper air.</em></h1>
+          </div>
+          <div class="scoreboard"><span>SHARDS <b id="level">1/5</b></span><strong id="shard-counter">0/7</strong><small>SCORE <b id="score">0000</b></small></div>
+        </div>
+
+        <div class="hud" aria-live="polite">
+          <span>ALTITUDE <b id="altitude">000</b>m</span>
+          <span>SHARDS <b id="shards">0/7</b></span>
+          <span>BEST <b id="best">0000</b></span>
+        </div>
+
+        <div class="game-wrap">
+          <canvas id="game-canvas" width="960" height="560" aria-label="Playable platformer canvas"></canvas>
+          <button class="freeze-button" id="freeze-button" type="button">FREEZE <span id="freeze-uses">2 LEFT</span></button>
+          <div class="start-overlay" id="start-overlay">
+            <p class="overlay-kicker">A calm climb through the cloudline</p>
+            <h2>Ready to rise?</h2>
+            <p>Use A and D or the arrow keys to move. Press W, Up, or Space to jump.</p>
+            <button id="start-button" type="button">START RUN <span>-></span></button>
+            <button class="instructions-button" id="instructions-button" type="button">INSTRUCTIONS</button>
+            <div class="instructions-panel" id="instructions-panel" hidden>
+              <button class="instructions-close" id="instructions-close" type="button" aria-label="Close instructions">X</button>
+              <p><b>Story:</b> You have awoken into a strange dimension and everyone is suddenly turning on you!</p>
+              <p>You must reach the highest point in order to find safety.</p>
+              <p><b>Controls:</b> use arrow keys.</p>
+              <p><b>Obstacles:</b> Spikes, rocks, and turned on kitties!</p>
+              <p><b>Objective:</b> reach the highest point my completing all five levels.</p>
+              <p><b>Power:</b> you can freeze the turned on kitties two time every single round.</p>
+              <p><b>Your kitten's name:</b> Nico.</p>
+            </div>
+            <button class="online-vault-button" id="online-vault-button" type="button">ONLINE VAULT</button>
+            <div class="online-vault-panel" id="online-vault-panel" hidden>
+              <button class="instructions-close" id="online-vault-close" type="button" aria-label="Close online vault">X</button>
+              <p class="overlay-kicker">Join an online game</p>
+              <label for="vault-code">CODE:</label>
+              <input id="vault-code" name="vault-code" type="password" inputmode="numeric" maxlength="4" placeholder="ENTER CODE" autocomplete="off" />
+              <button class="join-button" id="join-button" type="button">JOIN GAME</button>
+              <p class="vault-message" id="vault-message" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="result-overlay" id="result-overlay" hidden>
+            <p class="overlay-kicker" id="result-kicker">RUN COMPLETE</p>
+            <h2 id="result-title">You made it.</h2>
+            <p id="result-copy">The skyline is yours for a moment.</p>
+            <button id="restart-button" type="button">RUN AGAIN <span>-></span></button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <span><kbd>A</kbd><kbd>D</kbd> MOVE</span>
+          <span><kbd>W</kbd><kbd>SPACE</kbd> JUMP</span>
+          <span><kbd>R</kbd> RESTART</span>
+        </div>
+      </section>
+
+      <footer><span>SKYBOUND / 01</span><span>KEEP CLIMBING</span></footer>
+    </main>
+    <script src="script.js?v=1"></script>
+  </body>
+</html>

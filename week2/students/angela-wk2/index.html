@@ -25,8 +25,14 @@
           </span>
           <span>Hue Hunt</span>
         </a>
+        <div class="difficulty-toggle" role="group" aria-label="Choose difficulty">
+          <button type="button" data-difficulty="easy" aria-pressed="false">Easy</button>
+          <button class="active" type="button" data-difficulty="medium" aria-pressed="true">Medium</button>
+          <button type="button" data-difficulty="hard" aria-pressed="false">Hard</button>
+          <button type="button" data-difficulty="extreme" aria-pressed="false">Extreme</button>
+        </div>
         <div class="best-pill">
-          <span>Personal best</span>
+          <span id="header-best-label">Medium best</span>
           <strong id="header-best">0</strong>
         </div>
       </header>
@@ -40,30 +46,45 @@
             your eyes start playing tricks on you.
           </p>
           <button class="primary-button" id="start-button" type="button">
-            Start game
+            Start color game
             <span aria-hidden="true">→</span>
           </button>
           <div class="mini-board" aria-hidden="true">
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
           </div>
+          <button class="vision-entry" id="vision-button" type="button">
+            <span>20-question test</span>
+            <strong>How blind are you?</strong>
+            <i aria-hidden="true">↗</i>
+          </button>
         </div>
 
         <div class="game-screen" id="game-screen" hidden>
           <div class="game-heading">
             <div>
-              <span class="round-label">Round <b id="round-number">1</b></span>
-              <h1>Which one is different?</h1>
+              <span class="round-label">
+                <b id="difficulty-name">Medium</b> · <span id="progress-label">Round</span>
+                <b id="round-number">1</b>
+              </span>
+              <h1 id="question-title">Which one is different?</h1>
+              <span class="question-rating" id="question-rating" hidden>Difficulty 4/10</span>
             </div>
-            <div class="score-block">
-              <span>Score</span>
-              <strong id="score">0</strong>
+            <div class="game-stats">
+              <div class="timer-block" id="timer-block" hidden>
+                <span>Time</span>
+                <strong id="timer">5.0</strong>
+              </div>
+              <div class="score-block">
+                <span id="score-label">Score</span>
+                <strong id="score">0</strong>
+              </div>
             </div>
           </div>
 
           <div class="board-wrap">
             <div class="board" id="board" role="group" aria-label="Color tile grid"></div>
           </div>
-          <p class="hint">Choose the tile with the slightly different shade.</p>
+          <p class="hint" id="game-hint">Choose the tile with the slightly different shade.</p>
         </div>
       </section>
 
@@ -78,18 +99,18 @@
         <div class="result-icon" aria-hidden="true">
           <span></span><span></span><span></span>
         </div>
-        <p class="eyebrow">Game over</p>
+        <p class="eyebrow" id="result-eyebrow">Game over</p>
         <h2 id="result-title">Good eye!</h2>
         <p class="result-copy" id="result-copy">That was a tricky one.</p>
 
         <div class="result-stats">
           <div>
-            <span>Your score</span>
+            <span id="final-score-label">Your score</span>
             <strong id="final-score">0</strong>
           </div>
           <div class="divider" aria-hidden="true"></div>
           <div>
-            <span>Personal best</span>
+            <span id="final-best-label">Personal best</span>
             <strong id="final-best">0</strong>
           </div>
         </div>
@@ -98,6 +119,27 @@
           Play again
           <span aria-hidden="true">↻</span>
         </button>
+        <button class="secondary-button back-home-button" id="back-home-button" type="button" hidden>
+          Back to Hue Hunt
+        </button>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="difficulty-modal" hidden>
+      <section class="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="difficulty-title">
+        <div class="switch-icon" aria-hidden="true">↻</div>
+        <p class="eyebrow">Change difficulty?</p>
+        <h2 id="difficulty-title">Restart this game?</h2>
+        <p class="result-copy">
+          Switching to <strong id="requested-difficulty">Easy</strong> will reset your current score.
+        </p>
+        <div class="modal-actions">
+          <button class="secondary-button" id="stay-button" type="button">Stay &amp; continue</button>
+          <button class="primary-button" id="restart-button" type="button">
+            Start a new game
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
       </section>
     </div>
 
