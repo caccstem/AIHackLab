@@ -2,11 +2,9 @@ const http = require('http');
 const { WebSocketServer } = require('ws');
 
 const port = Number(process.env.PORT || 8080);
-const roomCode = '6147';
 const colors = ['#f29a55', '#65c8ff', '#cf7cff', '#ffe36e', '#72dc8c', '#ff7c9c', '#9c8cff'];
-const players = new Map();
+const rooms = new Map();
 let nextPlayerId = 1;
-let winner = null;
 
 const server = http.createServer((request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -14,15 +12,15 @@ const server = http.createServer((request, response) => {
 });
 const webSocketServer = new WebSocketServer({ server });
 
-function broadcast(message) {
+function broadcast(room, message) {
   const payload = JSON.stringify(message);
-  for (const client of webSocketServer.clients) {
+  for (const client of room.players.keys()) {
     if (client.readyState === 1) client.send(payload);
   }
 }
 
-function playerList() {
-  return [...players.values()].map(({ socket, ...player }) => player);
+function playerList(room) {
+  return [...room.players.values()].map(({ socket, ...player }) => player);
 }
 
 webSocketServer.on('connection', (socket) => {
@@ -30,40 +28,57 @@ webSocketServer.on('connection', (socket) => {
     let message;
     try { message = JSON.parse(rawMessage.toString()); } catch { return; }
 
-    if (message.type === 'join') {
-      if (message.code !== roomCode) {
-        socket.send(JSON.stringify({ type: 'join-error', message: 'That code is not available.' }));
+    if (message.type === 'host' || message.type === 'join') {
+      const code = String(message.code || '').trim().toLowerCase();
+      if (!/^[a-z0-9]{4,24}$/.test(code)) {
+        socket.send(JSON.stringify({ type: 'room-error', message: 'Use 4-24 letters or numbers for the code.' }));
         return;
       }
+      let room = rooms.get(code);
+      if (message.type === 'host' && room) {
+        socket.send(JSON.stringify({ type: 'room-error', message: 'That game code is already in use.' }));
+        return;
+      }
+      if (message.type === 'join' && !room) {
+        socket.send(JSON.stringify({ type: 'room-error', message: 'That game is not available.' }));
+        return;
+      }
+      if (!room) { room = { players: new Map(), winner: null }; rooms.set(code, room); }
       const playerNumber = nextPlayerId;
       const player = { id: `nico${playerNumber}`, name: playerNumber === 1 ? 'Nico' : `Nico${playerNumber}`, color: colors[(playerNumber - 1) % colors.length], x: 100, y: 1340, level: 1, socket };
       nextPlayerId += 1;
-      players.set(socket, player);
-      socket.send(JSON.stringify({ type: 'joined', player: { id: player.id, name: player.name, color: player.color }, players: playerList(), winner }));
-      broadcast({ type: 'players', players: playerList() });
+      socket.room = room;
+      socket.roomCode = code;
+      room.players.set(socket, player);
+      socket.send(JSON.stringify({ type: 'joined', code, player: { id: player.id, name: player.name, color: player.color }, players: playerList(room), winner: room.winner }));
+      broadcast(room, { type: 'players', players: playerList(room) });
       return;
     }
 
-    const player = players.get(socket);
+    const room = socket.room;
+    const player = room?.players.get(socket);
     if (!player) return;
 
     if (message.type === 'state') {
       player.x = Number(message.x) || 0;
       player.y = Number(message.y) || 0;
       player.level = Number(message.level) || 1;
-      broadcast({ type: 'players', players: playerList() });
+      broadcast(room, { type: 'players', players: playerList(room) });
     }
 
-    if (message.type === 'finish' && !winner) {
-      winner = { id: player.id, name: player.name, color: player.color };
-      broadcast({ type: 'winner', winner });
+    if (message.type === 'finish' && !room.winner) {
+      room.winner = { id: player.id, name: player.name, color: player.color };
+      broadcast(room, { type: 'winner', winner: room.winner });
     }
   });
 
   socket.on('close', () => {
-    players.delete(socket);
-    broadcast({ type: 'players', players: playerList() });
+    const room = socket.room;
+    if (!room) return;
+    room.players.delete(socket);
+    broadcast(room, { type: 'players', players: playerList(room) });
+    if (room.players.size === 0) rooms.delete(socket.roomCode);
   });
 });
 
-server.listen(port, () => console.log(`Skybound room ${roomCode} listening on port ${port}`));
+server.listen(port, () => console.log(`Skybound room server listening on port ${port}`));

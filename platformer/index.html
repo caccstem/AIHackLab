@@ -37,6 +37,26 @@
             <h2>Ready to rise?</h2>
             <p>Use A and D or the arrow keys to move. Press W, Up, or Space to jump.</p>
             <button id="start-button" type="button">START RUN <span>-></span></button>
+            <div class="start-code-panel" id="start-code-panel" hidden>
+              <p class="overlay-kicker">Enter the start code</p>
+              <label for="start-code">CODE:</label>
+              <input id="start-code" name="start-code" type="text" maxlength="9" placeholder="ENTER CODE" autocomplete="off" />
+              <button class="join-button" id="start-code-submit" type="button">CHECK CODE</button>
+              <p class="vault-message" id="start-code-message" aria-live="polite"></p>
+              <button class="join-button" id="start-confirm-button" type="button" hidden>CONFIRM START RUN</button>
+            </div>
+            <button class="difficulty-button" id="difficulty-button" type="button">EASY / HARD LEVEL</button>
+            <div class="difficulty-panel" id="difficulty-panel" hidden>
+              <p class="overlay-kicker">Enter the access code</p>
+              <label for="difficulty-code">CODE:</label>
+              <input id="difficulty-code" name="difficulty-code" type="text" maxlength="14" placeholder="ENTER CODE" autocomplete="off" />
+              <button class="join-button" id="difficulty-unlock" type="button">UNLOCK LEVELS</button>
+              <p class="vault-message" id="difficulty-message" aria-live="polite"></p>
+              <div class="difficulty-options" id="difficulty-options" hidden>
+                <button class="join-button" id="easy-button" type="button">EASY / 5 FREEZES</button>
+                <button class="join-button hard-button" id="hard-button" type="button">HARD / FULL RESTART</button>
+              </div>
+            </div>
             <button class="instructions-button" id="instructions-button" type="button">INSTRUCTIONS</button>
             <div class="instructions-panel" id="instructions-panel" hidden>
               <button class="instructions-close" id="instructions-close" type="button" aria-label="Close instructions">X</button>
@@ -45,15 +65,24 @@
               <p><b>Controls:</b> use arrow keys.</p>
               <p><b>Obstacles:</b> Spikes, rocks, and turned on kitties!</p>
               <p><b>Objective:</b> reach the highest point my completing all five levels.</p>
-              <p><b>Power:</b> you can freeze the turned on kitties two time every single round.</p>
+              <p><b>Power:</b> normal mode gives you two freezes every level.</p>
               <p><b>Your kitten's name:</b> Nico.</p>
+            </div>
+            <button class="host-game-button" id="host-game-button" type="button">HOST GAME</button>
+            <div class="host-game-panel" id="host-game-panel" hidden>
+              <button class="instructions-close" id="host-game-close" type="button" aria-label="Close host game">X</button>
+              <p class="overlay-kicker">Host an online game</p>
+              <label for="host-code">CREATE CODE:</label>
+              <input id="host-code" name="host-code" type="text" maxlength="24" placeholder="EXAMPLE: FOX123" autocomplete="off" />
+              <button class="join-button" id="host-confirm" type="button">CONFIRM CODE</button>
+              <p class="vault-message" id="host-message" aria-live="polite"></p>
             </div>
             <button class="online-vault-button" id="online-vault-button" type="button">ONLINE VAULT</button>
             <div class="online-vault-panel" id="online-vault-panel" hidden>
               <button class="instructions-close" id="online-vault-close" type="button" aria-label="Close online vault">X</button>
               <p class="overlay-kicker">Join an online game</p>
               <label for="vault-code">CODE:</label>
-              <input id="vault-code" name="vault-code" type="password" inputmode="numeric" maxlength="4" placeholder="ENTER CODE" autocomplete="off" />
+              <input id="vault-code" name="vault-code" type="text" maxlength="24" placeholder="ENTER CODE" autocomplete="off" />
               <button class="join-button" id="join-button" type="button">JOIN GAME</button>
               <p class="vault-message" id="vault-message" aria-live="polite"></p>
             </div>
@@ -64,11 +93,17 @@
             <p id="result-copy">The skyline is yours for a moment.</p>
             <button id="restart-button" type="button">RUN AGAIN <span>-></span></button>
           </div>
+          <div class="pause-overlay" id="pause-overlay" hidden>
+            <p class="overlay-kicker">RUN PAUSED</p>
+            <h2>Take a breath.</h2>
+            <p>Press P to resume your climb.</p>
+          </div>
         </div>
 
         <div class="controls">
           <span><kbd>A</kbd><kbd>D</kbd> MOVE</span>
           <span><kbd>W</kbd><kbd>SPACE</kbd> JUMP</span>
+          <span><kbd>P</kbd> PAUSE</span>
           <span><kbd>R</kbd> RESTART</span>
         </div>
       </section>

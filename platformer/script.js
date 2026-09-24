@@ -2,14 +2,34 @@ const canvas = document.querySelector('#game-canvas');
 const context = canvas.getContext('2d');
 const startOverlay = document.querySelector('#start-overlay');
 const resultOverlay = document.querySelector('#result-overlay');
+const pauseOverlay = document.querySelector('#pause-overlay');
 const startButton = document.querySelector('#start-button');
 const restartButton = document.querySelector('#restart-button');
+const difficultyButton = document.querySelector('#difficulty-button');
+const difficultyPanel = document.querySelector('#difficulty-panel');
+const difficultyCode = document.querySelector('#difficulty-code');
+const difficultyUnlock = document.querySelector('#difficulty-unlock');
+const difficultyMessage = document.querySelector('#difficulty-message');
+const difficultyOptions = document.querySelector('#difficulty-options');
+const easyButton = document.querySelector('#easy-button');
+const hardButton = document.querySelector('#hard-button');
+const startCodePanel = document.querySelector('#start-code-panel');
+const startCode = document.querySelector('#start-code');
+const startCodeSubmit = document.querySelector('#start-code-submit');
+const startCodeMessage = document.querySelector('#start-code-message');
+const startConfirmButton = document.querySelector('#start-confirm-button');
 const instructionsButton = document.querySelector('#instructions-button');
 const instructionsPanel = document.querySelector('#instructions-panel');
 const instructionsClose = document.querySelector('#instructions-close');
 const onlineVaultButton = document.querySelector('#online-vault-button');
 const onlineVaultPanel = document.querySelector('#online-vault-panel');
 const onlineVaultClose = document.querySelector('#online-vault-close');
+const hostGameButton = document.querySelector('#host-game-button');
+const hostGamePanel = document.querySelector('#host-game-panel');
+const hostGameClose = document.querySelector('#host-game-close');
+const hostCode = document.querySelector('#host-code');
+const hostConfirm = document.querySelector('#host-confirm');
+const hostMessage = document.querySelector('#host-message');
 const vaultCode = document.querySelector('#vault-code');
 const joinButton = document.querySelector('#join-button');
 const vaultMessage = document.querySelector('#vault-message');
@@ -61,9 +81,9 @@ const baseCheckpoints = [
 const levelShardSets = [
   [[590, 1190], [960, 1060], [1330, 940], [1690, 800], [2060, 650], [2290, 480], [1500, 250]],
   [[390, 1340], [700, 1190], [1100, 1060], [1370, 940], [1770, 800], [2130, 650], [2330, 480]],
-  [[590, 1190], [1010, 1060], [1430, 940], [1740, 800], [2010, 650], [2320, 480], [1110, 160]],
-  [[390, 1340], [620, 1190], [930, 1060], [1310, 940], [1640, 800], [2050, 650], [1470, 250]],
-  [[500, 1190], [980, 1060], [1290, 940], [1700, 800], [2080, 650], [2310, 480], [730, 40]],
+  [[590, 1190], [1010, 1060], [1430, 940], [1740, 800], [2010, 650], [2320, 480], [1110, 130]],
+  [[390, 1340], [620, 1190], [930, 1060], [1310, 940], [1640, 800], [2050, 650], [1470, 170]],
+  [[500, 1190], [980, 1060], [1290, 940], [1700, 800], [2080, 650], [2310, 480], [730, -30]],
   [[560, 1210], [920, 1080], [1280, 960], [1600, 830], [1910, 700], [2170, 570], [1540, 310]],
   [[590, 1200], [960, 1070], [1350, 940], [1670, 810], [2040, 680], [2240, 550], [1600, 290]]
 ];
@@ -80,10 +100,10 @@ const levelPlacementProfiles = [
   { platformX: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], platformY: [0, 0, 0, 0, 0, 10, 40, 10, 0, 0, 0, 0], obstacleX: [0, 0, 0, 0, 0, 0, 0], monsterX: [0, 0, 0], checkpointX: [0, 0, 0, 0] },
   { platformX: [0, 28, -32, 42, -24, 36, -28, 30, -16, 42, -13, 28], platformY: [0, 14, 4, 20, 20, 30, 60, 30, 10, 14, -8, 0], obstacleX: [24, -24, 30, -32, 22, -24, 28], monsterX: [30, -28, 24], checkpointX: [0, 24, -20, -28] },
   { platformX: [0, -34, 46, -40, 38, -44, 34, 8, 48, 22, 28, -24], platformY: [0, 24, 18, -2, 20, 30, 60, 30, 13, -10, 10, 0], obstacleX: [-20, 30, -36, 32, -24, 30, -34], monsterX: [-24, 36, -30], checkpointX: [0, 46, 30, 24] },
-  { platformX: [0, 70, -80, -20, -75, -99, -60, 250, 274, 164, 158, 45], platformY: [0, 35, 25, 45, 45, 55, 85, 55, 35, 30, -10, 0], platformWidth: [0, 60, -40, 80, -50, 70, -60, 90, -70, 50, -30, 80], obstacleX: [50, -55, 60, -65, 45, -50, 55], monsterX: [60, -55, 50], checkpointX: [0, 55, -50, -45] },
-  { platformX: [0, -80, 29, -75, -25, -90, 46, 80, 95, 109, 60, 30], platformY: [0, 0, 45, 25, 50, 60, 90, 60, 40, 10, 25, 0], platformWidth: [0, -30, 80, -60, 90, -70, 100, -80, 70, -50, 60, -30], obstacleX: [-45, 60, -70, 65, -50, 55, -65], monsterX: [-50, 70, -60], checkpointX: [0, -60, 60, 50] },
-  { platformX: [0, -30, -30, -70, -80, -130, -90, -10, 30, 90, 90, 90], platformY: [0, 20, 20, 20, 30, 50, 90, 70, 60, 40, 20, 0], platformWidth: [0, 40, -20, 60, -30, 20, -40, 50, -50, 30, -20, 70], obstacleX: [0, 0, -30, -30, -70, -80, -130], monsterX: [0, -30, -130], checkpointX: [0, -30, -80, -90] },
-  { platformX: [0, 30, 50, 50, 40, 30, -20, 90, 80, 78, 40, 20], platformY: [0, 10, 10, 0, 10, 30, 70, 50, 40, 20, 0, 0], platformWidth: [0, -20, 50, -30, 60, -40, 70, -50, 40, -20, 60, -30], obstacleX: [0, 0, 30, 50, 50, 40, 30], monsterX: [0, 50, 30], checkpointX: [0, 50, 40, -20] }
+  { platformX: [0, 70, -80, -100, -75, -99, -60, 250, 340, 320, 380, 330], platformY: [0, 35, 25, 45, 45, 55, 85, 55, 35, 30, -10, 0], platformWidth: [0, 60, -40, 80, -50, 70, -60, 90, -70, 50, -30, 80], obstacleX: [50, -55, 60, -65, 45, -50, 55], monsterX: [60, -55, 50], checkpointX: [0, 55, -50, -45] },
+  { platformX: [0, -80, -80, -75, -115, -90, -20, 80, 95, 225, 195, 255], platformY: [0, 0, 45, 25, 50, 60, 90, 60, 40, 10, 25, 0], platformWidth: [0, -30, 80, -60, 90, -70, 100, -80, 70, -50, 60, -30], obstacleX: [-45, 60, -70, 65, -50, 55, -65], monsterX: [-50, 70, -60], checkpointX: [0, -60, 60, 50] },
+  { platformX: [0, -30, -30, -70, -80, -130, -90, -10, 30, 90, 140, 90], platformY: [0, 20, 20, 20, 30, 50, 90, 70, 60, 40, 20, 0], platformWidth: [0, 40, -20, 60, -30, 20, -40, 50, -50, 30, -20, 70], obstacleX: [0, 0, -30, -30, -70, -80, -130], monsterX: [0, -30, -130], checkpointX: [0, -30, -80, -90] },
+  { platformX: [0, 30, 50, 50, 40, 30, -20, 90, 80, 130, 120, 180], platformY: [0, 10, 10, 0, 10, 30, 70, 50, 40, 20, 0, 0], platformWidth: [0, -20, 50, -30, 60, -40, 70, -50, 40, -20, 60, -30], obstacleX: [0, 0, 30, 50, 50, 40, 30], monsterX: [0, 50, 30], checkpointX: [0, 50, 40, -20] }
 ];
 let shards = [];
 let platforms = [];
@@ -92,11 +112,14 @@ let monsters = [];
 let checkpoints = [];
 let score = 0;
 let running = false;
+let paused = false;
+let gameMode = 'normal';
 let lastTime = 0;
 let activeCheckpoint = 0;
 let levelIndex = 0;
 let freezeUses = 2;
 let freezeTimer = 0;
+let respawnGraceTimer = 0;
 let onlineMode = false;
 let multiplayerSocket = null;
 let localOnlinePlayer = null;
@@ -105,6 +128,8 @@ let audioContext = null;
 let musicTimer = null;
 let footstepTimer = 0;
 let levelTimeLeft = 60;
+const difficultyAccessCode = 'badminton4ever';
+const startAccessCode = 'start run';
 
 function startAudio() {
   if (!audioContext) audioContext = new AudioContext();
@@ -182,8 +207,9 @@ function loadLevel(index) {
     reached: checkpointIndex === 0
   }));
   activeCheckpoint = 0;
-  freezeUses = 2;
+  freezeUses = gameMode === 'easy' ? 5 : 2;
   freezeTimer = 0;
+  respawnGraceTimer = 0;
   levelTimeLeft = 60;
   player.x = 100;
   player.y = checkpoints[0].groundY - player.height;
@@ -229,8 +255,17 @@ function resetGame() {
   updateHud();
 }
 
-function startGame() {
-  startAudio(); resetGame(); running = true; updateFreezeButton(); startOverlay.hidden = true; resultOverlay.hidden = true; lastTime = performance.now(); requestAnimationFrame(loop);
+function startGame(mode = 'normal') {
+  gameMode = mode;
+  startAudio(); resetGame(); running = true; paused = false; updateFreezeButton(); startOverlay.hidden = true; resultOverlay.hidden = true; pauseOverlay.hidden = true; lastTime = performance.now(); requestAnimationFrame(loop);
+}
+
+function togglePause() {
+  if (!running) return;
+  paused = !paused;
+  pauseOverlay.hidden = !paused;
+  updateFreezeButton();
+  if (!paused) lastTime = performance.now();
 }
 
 function sendOnlineState() {
@@ -238,22 +273,22 @@ function sendOnlineState() {
   multiplayerSocket.send(JSON.stringify({ type: 'state', x: player.x, y: player.y, level: levelIndex + 1 }));
 }
 
-function connectToOnlineVault(code) {
+function connectToOnlineVault(code, mode, messageElement) {
   if (multiplayerSocket) multiplayerSocket.close();
   const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
   multiplayerSocket = new WebSocket(`${protocol}://${location.hostname}:8080`);
-  multiplayerSocket.addEventListener('open', () => multiplayerSocket.send(JSON.stringify({ type: 'join', code })));
+  multiplayerSocket.addEventListener('open', () => multiplayerSocket.send(JSON.stringify({ type: mode, code })));
   multiplayerSocket.addEventListener('message', (event) => {
     const message = JSON.parse(event.data);
-    if (message.type === 'join-error') {
-      vaultMessage.textContent = message.message;
+    if (message.type === 'room-error') {
+      messageElement.textContent = message.message;
       return;
     }
     if (message.type === 'joined') {
       onlineMode = true;
       localOnlinePlayer = message.player;
       onlinePlayers = message.players;
-      vaultMessage.textContent = `JOINED AS ${localOnlinePlayer.name}!`;
+      messageElement.textContent = mode === 'host' ? `GAME HOSTED WITH CODE ${message.code}!` : `JOINED AS ${localOnlinePlayer.name}!`;
       startGame();
       return;
     }
@@ -265,7 +300,7 @@ function connectToOnlineVault(code) {
       resultOverlay.hidden = false;
     }
   });
-  multiplayerSocket.addEventListener('error', () => { vaultMessage.textContent = 'Online vault is offline right now.'; });
+  multiplayerSocket.addEventListener('error', () => { messageElement.textContent = 'Online vault is offline right now.'; });
 }
 
 function finishGame(won) {
@@ -287,6 +322,11 @@ function advanceLevel() {
 
 function respawnAtCheckpoint() {
   playDeathSound();
+  respawnGraceTimer = 0.75;
+  if (gameMode === 'hard') {
+    resetGame();
+    return;
+  }
   const checkpoint = checkpoints[activeCheckpoint];
   player.x = checkpoint.x;
   player.y = checkpoint.groundY - player.height;
@@ -308,6 +348,7 @@ function update(delta) {
   levelTimeLeft = Math.max(0, levelTimeLeft - delta / 60);
   updateTimer();
   if (levelTimeLeft === 0) { timeOutLevel(); return; }
+  respawnGraceTimer = Math.max(0, respawnGraceTimer - delta / 60);
   if (freezeTimer > 0) {
     freezeTimer = Math.max(0, freezeTimer - delta / 60);
     updateFreezeButton();
@@ -352,10 +393,12 @@ function update(delta) {
       playCheckpointSound();
     }
   });
-  const hitObstacle = obstacles.some((obstacle) => player.x < obstacle.x + obstacle.width && player.x + player.width > obstacle.x && player.y < obstacle.y + obstacle.height && player.y + player.height > obstacle.y);
-  const hitMonster = monsters.some((monster) => player.x < monster.x + monster.width && player.x + player.width > monster.x && player.y < monster.y + monster.height && player.y + player.height > monster.y);
-  if (hitObstacle || hitMonster) { respawnAtCheckpoint(); return; }
-  if (player.y > world.height + 100) { respawnAtCheckpoint(); return; }
+  if (respawnGraceTimer === 0) {
+    const hitObstacle = obstacles.some((obstacle) => player.x < obstacle.x + obstacle.width && player.x + player.width > obstacle.x && player.y < obstacle.y + obstacle.height && player.y + player.height > obstacle.y);
+    const hitMonster = monsters.some((monster) => player.x < monster.x + monster.width && player.x + player.width > monster.x && player.y < monster.y + monster.height && player.y + player.height > monster.y);
+    if (hitObstacle || hitMonster) { respawnAtCheckpoint(); return; }
+    if (player.y > world.height + 100) { respawnAtCheckpoint(); return; }
+  }
   if (player.x > 275 && player.y < 60) finishGame(true);
   sendOnlineState();
   camera.x += ((player.x - view.width * .38) - camera.x) * .08;
@@ -454,30 +497,71 @@ function draw() {
   context.fillStyle = '#a9472d'; context.fillRect(player.x + 8, player.y + 28, 6, 4); context.fillRect(player.x + 18, player.y + 28, 6, 4); context.restore();
 }
 
-function loop(timestamp) { if (!running) return; const delta = Math.min((timestamp - lastTime) / 16.67, 2); lastTime = timestamp; update(delta); draw(); requestAnimationFrame(loop); }
+function loop(timestamp) { if (!running) return; const delta = Math.min((timestamp - lastTime) / 16.67, 2); lastTime = timestamp; if (!paused) update(delta); draw(); requestAnimationFrame(loop); }
 
-addEventListener('keydown', (event) => { keys[event.code] = true; if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyW'].includes(event.code)) event.preventDefault(); if (event.code === 'KeyR') startGame(); });
+addEventListener('keydown', (event) => {
+  if (event.target.matches('input, textarea')) return;
+  keys[event.code] = true;
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyW', 'KeyP'].includes(event.code)) event.preventDefault();
+  if (event.code === 'KeyR') startGame(gameMode);
+  if (event.code === 'KeyP' && !event.repeat) togglePause();
+});
 addEventListener('keyup', (event) => { keys[event.code] = false; });
-startButton.addEventListener('click', startGame);
-restartButton.addEventListener('click', startGame);
+startButton.addEventListener('click', () => { startCodePanel.hidden = false; startCode.focus(); });
+startCodeSubmit.addEventListener('click', () => {
+  const unlocked = startCode.value.trim().toLowerCase() === startAccessCode;
+  startCodeMessage.textContent = unlocked ? 'CODE ACCEPTED. CONFIRM TO BEGIN.' : 'That code is not available.';
+  startCodeMessage.classList.toggle('vault-success', unlocked);
+  startConfirmButton.hidden = !unlocked;
+});
+startCode.addEventListener('keydown', (event) => { if (event.code === 'Enter') startCodeSubmit.click(); });
+startConfirmButton.addEventListener('click', () => startGame('normal'));
+restartButton.addEventListener('click', () => startGame(gameMode));
+difficultyButton.addEventListener('click', () => { difficultyPanel.hidden = !difficultyPanel.hidden; if (!difficultyPanel.hidden) difficultyCode.focus(); });
+difficultyUnlock.addEventListener('click', () => {
+  const unlocked = difficultyCode.value.trim().toLowerCase() === difficultyAccessCode;
+  difficultyMessage.textContent = unlocked ? 'LEVELS UNLOCKED.' : 'That code is not available.';
+  difficultyMessage.classList.toggle('vault-success', unlocked);
+  difficultyOptions.hidden = !unlocked;
+});
+difficultyCode.addEventListener('keydown', (event) => { if (event.code === 'Enter') difficultyUnlock.click(); });
+easyButton.addEventListener('click', () => startGame('easy'));
+hardButton.addEventListener('click', () => startGame('hard'));
 freezeButton.addEventListener('click', freezeMonsters);
 instructionsButton.addEventListener('click', () => { instructionsPanel.hidden = false; });
 instructionsClose.addEventListener('click', () => { instructionsPanel.hidden = true; });
+hostGameButton.addEventListener('click', () => { hostGamePanel.hidden = false; hostCode.focus(); });
+hostGameClose.addEventListener('click', () => { hostGamePanel.hidden = true; });
+hostConfirm.addEventListener('click', () => {
+  const code = hostCode.value.trim().toLowerCase();
+  if (!/^[a-z0-9]{4,24}$/.test(code)) {
+    hostMessage.textContent = 'Use 4-24 letters or numbers for the code.';
+    hostMessage.classList.remove('vault-success');
+    return;
+  }
+  hostMessage.textContent = 'CREATING GAME...';
+  hostMessage.classList.remove('vault-success');
+  connectToOnlineVault(code, 'host', hostMessage);
+});
+hostCode.addEventListener('keydown', (event) => { if (event.code === 'Enter') hostConfirm.click(); });
 onlineVaultButton.addEventListener('click', () => { onlineVaultPanel.hidden = false; vaultCode.focus(); });
 onlineVaultClose.addEventListener('click', () => { onlineVaultPanel.hidden = true; });
 joinButton.addEventListener('click', () => {
-  const code = vaultCode.value.trim();
-  if (code !== '6147') {
-    vaultMessage.textContent = 'That code is not available.';
+  const code = vaultCode.value.trim().toLowerCase();
+  if (!/^[a-z0-9]{4,24}$/.test(code)) {
+    vaultMessage.textContent = 'Enter a 4-24 character game code.';
     vaultMessage.classList.remove('vault-success');
     return;
   }
   vaultMessage.textContent = 'CONNECTING...';
   vaultMessage.classList.remove('vault-success');
-  connectToOnlineVault(code);
+  connectToOnlineVault(code, 'join', vaultMessage);
 });
 [
   startButton, restartButton, instructionsButton, instructionsClose,
-  onlineVaultButton, onlineVaultClose, joinButton, freezeButton
+  onlineVaultButton, onlineVaultClose, joinButton, freezeButton,
+  hostGameButton, hostGameClose, hostConfirm,
+  difficultyButton, difficultyUnlock, easyButton, hardButton,
+  startCodeSubmit, startConfirmButton
 ].forEach((button) => button.addEventListener('click', () => { startAudio(); playClickSound(); }));
 resetGame(); draw();
