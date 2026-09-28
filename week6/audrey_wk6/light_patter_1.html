@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Light Pattern 1</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      background: #0d1117;
+      color: #f0f6fc;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, #25314a 0, transparent 48%),
+        #0d1117;
+    }
+
+    main {
+      width: min(560px, 100%);
+      padding: 32px;
+      border: 1px solid #30363d;
+      border-radius: 22px;
+      background: rgba(22, 27, 34, 0.92);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 { margin: 0 0 8px; font-size: 1.8rem; }
+    .subtitle { margin: 0 0 28px; color: #8b949e; }
+
+    .lights {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .light-wrap { text-align: center; color: #8b949e; }
+
+    .light {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 9px;
+      border-radius: 50%;
+      border: 3px solid #484f58;
+      background: #21262d;
+      opacity: 0.28;
+      transition: opacity 160ms, box-shadow 160ms, transform 160ms;
+    }
+
+    .light.active {
+      opacity: 1;
+      transform: scale(1.06);
+      box-shadow: 0 0 14px currentColor, 0 0 34px currentColor;
+    }
+
+    [data-light="red"] { color: #ff4d5e; background: currentColor; }
+    [data-light="yellow"] { color: #ffd43b; background: currentColor; }
+    [data-light="green"] { color: #35d07f; background: currentColor; }
+    [data-light="blue"] { color: #4d96ff; background: currentColor; }
+
+    label { display: block; margin-bottom: 8px; color: #c9d1d9; }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      margin-bottom: 18px;
+      padding: 11px 12px;
+      color: #f0f6fc;
+      border: 1px solid #484f58;
+      border-radius: 9px;
+      outline: none;
+      background: #0d1117;
+    }
+
+    input:focus { border-color: #58a6ff; }
+
+    .sequence-label { margin: 4px 0 9px; }
+
+    #sequence {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 20px;
+      padding: 5px 3px 12px;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+    }
+
+    .step, #add-step {
+      flex: none;
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      font-size: 0;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 120ms, background 120ms;
+    }
+
+    .step:hover, #add-step:hover { transform: scale(1.08); }
+    .step[data-color="red"] { background: #ff4d5e; }
+    .step[data-color="yellow"] { background: #ffd43b; }
+    .step[data-color="green"] { background: #35d07f; }
+    .step[data-color="blue"] { background: #4d96ff; }
+
+    #add-step {
+      color: #8b949e;
+      border: 2px dashed #484f58;
+      background: #21262d;
+      font-size: 1.6rem;
+      font-weight: 400;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .repeat {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 7px;
+    }
+
+    .actions { display: flex; gap: 12px; margin-top: 8px; }
+
+    button {
+      flex: 1;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 10px;
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: #238636;
+    }
+
+    button:hover { filter: brightness(1.12); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #stop { background: #da3633; }
+
+    #status {
+      min-height: 24px;
+      margin: 20px 0 0;
+      color: #8b949e;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      main { padding: 24px 18px; }
+      .lights { gap: 8px; }
+      .light { width: 52px; height: 52px; }
+      .options { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Light Pattern 1</h1>
+    <p class="subtitle">Build and run your own LED sequence</p>
+
+    <div class="lights" aria-label="Light status">
+      <div class="light-wrap"><div class="light" data-light="red"></div>Red</div>
+      <div class="light-wrap"><div class="light" data-light="yellow"></div>Yellow</div>
+      <div class="light-wrap"><div class="light" data-light="green"></div>Green</div>
+      <div class="light-wrap"><div class="light" data-light="blue"></div>Blue</div>
+    </div>
+
+    <label for="base-url">ESP32 address</label>
+    <input id="base-url" type="text" value="http://esp32-1.local" spellcheck="false">
+
+    <label class="sequence-label">Sequence — tap to change color</label>
+    <div id="sequence" aria-label="Pattern steps">
+      <button id="add-step" type="button" aria-label="Add step">+</button>
+    </div>
+
+    <div class="options">
+      <div>
+        <label for="duration">Time per light (milliseconds)</label>
+        <input id="duration" type="number" value="1000" min="100" step="100">
+      </div>
+      <label class="repeat"><input id="repeat" type="checkbox"> Repeat continuously</label>
+    </div>
+
+    <div class="actions">
+      <button id="start" type="button">Start pattern</button>
+      <button id="stop" type="button" disabled>Stop</button>
+    </div>
+    <p id="status" role="status">Ready</p>
+  </main>
+
+  <script>
+    const colors = ["red", "yellow", "green", "blue"];
+    const startButton = document.querySelector("#start");
+    const stopButton = document.querySelector("#stop");
+    const addStepButton = document.querySelector("#add-step");
+    const sequenceElement = document.querySelector("#sequence");
+    const status = document.querySelector("#status");
+    let running = false;
+    let timer;
+    let wake;
+
+    const sleep = (milliseconds) => new Promise((resolve) => {
+      wake = resolve;
+      timer = setTimeout(resolve, milliseconds);
+    });
+
+    function addStep(color = "red") {
+      const step = document.createElement("button");
+      step.type = "button";
+      step.className = "step";
+      step.dataset.color = color;
+      step.title = "Tap to change color; double-click to remove";
+      step.addEventListener("click", () => {
+        const nextColor = colors[(colors.indexOf(step.dataset.color) + 1) % colors.length];
+        step.dataset.color = nextColor;
+        step.setAttribute("aria-label", `${nextColor} light step`);
+      });
+      step.addEventListener("dblclick", () => {
+        step.remove();
+        numberSteps();
+      });
+      sequenceElement.insertBefore(step, addStepButton);
+      numberSteps();
+    }
+
+    function numberSteps() {
+      sequenceElement.querySelectorAll(".step").forEach((step, index) => {
+        step.setAttribute("aria-label", `Step ${index + 1}: ${step.dataset.color} light`);
+      });
+    }
+
+    function setEditorDisabled(disabled) {
+      document.querySelectorAll("#sequence button").forEach((control) => {
+        control.disabled = disabled;
+      });
+    }
+
+    async function sendCommand(color, command) {
+      const baseUrl = document.querySelector("#base-url").value.trim().replace(/\/$/, "");
+      // no-cors lets the browser send commands to an ESP32 that does not return
+      // cross-origin headers. The device's response cannot be read in this mode.
+      await fetch(`${baseUrl}/${color}_light/${command}`, {
+        method: "GET",
+        mode: "no-cors",
+        cache: "no-store"
+      });
+    }
+
+    function showLight(activeColor) {
+      document.querySelectorAll(".light").forEach((light) => {
+        light.classList.toggle("active", light.dataset.light === activeColor);
+      });
+    }
+
+    async function turnEverythingOff() {
+      showLight(null);
+      await Promise.allSettled(colors.map((color) => sendCommand(color, "off")));
+    }
+
+    async function runPattern() {
+      if (running) return;
+      const sequence = [...sequenceElement.querySelectorAll(".step")].map((step) => step.dataset.color);
+      if (sequence.length === 0) {
+        status.textContent = "Add at least one step first.";
+        return;
+      }
+      running = true;
+      startButton.disabled = true;
+      stopButton.disabled = false;
+      setEditorDisabled(true);
+
+      try {
+        do {
+          for (const color of sequence) {
+            if (!running) break;
+            status.textContent = `${color[0].toUpperCase() + color.slice(1)} light on`;
+            showLight(color);
+            await sendCommand(color, "on");
+            await sleep(Math.max(100, Number(document.querySelector("#duration").value) || 1000));
+            await sendCommand(color, "off");
+            showLight(null);
+          }
+        } while (running && document.querySelector("#repeat").checked);
+      } catch (error) {
+        console.error(error);
+        status.textContent = "Could not reach the ESP32. Check its address and your network.";
+      } finally {
+        running = false;
+        clearTimeout(timer);
+        wake = null;
+        await turnEverythingOff();
+        startButton.disabled = false;
+        stopButton.disabled = true;
+        setEditorDisabled(false);
+        if (!status.textContent.startsWith("Could not") && status.textContent !== "Stopped") {
+          status.textContent = "Pattern complete";
+        }
+      }
+    }
+
+    startButton.addEventListener("click", runPattern);
+    addStepButton.addEventListener("click", () => addStep("red"));
+    stopButton.addEventListener("click", () => {
+      running = false;
+      clearTimeout(timer);
+      wake?.();
+      status.textContent = "Stopped";
+    });
+
+    ["red", "yellow", "green", "blue"].forEach(addStep);
+  </script>
+</body>
+</html>
