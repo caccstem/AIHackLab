@@ -1,0 +1,44 @@
+###############################################
+# Common APIs for all the ESP32 boards
+###############################################
+
+http://esp32-1.local/red_light/on
+http://esp32-1.local/red_light/off
+http://esp32-1.local/red_light/state
+
+http://esp32-1.local/yellow_light/on
+http://esp32-1.local/yellow_light/off
+http://esp32-1.local/yellow_light/state
+
+http://esp32-1.local/blue_light/on
+http://esp32-1.local/blue_light/off
+http://esp32-1.local/blue_light/state
+
+http://esp32-1.local/green_light/on
+http://esp32-1.local/green_light/off
+http://esp32-1.local/green_light/state
+
+http://esp32-1.local/temperature
+http://esp32-1.local/humidity
+
+###############################################
+# APIs specific to esp32-1.local
+###############################################
+
+http://esp32-2.local/play_notes?melody=frequency1:duration1,frequency2:duration2,...
+
+###############################################
+# APIs specific to esp32-2.local
+###############################################
+
+http://esp32-2.local/getDistance
+http://esp32-2.local/motorControl?angle=90
+
+###############################################
+# APIs specific to esp32-3.local
+###############################################
+
+http://esp32-3.local/keypad/last
+http://esp32-3.local/keypad/current
+
+
