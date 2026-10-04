@@ -21,6 +21,12 @@ DHT dht(DHT11PIN, DHT11);
 // Instantiate the web server on port 80
 WebServer server(80);
 
+void sendCorsHeaders() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.sendHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
 // Replace with your network credentials
 // Only supports 2.4 GHz Wi-Fi networks, not 5 GHz
 const char* ssid = "AiHacklab-2.4";
@@ -133,11 +139,13 @@ void handleRoot() {
   html += "<p>Temperature: " + String(temperature) + " °C</p>";
   html += "<p>Humidity: " + String(humidity) + " %</p>";
 
+  sendCorsHeaders();
   server.send(200, "text/html", html); 
 }
 
 // Function to handle turning the Red LED ON
 void handleRedLightOn() {
+  sendCorsHeaders();
   digitalWrite(LED_RED_PIN, HIGH);
   if (server.hasArg("redirect")) {
     server.sendHeader("Location", "/"); // Redirect back to the root page
@@ -149,6 +157,7 @@ void handleRedLightOn() {
 
 // Function to handle turning the Red LED OFF
 void handleRedLightOff() {
+  sendCorsHeaders();
   digitalWrite(LED_RED_PIN, LOW);
   if (server.hasArg("redirect")) {
     server.sendHeader("Location", "/"); // Redirect back to the root page
@@ -160,6 +169,7 @@ void handleRedLightOff() {
 
 // Function to read the Red LED state and return it as a JSON response
 void handleRedLightState() {
+  sendCorsHeaders();
   bool isOn = digitalRead(LED_RED_PIN) == HIGH;
   String jsonResponse = "{\"status\":\"" + String(isOn ? "ON" : "OFF") + "\"}";
   server.send(200, "application/json", jsonResponse);
@@ -167,6 +177,7 @@ void handleRedLightState() {
 
 // Function to handle turning the Yellow LED ON
 void handleYellowLightOn() {
+  sendCorsHeaders();
   digitalWrite(LED_YELLOW_PIN, HIGH);
   if (server.hasArg("redirect")) {
     server.sendHeader("Location", "/"); // Redirect back to the root page
@@ -178,6 +189,7 @@ void handleYellowLightOn() {
 
 // Function to handle turning the Yellow LED OFF
 void handleYellowLightOff() {
+  sendCorsHeaders();
   digitalWrite(LED_YELLOW_PIN, LOW);
   if (server.hasArg("redirect")) {
     server.sendHeader("Location", "/"); // Redirect back to the root page
@@ -189,6 +201,7 @@ void handleYellowLightOff() {
 
 // Function to read the Yellow LED state and return it as a JSON response
 void handleYellowLightState() {
+  sendCorsHeaders();
   bool isOn = digitalRead(LED_YELLOW_PIN) == HIGH;
   String jsonResponse = "{\"status\":\"" + String(isOn ? "ON" : "OFF") + "\"}";
   server.send(200, "application/json", jsonResponse);
@@ -196,6 +209,7 @@ void handleYellowLightState() {
 
 // Function to handle turning the Blue LED ON
 void handleBlueLightOn() {
+  sendCorsHeaders();
   digitalWrite(LED_BLUE_PIN, HIGH);
   if (server.hasArg("redirect")) {
     server.sendHeader("Location", "/"); // Redirect back to the root page
@@ -207,6 +221,7 @@ void handleBlueLightOn() {
 
 // Function to handle turning the Blue LED OFF
 void handleBlueLightOff() {
+  sendCorsHeaders();
   digitalWrite(LED_BLUE_PIN, LOW);
   if (server.hasArg("redirect")) {
     server.sendHeader("Location", "/"); // Redirect back to the root page
@@ -218,6 +233,7 @@ void handleBlueLightOff() {
 
 // Function to read the Blue LED state and return it as a JSON response
 void handleBlueLightState() {
+  sendCorsHeaders();
   bool isOn = digitalRead(LED_BLUE_PIN) == HIGH;
   String jsonResponse = "{\"status\":\"" + String(isOn ? "ON" : "OFF") + "\"}";
   server.send(200, "application/json", jsonResponse);
@@ -225,6 +241,7 @@ void handleBlueLightState() {
 
 // Function to handle turning the Green LED ON
 void handleGreenLightOn() {
+  sendCorsHeaders();
   digitalWrite(LED_GREEN_PIN, HIGH);
   if (server.hasArg("redirect")) {
     server.sendHeader("Location", "/"); // Redirect back to the root page
@@ -236,6 +253,7 @@ void handleGreenLightOn() {
 
 // Function to handle turning the Green LED OFF
 void handleGreenLightOff() {
+  sendCorsHeaders();
   digitalWrite(LED_GREEN_PIN, LOW);
   if (server.hasArg("redirect")) {
     server.sendHeader("Location", "/"); // Redirect back to the root page
@@ -247,6 +265,7 @@ void handleGreenLightOff() {
 
 // Function to read the Green LED state and return it as a JSON response
 void handleGreenLightState() {
+  sendCorsHeaders();
   bool isOn = digitalRead(LED_GREEN_PIN) == HIGH;
   String jsonResponse = "{\"status\":\"" + String(isOn ? "ON" : "OFF") + "\"}";
   server.send(200, "application/json", jsonResponse);
@@ -254,6 +273,7 @@ void handleGreenLightState() {
 
 // Function to handle getting the temperature from the DHT11 sensor
 void handleGetTemperature() {
+  sendCorsHeaders();
   float temperature = dht.readTemperature();
   String jsonResponse = "{\"temperature\":" + String(temperature) + "}";
   server.send(200, "application/json", jsonResponse);
@@ -261,6 +281,7 @@ void handleGetTemperature() {
 
 // Function to handle getting the humidity from the DHT11 sensor
 void handleGetHumidity() {
+  sendCorsHeaders();
   float humidity = dht.readHumidity();
   String jsonResponse = "{\"humidity\":" + String(humidity) + "}";
   server.send(200, "application/json", jsonResponse);

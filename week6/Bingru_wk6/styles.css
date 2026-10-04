@@ -30,6 +30,12 @@ h2 { font: 400 40px/1 'Indie Flower', cursive; margin: 0; }
 .control-button, #refresh { align-self: flex-start; position: relative; z-index: 1; border: 1px solid var(--ink); background: transparent; color: var(--ink); padding: 10px 14px; font: inherit; cursor: pointer; }
 .control-button:hover, #refresh:hover { background: var(--ink); color: #fff; }
 .control-button span { margin-left: 18px; font-size: 17px; }
+.light-actions { position: relative; z-index: 1; display: flex; gap: 10px; }
+.light-actions .control-button { flex: 1; min-width: 76px; text-align: center; }
+.light-actions .on-button { background: rgba(255, 255, 255, .48); }
+.light-actions .off-button { background: rgba(37, 37, 31, .07); }
+.light-actions .on-button:hover { background: var(--accent); color: var(--ink); }
+.light-actions .off-button:hover { background: var(--ink); color: #fff; }
 .thermometer { position: absolute; right: 70px; top: 35px; width: 18px; height: 80px; border: 3px solid var(--violet); border-radius: 14px 14px 12px 12px; }
 .thermometer:before { content: ''; position: absolute; left: 3px; bottom: -19px; width: 27px; height: 27px; border-radius: 50%; background: var(--violet); }
 .thermometer span { position: absolute; left: 5px; bottom: 4px; width: 5px; height: 56px; background: var(--violet); border-radius: 5px; }

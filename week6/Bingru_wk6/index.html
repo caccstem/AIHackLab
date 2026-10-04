@@ -21,22 +21,22 @@
       <article class="control-card yellow" data-color="yellow">
         <div class="light-orb" aria-hidden="true"></div>
         <div class="card-copy"><p class="card-label">01 / Light</p><h2>Yellow</h2><p class="status" id="yellow-status">Current status: checking...</p></div>
-        <button class="control-button" type="button" data-action="light" data-color="yellow" aria-label="Toggle yellow light">Toggle <span>↗</span></button>
+        <div class="light-actions"><button class="control-button on-button" type="button" data-action="light" data-color="yellow" data-command="on" aria-label="Turn yellow light on">On</button><button class="control-button off-button" type="button" data-action="light" data-color="yellow" data-command="off" aria-label="Turn yellow light off">Off</button></div>
       </article>
       <article class="control-card green" data-color="green">
         <div class="light-orb" aria-hidden="true"></div>
         <div class="card-copy"><p class="card-label">02 / Light</p><h2>Green</h2><p class="status" id="green-status">Current status: checking...</p></div>
-        <button class="control-button" type="button" data-action="light" data-color="green" aria-label="Toggle green light">Toggle <span>↗</span></button>
+        <div class="light-actions"><button class="control-button on-button" type="button" data-action="light" data-color="green" data-command="on" aria-label="Turn green light on">On</button><button class="control-button off-button" type="button" data-action="light" data-color="green" data-command="off" aria-label="Turn green light off">Off</button></div>
       </article>
       <article class="control-card blue" data-color="blue">
         <div class="light-orb" aria-hidden="true"></div>
         <div class="card-copy"><p class="card-label">03 / Light</p><h2>Blue</h2><p class="status" id="blue-status">Current status: checking...</p></div>
-        <button class="control-button" type="button" data-action="light" data-color="blue" aria-label="Toggle blue light">Toggle <span>↗</span></button>
+        <div class="light-actions"><button class="control-button on-button" type="button" data-action="light" data-color="blue" data-command="on" aria-label="Turn blue light on">On</button><button class="control-button off-button" type="button" data-action="light" data-color="blue" data-command="off" aria-label="Turn blue light off">Off</button></div>
       </article>
       <article class="control-card red" data-color="red">
         <div class="light-orb" aria-hidden="true"></div>
         <div class="card-copy"><p class="card-label">04 / Light</p><h2>Red</h2><p class="status" id="red-status">Current status: checking...</p></div>
-        <button class="control-button" type="button" data-action="light" data-color="red" aria-label="Toggle red light">Toggle <span>↗</span></button>
+        <div class="light-actions"><button class="control-button on-button" type="button" data-action="light" data-color="red" data-command="on" aria-label="Turn red light on">On</button><button class="control-button off-button" type="button" data-action="light" data-color="red" data-command="off" aria-label="Turn red light off">Off</button></div>
       </article>
       <article class="control-card temperature" data-color="temperature">
         <div class="thermometer" aria-hidden="true"><span></span></div>
@@ -45,7 +45,7 @@
       </article>
     </section>
 
-    <footer><span>DEVICE / ESP32-1</span><button id="refresh" type="button">Refresh states <span>↻</span></button></footer>
+    <footer><span>DEVICE / ESP32-3</span><button id="refresh" type="button">Refresh states <span>↻</span></button></footer>
   </main>
   <script src="script.js"></script>
 </body>
