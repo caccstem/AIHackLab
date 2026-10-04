@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+:root { --ink: #25251f; --muted: #77766b; --paper: #f5f2e9; --line: #d8d4c9; --yellow: #f4c947; --green: #74a87a; --blue: #6d9fc4; --red: #d97865; --violet: #9d87c5; }
+* { box-sizing: border-box; }
+*, *::before, *::after { font-family: 'Indie Flower', cursive !important; }
+body { margin: 0; min-height: 100vh; background: #ebe8de; color: var(--ink); font: 18px/1.35 'Indie Flower', cursive; }
+.panel { max-width: 1180px; margin: 0 auto; padding: 58px 5vw 32px; }
+.header { display: flex; justify-content: space-between; align-items: end; gap: 30px; padding-bottom: 48px; }
+.eyebrow, .card-label, footer { color: var(--muted); font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; }
+.eyebrow { margin: 0 0 17px; }
+h1 { font: 400 clamp(48px, 7vw, 92px)/.9 'Indie Flower', cursive; letter-spacing: 0; margin: 0; }
+h1 span { color: var(--red); font-style: italic; }
+.intro { color: var(--muted); max-width: 420px; margin: 25px 0 0; }
+.connection { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+.connection i { display: block; width: 9px; height: 9px; border-radius: 50%; background: #d8a13b; }
+.connection.online i { background: var(--green); box-shadow: 0 0 0 5px #74a87a22; }
+.connection.offline i { background: var(--red); }
+.controls { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.control-card { position: relative; min-height: 255px; padding: 28px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; background: #f7f5ee; border: 1px solid var(--line); }
+.control-card.yellow { --accent: var(--yellow); background: #f8f1dc; }
+.control-card.green { --accent: var(--green); background: #e5eee4; }
+.control-card.blue { --accent: var(--blue); background: #e4edf3; }
+.control-card.red { --accent: var(--red); background: #f6e5df; }
+.control-card.temperature { --accent: var(--violet); background: #eee9f5; grid-column: span 2; min-height: 170px; }
+.light-orb { position: absolute; width: 190px; height: 190px; right: -32px; top: -40px; border-radius: 50%; background: var(--accent); opacity: .18; box-shadow: 0 0 70px 22px var(--accent); transition: opacity .2s, box-shadow .2s; }
+.control-card.is-on .light-orb { opacity: .9; box-shadow: 0 0 55px 28px var(--accent); }
+.card-copy { position: relative; z-index: 1; }
+.card-label { margin: 0 0 13px; }
+h2 { font: 400 40px/1 'Indie Flower', cursive; margin: 0; }
+.status { color: var(--muted); margin: 15px 0 0; font-size: 11px; }
+.control-button, #refresh { align-self: flex-start; position: relative; z-index: 1; border: 1px solid var(--ink); background: transparent; color: var(--ink); padding: 10px 14px; font: inherit; cursor: pointer; }
+.control-button:hover, #refresh:hover { background: var(--ink); color: #fff; }
+.control-button span { margin-left: 18px; font-size: 17px; }
+.thermometer { position: absolute; right: 70px; top: 35px; width: 18px; height: 80px; border: 3px solid var(--violet); border-radius: 14px 14px 12px 12px; }
+.thermometer:before { content: ''; position: absolute; left: 3px; bottom: -19px; width: 27px; height: 27px; border-radius: 50%; background: var(--violet); }
+.thermometer span { position: absolute; left: 5px; bottom: 4px; width: 5px; height: 56px; background: var(--violet); border-radius: 5px; }
+footer { display: flex; justify-content: space-between; align-items: center; padding-top: 34px; }
+#refresh { border: 0; color: var(--muted); padding: 0; }
+#refresh span { font-size: 20px; margin-left: 7px; }
+@media (max-width: 650px) { .panel { padding-top: 35px; } .header { display: block; } .connection { margin-top: 30px; } .controls { grid-template-columns: 1fr; } .control-card.temperature { grid-column: auto; } footer { display: block; } footer button { margin-top: 18px; } }

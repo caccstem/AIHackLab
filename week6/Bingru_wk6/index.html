@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Options &amp; Controls</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="panel">
+    <header class="header">
+      <div>
+        <p class="eyebrow">ESP32 control panel</p>
+        <h1>Options <span>&amp;</span> Controls</h1>
+        <p class="intro">Tap a control to change the lights or check the room temperature.</p>
+      </div>
+      <div class="connection" id="connection"><i></i><span>Checking device...</span></div>
+    </header>
+
+    <section class="controls" aria-label="Device controls">
+      <article class="control-card yellow" data-color="yellow">
+        <div class="light-orb" aria-hidden="true"></div>
+        <div class="card-copy"><p class="card-label">01 / Light</p><h2>Yellow</h2><p class="status" id="yellow-status">Current status: checking...</p></div>
+        <button class="control-button" type="button" data-action="light" data-color="yellow" aria-label="Toggle yellow light">Toggle <span>↗</span></button>
+      </article>
+      <article class="control-card green" data-color="green">
+        <div class="light-orb" aria-hidden="true"></div>
+        <div class="card-copy"><p class="card-label">02 / Light</p><h2>Green</h2><p class="status" id="green-status">Current status: checking...</p></div>
+        <button class="control-button" type="button" data-action="light" data-color="green" aria-label="Toggle green light">Toggle <span>↗</span></button>
+      </article>
+      <article class="control-card blue" data-color="blue">
+        <div class="light-orb" aria-hidden="true"></div>
+        <div class="card-copy"><p class="card-label">03 / Light</p><h2>Blue</h2><p class="status" id="blue-status">Current status: checking...</p></div>
+        <button class="control-button" type="button" data-action="light" data-color="blue" aria-label="Toggle blue light">Toggle <span>↗</span></button>
+      </article>
+      <article class="control-card red" data-color="red">
+        <div class="light-orb" aria-hidden="true"></div>
+        <div class="card-copy"><p class="card-label">04 / Light</p><h2>Red</h2><p class="status" id="red-status">Current status: checking...</p></div>
+        <button class="control-button" type="button" data-action="light" data-color="red" aria-label="Toggle red light">Toggle <span>↗</span></button>
+      </article>
+      <article class="control-card temperature" data-color="temperature">
+        <div class="thermometer" aria-hidden="true"><span></span></div>
+        <div class="card-copy"><p class="card-label">05 / Sensor</p><h2>Temperature</h2><p class="status" id="temperature-status">Current temperature: not checked</p></div>
+        <button class="control-button" type="button" data-action="temperature" aria-label="Check current temperature">Check <span>↗</span></button>
+      </article>
+    </section>
+
+    <footer><span>DEVICE / ESP32-1</span><button id="refresh" type="button">Refresh states <span>↻</span></button></footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
