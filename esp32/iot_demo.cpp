@@ -2,6 +2,7 @@
 #include <WebServer.h>
 #include <DHT.h>
 #include <ESPmDNS.h>
+#include "ultrasonic_motor.h"
 
 // Change to your board's built-in LED pin (often 2 for standard ESP32 dev boards)
 #ifndef LED_BUILTIN
@@ -25,7 +26,7 @@ WebServer server(80);
 const char* ssid = "AiHacklab-2.4";
 const char* password = "cacc2026";
 
-const char* host = "esp32-1"; // Hostname for mDNS
+const char* host = "esp32-3"; // Hostname for mDNS
 
 
 // Base Tempo Calculation (120 BPM)
@@ -376,6 +377,7 @@ void setup() {
   pinMode(LED_BLUE_PIN, OUTPUT);
   pinMode(LED_GREEN_PIN, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
+  UltrasonicMotor::begin();
   delay(1000);
 
   digitalWrite(LED_RED_PIN, LOW);
@@ -426,6 +428,8 @@ void setup() {
   server.on("/temperature", handleGetTemperature);
   server.on("/humidity", handleGetHumidity);
   server.on("/buzzer", handleBuzzer);
+  server.on("/getDistance", HTTP_GET, getDistance);
+  server.on("/motorControl", handleMotorControl);
   server.on("/play_notes", handlePlayNotes);
   server.on("/play_happy_birthday", playHappyBirthday);
   server.on("/mystery1", handleMystery1);
@@ -438,5 +442,6 @@ void setup() {
 }
 
 void loop() {
+  UltrasonicMotor::update();
   server.handleClient(); // Handle incoming client requests
 }
