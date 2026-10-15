@@ -1,13 +1,28 @@
 # 🚀 Final Project
 
 ## 📋 Overview
-Your goal is to build a high-quality, AI-powered application that solves a real-world problem.
+Your goal is to build a functional, high-quality, AI-powered application that solves a real-world problem.
 
+### 👥 Team & Timeline
 | Feature | Requirement |
 | :--- | :--- |
 | **Team Size** | 2–3 Members |
 | **Duration** | Class 9 $\rightarrow$ Class 16 (7 weeks) |
 | **Complexity** | Medium to High |
+
+## 📂 Repository Structure
+Every team is required to create a unique directory under the `final-projects` folder.
+- **Naming Convention:** Use your **Group Name** as the folder name.
+- **Purpose:** This will be the home for both your **code** and your **documentation**.
+
+**Example Structure:**
+```text
+final-projects/
+└── Your_Group_Name/
+    ├── src/            # Your source code
+    ├── docs/          # Your requirements & interview notes
+    └── README.md      # Your team's specific project README
+```
 
 ---
 
