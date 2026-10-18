@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Luma · IoT control room</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<div class="shell">
+<header><a class="brand" href="./"><span class="brand-icon">◈</span> luma<span class="brand-sub">CONTROL ROOM</span></a><span class="demo-badge"><i></i> Local devices</span></header>
+<main>
+<section class="intro"><div><p class="eyebrow">YOUR SPACE, CONNECTED</p><h1>A little more control.<br>A little more <em>comfort.</em></h1><p class="subtitle">Three boards. Four colors. Your environment at a glance.</p></div><div class="intro-art" aria-hidden="true"><div class="orbit"><span>✳</span></div><span class="art-label">SMALL SIGNALS. BIG POSSIBILITIES.</span></div></section>
+<div class="notice"><span class="notice-icon">◇</span><p><strong>Your ESP32 control room.</strong> Connect to the same network as your boards. Light states start unknown until you send a command.</p><button id="connection-info" class="text-button">Connection guide ↗</button></div>
+<section class="summary" aria-label="Overview"><div><span class="metric-label">BOARDS RESPONDING</span><p id="board-count">00 <small>/ 03</small></p></div><div><span class="metric-label">AVERAGE TEMPERATURE</span><p id="average-temp">—</p></div><div><span class="metric-label">AVERAGE HUMIDITY</span><p id="average-humidity">—</p></div><div><span class="metric-label">LAST COMMANDED ON</span><p id="light-count">—</p></div></section>
+<section aria-labelledby="boards-title"><div class="section-heading"><div><p class="eyebrow">DEVICE OVERVIEW</p><h2 id="boards-title">Your boards <span>3</span></h2></div></div><div class="boards" id="boards"></div></section>
+<section class="lights-panel" aria-labelledby="lights-title">
+<div class="section-heading"><div><p class="eyebrow">MAKE IT YOUR MOOD</p><h2 id="lights-title">Lights</h2></div><button class="button" id="all-off">⏻ &nbsp; Turn off all boards</button></div>
+<div class="lights-toolbar"><div id="board-selector" class="board-selector" role="group" aria-label="Choose a board for light controls"></div><span id="lights-target">Controlling Board 01</span></div>
+<div id="light-controls" class="light-controls"></div>
+<p class="lights-help">Select a board, then tap a color to turn it on or off. Indicators remember your last accepted command.</p>
+<p id="light-feedback" class="light-feedback" role="status"></p>
+</section>
+<footer><span><i class="live-dot"></i> Sensor polling repeats 5 seconds after each check</span><span id="updated">Waiting for readings</span></footer>
+<p id="announcement" class="sr-only" role="status"></p>
+</main>
+<dialog id="guide"><div class="dialog-top"><p class="eyebrow">FROM DEMO TO DEVICE</p><button id="close-guide" class="button" aria-label="Close connection guide">✕</button></div><h2>Connect your ESP32 boards.</h2><p>Use this page on the same network as your boards. Run <code>python3 server.py</code> and open <code>http://localhost:8000</code>. Addresses are configured in <code>server.py</code>: <code>esp32-1.local</code>, <code>esp32-2.local</code>, and <code>esp32-3.local</code>.</p><p>Temperature and humidity are read from <code>/temperature</code> and <code>/humidity</code>. Light buttons request <code>/red_light/on</code> or <code>/red_light/off</code>, with the matching color.</p><p>Light indicators show the last successful HTTP command in this page, not measured light status. “Unknown” means no successful command has been recorded, or a request failed. Reloading resets these indicators without changing any lights.</p><p class="dialog-note">If readings fail, try the temperature URL directly. Use the included server instead of Live Server or opening the HTML file directly. It forwards requests to the boards so they do not need browser CORS support. The error on each card provides more detail.</p></dialog>
+</div><script src="devices.js"></script><script src="app.js"></script>
+</body></html>
