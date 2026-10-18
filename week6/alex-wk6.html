@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alex • ESP32 Control Center</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0b1220;color:#edf4ff}*{box-sizing:border-box}body{margin:0;padding:48px 22px}main{max-width:1100px;margin:auto}.eyebrow{color:#70caff;letter-spacing:.16em;text-transform:uppercase;font-size:.8rem;font-weight:750}h1{font-size:clamp(2rem,6vw,3.6rem);letter-spacing:-.045em;margin:12px 0}h2{font-size:1.2rem;margin:0 0 18px}p{color:#b4c2d8;line-height:1.6}.settings,article{background:#141f32;border:1px solid #33415a;border-radius:16px;padding:24px}.settings{margin:28px 0}.grid,.addresses{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.grid{grid-template-columns:repeat(2,1fr)}label{display:block;font-size:.875rem;font-weight:650;margin:12px 0 8px}input,select,textarea{width:100%;background:#0b1220;color:inherit;border:1px solid #63728b;border-radius:8px;padding:12px;font:inherit}textarea{resize:vertical;min-height:90px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}a.command{display:inline-block;border:1px solid #63728b;border-radius:8px;padding:11px 16px;color:#edf4ff;text-decoration:none;font-weight:650}a.command:first-child{background:#70caff;color:#0b1220;border-color:#70caff}a.command:hover{filter:brightness(1.2)}a[aria-disabled=true]{opacity:.45;cursor:not-allowed}:focus-visible{outline:3px solid white;outline-offset:4px}.hint{font-size:.84rem}.light{border-top:4px solid var(--color)}.dot{display:inline-block;width:12px;height:12px;background:var(--color);border-radius:50%;margin-right:10px}.status{padding:18px;border-left:3px solid #70caff;background:#141f32;overflow-wrap:anywhere}footer{margin-top:24px;color:#b4c2d8;font-size:.85rem}@media(max-width:700px){.grid,.addresses{grid-template-columns:1fr}body{padding:28px 16px}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">Alex / Week 6</div><h1>ESP32 control center</h1><p>Lights, sensors, sound, and motion. Connect to the same Wi-Fi as your boards. Each command opens its response in a new tab.</p></header>
+<section class="settings" aria-label="Board connections"><h2>Your boards</h2><div class="addresses">
+<div><label for="board1">Board 1 address</label><input id="board1" value="http://esp32-1.local" type="url" required></div>
+<div><label for="board2">Board 2 address</label><input id="board2" value="http://esp32-2.local" type="url" required></div>
+<div><label for="board3">Board 3 address</label><input id="board3" value="http://esp32-3.local" type="url" required></div>
+</div><label for="common-board">Board for lights, temperature, and humidity</label><select id="common-board"><option value="1">Board 1</option><option value="2">Board 2</option><option value="3">Board 3</option></select><p class="hint">You can replace any address with your board’s IP address, including http://.</p></section>
+<section class="grid" id="controls" aria-label="Board controls">
+<article><h2>Temperature &amp; humidity</h2><p>Read the environment sensor on the selected board.</p><div class="actions"><a class="command" data-board="common" data-path="temperature">Read temperature</a><a class="command" data-board="common" data-path="humidity">Read humidity</a></div></article>
+<article><h2>Distance</h2><p>Read the ultrasonic distance sensor on board 2.</p><div class="actions"><a class="command" data-board="2" data-path="getDistance">Read distance</a></div></article>
+<article><h2>Motor angle</h2><p>Move the servo on board 2.</p><label for="angle">Angle (0–180°)</label><input id="angle" type="number" min="0" max="180" step="1" value="90" required><div class="actions"><a class="command" data-board="2" data-path="motorControl" data-param="angle">Move motor</a></div></article>
+<article><h2>Keypad</h2><p>Check keypad input on board 3.</p><div class="actions"><a class="command" data-board="3" data-path="keypad/last">Read last key</a><a class="command" data-board="3" data-path="keypad/current">Read current key</a></div></article>
+<article><h2>Play a melody</h2><label for="melody-board">Melody board</label><select id="melody-board"><option value="2">Board 2 (listed URL)</option><option value="1">Board 1</option><option value="3">Board 3</option></select><label for="melody">Notes: frequency in Hz:duration in seconds</label><textarea id="melody" spellcheck="false" aria-describedby="melody-help">262:0.3,330:0.3,392:0.3,523:0.6</textarea><p class="hint" id="melody-help">Separate notes with commas. Use frequency 0 for a rest. Example: 440:0.5,0:0.2,523:0.5. The API file’s heading says board 1, but its melody URL uses board 2.</p><div class="actions"><a class="command" data-board="melody" data-path="play_notes" data-param="melody">Play notes</a></div></article>
+</section>
+<p class="status" id="status" role="status">Ready. Choose a command to see the board’s response.</p>
+<footer>Readings appear in the response tab. This page does not confirm device state; check the response or the board after sending a command.</footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+for (const [name,color] of [['Green','#63dfad'],['Blue','#79b9ff'],['Yellow','#f8d366'],['Red','#ff7c86']]) {
+  const card = document.createElement('article');
+  card.className = 'light';
+  card.style.setProperty('--color',color);
+  card.innerHTML = `<h2><span class="dot" aria-hidden="true"></span>${name} light</h2><p>Control this light on the selected board.</p><div class="actions">${[['on','Turn on'],['off','Turn off'],['state','Read state']].map(([action,label])=>`<a class="command" data-board="common" data-path="${name.toLowerCase()}_light/${action}" aria-label="${name} light: ${label}">${label}</a>`).join('')}</div>`;
+  $('controls').prepend(card);
+}
+function commandUrl(link) {
+  const target = link.dataset.board;
+  const board = target === 'common' ? $('common-board').value : target === 'melody' ? $('melody-board').value : target;
+  let address;
+  try { address = new URL($(`board${board}`).value.trim()); } catch { throw new Error(`Enter a valid address for board ${board}, including http://.`); }
+  if (!['http:','https:'].includes(address.protocol) || address.username || address.password || address.pathname !== '/' || address.search || address.hash) throw new Error(`Board ${board} needs an http:// or https:// address without a path, query, or password.`);
+  const url = new URL('/'+link.dataset.path,address);
+  if (link.dataset.param === 'angle') {
+    if (!$('angle').checkValidity()) throw new Error('Enter a whole motor angle from 0 to 180.');
+    url.searchParams.set('angle',$('angle').value);
+  }
+  if (link.dataset.param === 'melody') {
+    const melody = $('melody').value.replace(/\s/g,'');
+    if (!/^\d+:(?:\d+(?:\.\d+)?|\.\d+)(,\d+:(?:\d+(?:\.\d+)?|\.\d+))*$/.test(melody) || melody.split(',').some(note=>Number(note.split(':')[1])<=0)) throw new Error('Enter comma-separated frequency:duration notes with positive durations, such as 440:0.5,523:0.5.');
+    url.searchParams.set('melody',melody);
+  }
+  return url.href;
+}
+const links = [...document.querySelectorAll('.command')];
+function updateLinks() {
+  for (const link of links) {
+    try { link.href = commandUrl(link); link.removeAttribute('aria-disabled'); link.title = link.href; }
+    catch (error) { link.removeAttribute('href'); link.setAttribute('aria-disabled','true'); link.title = error.message; }
+  }
+}
+for (const link of links) {
+  link.target = '_blank'; link.rel = 'noopener noreferrer'; link.tabIndex = 0;
+  link.addEventListener('click',event=>{
+    try { link.href = commandUrl(link); $('status').textContent = `Opening ${link.href} — check the response tab to confirm the result.`; }
+    catch (error) { event.preventDefault(); $('status').textContent = error.message; }
+  });
+}
+document.querySelectorAll('input,select,textarea').forEach(input=>input.addEventListener('input',()=>{updateLinks();$('status').textContent='Settings updated. Choose a command.';}));
+updateLinks();
+</script></body></html>
