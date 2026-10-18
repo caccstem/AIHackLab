@@ -17,6 +17,7 @@ let toastTimer;
 let selectedPreset = null;
 let esp32BaseUrl = '';
 let esp32Connected = false;
+let esp32CorsMode = true;
 
 function showToast(message) {
   toast.textContent = message;
@@ -51,6 +52,25 @@ function normalizeAddress(value) {
   return address.replace(/\/+$/, '');
 }
 
+async function requestEsp32(url, options = {}) {
+  try {
+    const response = await fetch(url, { ...options, mode: 'cors', cache: 'no-store' });
+    return { response, cors: true };
+  } catch (error) {
+    if (options.method && options.method !== 'GET') {
+      const fallback = await fetch(url, {
+        method: options.method,
+        mode: 'no-cors',
+        cache: 'no-store',
+        body: options.body,
+      });
+      return { response: fallback, cors: false };
+    }
+    const fallback = await fetch(url, { method: 'GET', mode: 'no-cors', cache: 'no-store' });
+    return { response: fallback, cors: false };
+  }
+}
+
 async function connectToEsp32(event) {
   event.preventDefault();
   const address = normalizeAddress(addressInput.value);
@@ -65,21 +85,28 @@ async function connectToEsp32(event) {
   connectionMessage.className = '';
   setConnectionStatus('checking', address);
   try {
-    const response = await fetch(address + '/api/status', { method: 'GET', mode: 'cors' });
-    if (!response.ok) throw new Error('HTTP ' + response.status);
+    if (location.protocol === 'https:' && address.startsWith('http://')) {
+      throw new Error('HTTPS_PAGE_TO_HTTP_DEVICE');
+    }
+    const probeColor = cards[0]?.dataset.light || 'yellow';
+    const result = await requestEsp32(address + '/' + probeColor + '_light/state', { method: 'GET' });
+    if (result.cors && !result.response.ok) throw new Error('HTTP ' + result.response.status);
     esp32BaseUrl = address;
     esp32Connected = true;
+    esp32CorsMode = result.cors;
     localStorage.setItem(ESP32_ADDRESS_KEY, address);
     deviceAddressLabel.textContent = address.replace(/^https?:\/\//i, '');
     setConnectionStatus('connected', 'Ready for light commands');
-    connectionMessage.textContent = 'Connected. Your light controls are live.';
+    connectionMessage.textContent = result.cors ? 'Connected. Your light controls are live.' : 'Connected in local mode. Your light controls are live.';
     connectionMessage.className = 'success';
     updated.textContent = 'just now';
     showToast('ESP32 connected');
-  } catch {
+  } catch (error) {
     esp32Connected = false;
     setConnectionStatus('disconnected', 'Could not reach this address');
-    connectionMessage.textContent = 'Connection failed. Check the address, router, and ESP32 server.';
+    connectionMessage.textContent = error.message === 'HTTPS_PAGE_TO_HTTP_DEVICE'
+      ? 'This page uses HTTPS but the ESP32 uses HTTP. Open the site over HTTP or add HTTPS to the ESP32.'
+      : 'Connection failed. Check the IP, router, /api/status route, and ESP32 server.';
     connectionMessage.className = 'error';
     showToast('Could not connect to ESP32');
   } finally {
@@ -90,17 +117,16 @@ async function connectToEsp32(event) {
 
 async function sendLightCommand(card) {
   if (!esp32Connected) return;
-  const channel = cards.indexOf(card) + 1;
   const isOn = card.querySelector('input').checked;
   try {
-    const response = await fetch(esp32BaseUrl + '/api/lights/' + channel, {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ on: isOn, color: card.dataset.light }),
+    await fetch(esp32BaseUrl + '/' + card.dataset.light + '_light/' + (isOn ? 'on' : 'off'), {
+      method: 'GET',
+      mode: 'no-cors',
+      cache: 'no-store',
     });
-    if (!response.ok) throw new Error('HTTP ' + response.status);
     updated.textContent = 'just now';
+    connectionMessage.textContent = 'Light command sent to ESP32.';
+    connectionMessage.className = 'success';
   } catch {
     esp32Connected = false;
     setConnectionStatus('disconnected', 'Light command failed');
@@ -817,15 +843,26 @@ async function playTuneData(data) {
     showToast('Connect to your ESP32 first');
     return;
   }
+  const noteSemitones = { C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11 };
+  const frequencyForNote = note => {
+    if (note === 'rest') return 0;
+    const match = String(note).match(/^([A-G](?:#)?)(\d+)$/);
+    if (!match || noteSemitones[match[1]] === undefined) return 0;
+    const midi = (Number(match[2]) + 1) * 12 + noteSemitones[match[1]];
+    return Math.round(440 * Math.pow(2, (midi - 69) / 12));
+  };
+  const quarterSeconds = 60 / (Number(data.tempo) || 120);
+  const melody = data.notes.map(item => {
+    const beats = noteDuration(item.length);
+    return frequencyForNote(item.note) + ':' + (beats * quarterSeconds).toFixed(3);
+  }).join(',');
   try {
-    const response = await fetch(esp32BaseUrl + '/api/tune', {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ notes: data.notes, timeSignature: data.timeSignature, key: data.key, tempo: data.tempo || 120 }),
+    await fetch(esp32BaseUrl + '/play_notes?melody=' + encodeURIComponent(melody), {
+      method: 'GET',
+      mode: 'no-cors',
+      cache: 'no-store',
     });
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    showToast('Tune sent to ESP32');
+    showToast('Tune sent to ESP32 at ' + (data.tempo || 120) + ' BPM');
   } catch {
     showToast('ESP32 could not play this tune');
   }
