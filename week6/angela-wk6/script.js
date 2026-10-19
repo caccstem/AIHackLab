@@ -293,6 +293,41 @@ const createTuneButton = document.querySelector('#create-tune-button');
 const clearTuneButton = document.querySelector('#clear-tune-button');
 const saveTuneButton = document.querySelector('#save-tune-button');
 const playTuneButton = document.querySelector('#play-tune-button');
+const composerInfoButton = document.createElement('button');
+composerInfoButton.type = 'button';
+composerInfoButton.className = 'composer-button info-button';
+composerInfoButton.id = 'composer-info-button';
+composerInfoButton.setAttribute('aria-label', 'Show keyboard and rhythm shortcuts');
+composerInfoButton.setAttribute('aria-expanded', 'false');
+composerInfoButton.textContent = 'i';
+const composerInfoPanel = document.createElement('div');
+composerInfoPanel.className = 'composer-info-panel';
+composerInfoPanel.id = 'composer-info-panel';
+composerInfoPanel.hidden = true;
+composerInfoPanel.innerHTML = '<div class="info-tabs" role="tablist" aria-label="Composer shortcuts"><button class="info-tab active" type="button" role="tab" aria-selected="true" aria-controls="info-keys" data-info-tab="keys">Keys</button><button class="info-tab" type="button" role="tab" aria-selected="false" aria-controls="info-rhythm" data-info-tab="rhythm">Rhythm</button></div><div class="info-tab-content" id="info-keys" role="tabpanel"><p>Keyboard keys add notes while recording.</p><div class="shortcut-grid"><span><kbd>Q</kbd> C</span><span><kbd>2</kbd> C♯</span><span><kbd>W</kbd> D</span><span><kbd>3</kbd> D♯</span><span><kbd>E</kbd> E</span><span><kbd>R</kbd> F</span><span><kbd>5</kbd> F♯</span><span><kbd>T</kbd> G</span><span><kbd>6</kbd> G♯</span><span><kbd>Y</kbd> A</span><span><kbd>7</kbd> A♯</span><span><kbd>U</kbd> B</span><span><kbd>Z</kbd> C</span><span><kbd>S</kbd> D</span><span><kbd>X</kbd> E</span><span><kbd>D</kbd> F</span><span><kbd>C</kbd> G</span><span><kbd>V</kbd> A</span><span><kbd>G</kbd> B</span><span><kbd>,</kbd> C</span></div><p class="info-note"><kbd>Shift</kbd> + <kbd>W</kbd>/<kbd>S</kbd> changes keyboard range.</p></div><div class="info-tab-content" id="info-rhythm" role="tabpanel" hidden><p>Hover over a note or rest, then press a number key.</p><div class="shortcut-list"><span><kbd>1</kbd> Quarter note</span><span><kbd>2</kbd> Half note</span><span><kbd>3</kbd> Dotted half note</span><span><kbd>4</kbd> Whole note</span><span><kbd>5</kbd> Dotted quarter note</span><span><kbd>6</kbd> Triplet — 3 equal triplets = 1 beat</span><span><kbd>7</kbd> Sixteenth note</span><span><kbd>8</kbd> Eighth note</span><span><kbd>-</kbd> Add a rest</span></div></div>';
+composerInfoPanel.querySelector('.shortcut-grid').innerHTML = [
+  ['Q', 'C3'], ['2', 'C♯3'], ['W', 'D3'], ['3', 'D♯3'], ['E', 'E3'], ['R', 'F3'], ['5', 'F♯3'], ['T', 'G3'], ['6', 'G♯3'], ['Y', 'A3'], ['7', 'A♯3'], ['U', 'B3'],
+  ['Z', 'C4'], ['S', 'C♯4'], ['X', 'D4'], ['D', 'D♯4'], ['C', 'E4'], ['V', 'F4'], ['G', 'F♯4'], ['B', 'G4'], ['H', 'G♯4'], ['N', 'A4'], ['J', 'A♯4'], ['M', 'B4'], [',', 'C5'],
+].map(([key, note]) => '<span><kbd>' + key + '</kbd> ' + note + '</span>').join('');
+playTuneButton.before(composerInfoButton);
+playTuneButton.closest('.composer-toolbar').after(composerInfoPanel);
+composerInfoButton.addEventListener('click', () => {
+  composerInfoPanel.hidden = !composerInfoPanel.hidden;
+  composerInfoButton.setAttribute('aria-expanded', String(!composerInfoPanel.hidden));
+});
+composerInfoPanel.addEventListener('click', event => {
+  const tab = event.target.closest('[data-info-tab]');
+  if (!tab) return;
+  const selected = tab.dataset.infoTab;
+  composerInfoPanel.querySelectorAll('[data-info-tab]').forEach(button => {
+    const active = button === tab;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-selected', String(active));
+  });
+  composerInfoPanel.querySelectorAll('.info-tab-content').forEach(panel => {
+    panel.hidden = panel.id !== 'info-' + selected;
+  });
+});
 const tempoBpm = document.createElement('input');
 tempoBpm.id = 'tempo-bpm';
 tempoBpm.type = 'number';
@@ -946,7 +981,7 @@ document.addEventListener('keydown', event => {
     return;
   }
   const index = hoveredNoteIndex ?? selectedNoteIndex;
-  const rhythmShortcuts = { '1': 'quarter', '2': 'half', '3': 'dotted-half', '4': 'whole', '5': 'dotted-quarter', '7': 'sixteenth', '8': 'eighth' };
+  const rhythmShortcuts = { '1': 'quarter', '2': 'half', '3': 'dotted-half', '4': 'whole', '5': 'dotted-quarter', '6': 'triplet', '7': 'sixteenth', '8': 'eighth' };
   if (event.key === '-' && !event.repeat) {
     event.preventDefault();
     addRest();
