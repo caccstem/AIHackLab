@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lights · IoT control</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #101817; color: #edf4eb; font: 16px system-ui, sans-serif; display: grid; place-items: center; padding: 24px; }
+    main { width: min(100%, 1400px); min-width: 0; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; color: #a9bab2; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    .tag { border: 1px solid #3c4c45; padding: 7px 10px; border-radius: 30px; }
+    section { background: #1a2622; border: 1px solid #34453c; padding: clamp(24px,6vw,44px); border-radius: 24px; }
+    .eyebrow { color: #b5c3b9; font-size: 13px; }
+    h1 { font-size: clamp(36px,8vw,48px); margin: 10px 0 14px; font-weight: 550; letter-spacing: -.05em; }
+    p { color: #b5c3b9; line-height: 1.6; }
+    .status { display: flex; align-items: center; gap: 10px; margin: 30px 0; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #9ba69e; flex-shrink: 0; }
+    .dot.on { background: var(--accent); box-shadow: 0 0 18px var(--accent); }
+    .lights { display: grid; grid-template-columns: repeat(4, minmax(270px, 1fr)); gap: 20px; overflow-x: auto; padding: 6px 6px 16px; }
+    .lights section { padding: 24px; min-width: 0; }
+    h2 { font-size: 28px; margin: 10px 0; }
+    .lever-area { display: flex; align-items: center; justify-content: center; gap: 28px; margin: 24px 0; }
+    .lever-frame { width: 100px; height: 230px; position: relative; border: 1px solid #56665b; border-radius: 22px; background: #101817; }
+    .lever { appearance: none; -webkit-appearance: none; position: absolute; width: 210px; height: 80px; left: -56px; top: 74px; margin: 0; transform: rotate(-90deg); background: transparent; cursor: grab; touch-action: none; }
+    .lever:active { cursor: grabbing; }
+    .lever::-webkit-slider-runnable-track { height: 12px; border-radius: 8px; background: #060b09; }
+    .lever::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 50px; height: 78px; margin-top: -33px; border-radius: 12px; border: 1px solid #b8c6b2; background: linear-gradient(90deg, var(--shade), var(--accent)); box-shadow: -4px 0 12px #0006; }
+    .lever::-moz-range-track { height: 12px; border-radius: 8px; background: #060b09; }
+    .lever::-moz-range-thumb { width: 50px; height: 78px; border-radius: 12px; border: 1px solid #b8c6b2; background: linear-gradient(90deg, var(--shade), var(--accent)); box-shadow: -4px 0 12px #0006; }
+    .lever-labels { height: 200px; display: flex; flex-direction: column; justify-content: space-between; font-weight: 650; letter-spacing: .08em; }
+    .lever-labels span:first-child { color: var(--accent, #e1f4b0); }
+    .hint { font-size: 13px; text-align: center; }
+    :focus-visible { outline: 3px solid #ffaaa3; outline-offset: 5px; }
+    .message { min-height: 52px; margin: 22px 0 0; font-size: 14px; overflow-wrap: anywhere; }
+    details { margin-top: 28px; border-top: 1px solid #34453c; padding-top: 22px; color: #b5c3b9; font-size: 13px; }
+    summary { cursor: pointer; }
+    code { display: block; margin: 10px 0 18px; overflow-wrap: anywhere; color: var(--accent, #e1f4b0); }
+    .readings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin: 24px 6px 10px; }
+    .reading { padding: 24px; }
+    .reading h2 { font-size: 16px; color: #b5c3b9; font-weight: 500; }
+    .reading output { font-size: clamp(30px, 6vw, 48px); font-variant-numeric: tabular-nums; }
+    .sensor-note { margin: 10px 6px 24px; color: #b5c3b9; font-size: 14px; }
+    .music { margin: 24px 6px; padding: 28px; }
+    .music-controls { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+    .music button { padding: 14px 24px; border: 1px solid #56665b; border-radius: 12px; font: inherit; font-weight: 600; background: #e1f4b0; color: #182217; }
+    .music button.secondary { background: transparent; color: #edf4eb; }
+    .music button:disabled { opacity: .45; cursor: not-allowed; }
+    footer { font-size: 13px; color: #a9bab2; line-height: 1.6; padding: 22px 8px; }
+  </style>
+</head>
+<body>
+  <main>
+    <header><span>IoT / Control room</span><span class="tag">Local network</span></header>
+    <h1>Room controls</h1>
+    <div class="readings" aria-label="Room sensor readings">
+      <section class="reading" aria-labelledby="temperature-label">
+        <h2 id="temperature-label">Temperature</h2>
+        <output id="temperature" aria-labelledby="temperature-label">—</output>
+      </section>
+      <section class="reading" aria-labelledby="humidity-label">
+        <h2 id="humidity-label">Humidity</h2>
+        <output id="humidity" aria-labelledby="humidity-label">—</output>
+      </section>
+    </div>
+    <p class="sensor-note" id="sensor-status" role="status">Connecting to the ESP32 sensors…</p>
+    <div class="lights">
+    <section data-light="red" style="--accent: #ff9990; --shade: #b85250" aria-labelledby="red-title">
+      <div class="eyebrow">LIGHT CONTROL · 01</div>
+      <h2 id="red-title">Red light</h2>
+      <div class="status"><span class="dot" id="red-indicator" aria-hidden="true"></span><span id="red-status">State unknown</span></div>
+      <div class="lever-area">
+        <div class="lever-frame">
+          <input id="red-lever" class="lever" type="range" min="0" max="100" step="1" value="50" aria-label="Red light command" aria-orientation="vertical" aria-valuetext="No command selected" aria-describedby="red-lever-help">
+        </div>
+        <div class="lever-labels" aria-hidden="true"><span>↑ ON</span><span>↓ OFF</span></div>
+      </div>
+      <p class="hint" id="red-lever-help">Drag up for ON, down for OFF, then release.<br>Stay on this page while the command is sent. Arrow keys work too.</p>
+      <p id="red-message" class="message" role="status" aria-live="polite">Move the lever to send a command.</p>
+      <details>
+        <summary>Connection details</summary>
+        <p>ON endpoint</p><code>http://esp32-2.local/red_light/on</code>
+        <p>OFF endpoint</p><code>http://esp32-2.local/red_light/off</code>
+        <p>These are your configured device addresses. The local server sends the selected command to your device. This page has no live state sensor and cannot confirm that the light changed.</p>
+      </details>
+    </section>
+    <section data-light="yellow" style="--accent: #f8de79; --shade: #aa872e" aria-labelledby="yellow-title">
+      <div class="eyebrow">LIGHT CONTROL · 02</div>
+      <h2 id="yellow-title">Yellow light</h2>
+      <div class="status"><span class="dot" id="yellow-indicator" aria-hidden="true"></span><span id="yellow-status">State unknown</span></div>
+      <div class="lever-area">
+        <div class="lever-frame">
+          <input id="yellow-lever" class="lever" type="range" min="0" max="100" step="1" value="50" aria-label="Yellow light command" aria-orientation="vertical" aria-valuetext="No command selected" aria-describedby="yellow-lever-help">
+        </div>
+        <div class="lever-labels" aria-hidden="true"><span>↑ ON</span><span>↓ OFF</span></div>
+      </div>
+      <p class="hint" id="yellow-lever-help">Drag up for ON, down for OFF, then release.<br>Stay on this page while the command is sent. Arrow keys work too.</p>
+      <p id="yellow-message" class="message" role="status" aria-live="polite">Move the lever to send a command.</p>
+      <details>
+        <summary>Connection details</summary>
+        <p>ON endpoint</p><code>http://esp32-2.local/yellow_light/on</code>
+        <p>OFF endpoint</p><code>http://esp32-2.local/yellow_light/off</code>
+        <p>These are your configured device addresses. The local server sends the selected command to your device. This page has no live state sensor and cannot confirm that the light changed.</p>
+      </details>
+    </section>
+    <section data-light="blue" style="--accent: #91caff; --shade: #437cae" aria-labelledby="blue-title">
+      <div class="eyebrow">LIGHT CONTROL · 03</div>
+      <h2 id="blue-title">Blue light</h2>
+      <div class="status"><span class="dot" id="blue-indicator" aria-hidden="true"></span><span id="blue-status">State unknown</span></div>
+      <div class="lever-area">
+        <div class="lever-frame">
+          <input id="blue-lever" class="lever" type="range" min="0" max="100" step="1" value="50" aria-label="Blue light command" aria-orientation="vertical" aria-valuetext="No command selected" aria-describedby="blue-lever-help">
+        </div>
+        <div class="lever-labels" aria-hidden="true"><span>↑ ON</span><span>↓ OFF</span></div>
+      </div>
+      <p class="hint" id="blue-lever-help">Drag up for ON, down for OFF, then release.<br>Stay on this page while the command is sent. Arrow keys work too.</p>
+      <p id="blue-message" class="message" role="status" aria-live="polite">Move the lever to send a command.</p>
+      <details>
+        <summary>Connection details</summary>
+        <p>ON endpoint</p><code>http://esp32-2.local/blue_light/on</code>
+        <p>OFF endpoint</p><code>http://esp32-2.local/blue_light/off</code>
+        <p>These are your configured device addresses. The local server sends the selected command to your device. This page has no live state sensor and cannot confirm that the light changed.</p>
+      </details>
+    </section>
+    <section data-light="green" style="--accent: #b5eaa0; --shade: #588c47" aria-labelledby="green-title">
+      <div class="eyebrow">LIGHT CONTROL · 04</div>
+      <h2 id="green-title">Green light</h2>
+      <div class="status"><span class="dot" id="green-indicator" aria-hidden="true"></span><span id="green-status">State unknown</span></div>
+      <div class="lever-area">
+        <div class="lever-frame">
+          <input id="green-lever" class="lever" type="range" min="0" max="100" step="1" value="50" aria-label="Green light command" aria-orientation="vertical" aria-valuetext="No command selected" aria-describedby="green-lever-help">
+        </div>
+        <div class="lever-labels" aria-hidden="true"><span>↑ ON</span><span>↓ OFF</span></div>
+      </div>
+      <p class="hint" id="green-lever-help">Drag up for ON, down for OFF, then release.<br>Stay on this page while the command is sent. Arrow keys work too.</p>
+      <p id="green-message" class="message" role="status" aria-live="polite">Move the lever to send a command.</p>
+      <details>
+        <summary>Connection details</summary>
+        <p>ON endpoint</p><code>http://esp32-2.local/green_light/on</code>
+        <p>OFF endpoint</p><code>http://esp32-2.local/green_light/off</code>
+        <p>These are your configured device addresses. The local server sends the selected command to your device. This page has no live state sensor and cannot confirm that the light changed.</p>
+      </details>
+    </section>
+    </div>
+    <section class="music" aria-labelledby="music-title">
+      <div class="eyebrow">SOUND CONTROL · BOARD BUZZER</div>
+      <h2 id="music-title">Music &amp; tunes</h2>
+      <p>Play a tune through your ESP32’s built-in buzzer.</p>
+      <div class="music-controls">
+        <button type="button" id="play-tune" disabled aria-describedby="music-status">▶ Play tune</button>
+        <button type="button" id="stop-tune" class="secondary" disabled aria-describedby="music-status">■ Stop</button>
+      </div>
+      <p id="music-status" class="message" role="status">Setup needed: waiting for the board’s buzzer command. Playback is not connected yet.</p>
+    </section>
+    <footer>Use this page on the same network as your ESP device. Keep the local control server running on this computer. Check the light to confirm its state.</footer>
+  </main>
+  <script>
+    async function refreshReadings() {
+      const note = document.getElementById('sensor-status');
+      const temperature = document.getElementById('temperature');
+      const humidity = document.getElementById('humidity');
+      if (!['http://127.0.0.1:8766', 'http://localhost:8766'].includes(location.origin)) return;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
+      let retry = true;
+      try {
+        const response = await fetch('/api/readings', { cache: 'no-store', signal: controller.signal });
+        const data = await response.json();
+        if (!response.ok) {
+          if (data.code === 'not_configured') retry = false;
+          throw new Error(data.error || 'Sensor readings unavailable.');
+        }
+        if (!Number.isFinite(data.temperature_c) || !Number.isFinite(data.humidity)
+            || data.humidity < 0 || data.humidity > 100) throw new Error('The device returned invalid sensor readings.');
+        temperature.textContent = `${data.temperature_c.toFixed(1)} °C`;
+        humidity.textContent = `${data.humidity.toFixed(1)} %`;
+        note.textContent = `Updated ${new Date().toLocaleTimeString()} · refreshes every 10 seconds`;
+      } catch (error) {
+        temperature.textContent = '—';
+        humidity.textContent = '—';
+        note.textContent = error instanceof TypeError || error instanceof SyntaxError
+          ? 'Sensor readings unavailable. Check that the local control server is running.'
+          : error.name === 'AbortError' ? 'Sensor request timed out. Retrying…' : error.message;
+      } finally {
+        clearTimeout(timer);
+        if (retry) setTimeout(refreshReadings, 10000);
+      }
+    }
+    refreshReadings();
+    document.querySelectorAll('[data-light]').forEach(card => {
+    const color = card.dataset.light;
+    const lever = card.querySelector('.lever');
+    let busy = false;
+    let queuedAction = null;
+    function setPosition(value) {
+      lever.value = value;
+      lever.setAttribute('aria-valuetext', value === 100 ? 'ON command selected' : value === 0 ? 'OFF command selected' : 'No command selected');
+    }
+    const status = document.getElementById(`${color}-status`);
+    const message = document.getElementById(`${color}-message`);
+    const indicator = document.getElementById(`${color}-indicator`);
+    const usingControlServer = location.protocol === 'http:'
+      && ['127.0.0.1', 'localhost'].includes(location.hostname)
+      && location.port === '8766';
+    if (!usingControlServer) {
+      status.textContent = 'Open the local control page';
+      message.textContent = 'In this tab’s address bar, enter http://127.0.0.1:8766. This copy of the page is not connected to the command server.';
+    }
+    async function sendCommand(action) {
+      if (busy) {
+        queuedAction = action;
+        message.textContent = `${action.toUpperCase()} selected; waiting for the previous command to finish…`;
+        return;
+      }
+      if (!usingControlServer) {
+        message.textContent = 'In this tab’s address bar, enter http://127.0.0.1:8766 to connect this lever to the command server.';
+        return;
+      }
+      busy = true;
+
+      indicator.className = 'dot';
+      status.textContent = 'Sending command…';
+      message.textContent = 'Contacting your device…';
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+      try {
+        const response = await fetch(`/api/light/${color}/${action}`, {
+          method: 'POST', signal: controller.signal,
+          headers: { 'X-Light-Control': '1' }
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Device request failed.');
+        status.textContent = `${action.toUpperCase()} command acknowledged`;
+        indicator.className = action === 'on' ? 'dot on' : 'dot';
+        message.textContent = 'The device responded successfully. Check the light to confirm its physical state.';
+      } catch (error) {
+        status.textContent = 'State unknown';
+        message.textContent = error.name === 'AbortError'
+          ? 'Request timed out. The command may have reached the device.'
+          : error instanceof TypeError || error instanceof SyntaxError
+            ? 'Cannot reach the local control server. Run server.py and open http://127.0.0.1:8766 in this tab.'
+            : error.message;
+      } finally {
+        clearTimeout(timeout);
+        busy = false;
+        if (queuedAction !== null) {
+          const next = queuedAction;
+          queuedAction = null;
+          sendCommand(next);
+        }
+      }
+    }
+    lever.addEventListener('input', () => {
+      lever.setAttribute('aria-valuetext', Number(lever.value) >= 50 ? 'Release for ON' : 'Release for OFF');
+    });
+    lever.addEventListener('change', () => {
+      const action = Number(lever.value) >= 50 ? 'on' : 'off';
+      setPosition(action === 'on' ? 100 : 0);
+      sendCommand(action);
+    });
+    lever.addEventListener('keydown', event => {
+      const action = { ArrowUp: 'on', ArrowRight: 'on', End: 'on', ArrowDown: 'off', ArrowLeft: 'off', Home: 'off' }[event.key];
+      if (!action) return;
+      event.preventDefault();
+      if (event.repeat) return;
+      setPosition(action === 'on' ? 100 : 0);
+      sendCommand(action);
+    });
+    });
+  </script>
+</body>
+</html>
