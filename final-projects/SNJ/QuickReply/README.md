@@ -1,3 +1,6 @@
+Team member list: Sophie Sim, Jennifer Zhou
+
+
 # QuickReply
 
 QuickReply is a local MVP for managing frequently asked questions and using their saved answers in Gmail. The dashboard and Chrome extension read and write through the same local API, so updates show up in the extension while the local server is running.
