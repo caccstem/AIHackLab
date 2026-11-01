@@ -15,3 +15,7 @@ python3 -m http.server 8000
 Open http://localhost:8000 in your browser. No installation or build is required.
 
 Speech recognition requires a supported browser and microphone permission; typing is available as a fallback. The handwriting pad supports freehand practice without automatic grading.
+
+## Avatar rewards
+
+Earn 100 avatar points the first time a level is mastered, or 25 points for a perfect replay of a completed level. Spend points in My avatar on hair, outfits, accessories, and backgrounds. Skin tones and starter items are free. Completed levels from earlier versions receive 100 points each. Points, purchases, and the equipped avatar save locally in the browser.
