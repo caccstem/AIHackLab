@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connect QuickReply to Gmail</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .guide{max-width:760px;margin:72px auto;padding:0 24px}.back{color:#4a805c;text-decoration:none;font-size:12px;font-weight:600}.guide h1{font:700 31px Manrope,sans-serif;letter-spacing:-1px;margin:24px 0 8px}.lead{font-size:14px;color:#777e74;line-height:1.6;margin:0 0 28px}.step{background:white;border:1px solid #e8ebe5;border-radius:10px;padding:18px 20px;margin:12px 0;display:flex;gap:15px}.number{width:28px;height:28px;flex:0 0 auto;border-radius:9px;background:#edf4ed;color:#4b805a;display:grid;place-items:center;font-size:12px;font-weight:700}.step h2{font:700 13px Manrope;margin:2px 0 6px}.step p{font-size:11px;line-height:1.6;color:#777e74;margin:0}.step code{background:#f1f3ee;border-radius:4px;padding:2px 5px;font-size:10px}.callout{background:#f8f3e8;border:1px solid #eee5d1;border-radius:8px;padding:13px 15px;color:#776847;font-size:11px;line-height:1.6;margin-top:20px}.guide .primary-button{display:inline-flex;align-items:center;text-decoration:none;margin-top:18px}
+    @media(max-width:600px){.guide{margin:40px auto;padding:0 16px}.guide h1{font-size:26px}}
+  </style>
+</head>
+<body><main class="guide">
+  <a class="back" href="/">← Back to reply library</a>
+  <div class="eyebrow" style="margin-top:38px">QUICK SETUP</div>
+  <h1>Bring QuickReply to Gmail</h1>
+  <p class="lead">The local server shares your reply library with the Chrome extension. Keep it running while you use Gmail.</p>
+  <section class="step"><span class="number">1</span><div><h2>Start your local server</h2><p>In Terminal, go to the QuickReply project folder and run <code>python3 server.py</code>. Leave that window open, then open <code>http://127.0.0.1:8766</code> in Chrome.</p></div></section>
+  <section class="step"><span class="number">2</span><div><h2>Load the Chrome extension</h2><p>Visit <code>chrome://extensions</code>, turn on <strong>Developer mode</strong>, click <strong>Load unpacked</strong>, and select the project's <code>extension</code> folder.</p></div></section>
+  <section class="step"><span class="number">3</span><div><h2>Create your saved answers</h2><p>From the reply library, add a common customer question and the response you want to use. Active replies sync to the extension through the running local server.</p></div></section>
+  <section class="step"><span class="number">4</span><div><h2>Try draft mode in Gmail</h2><p>Refresh Gmail and open a message. For a strong question match, QuickReply shows the suggested response. Select <strong>Prepare reply</strong>, review the draft, and send it yourself.</p></div></section>
+  <div class="callout"><strong>Auto-send is optional.</strong> It is off by default. The extension popup can enable it for strong matches. Keep draft mode on until you have reviewed your replies and matched results. This prototype only supports Gmail in Chrome and stores reply rules on this computer.</div>
+  <a class="primary-button" href="/">Open reply library →</a>
+</main></body>
+</html>

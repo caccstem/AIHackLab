@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuickReply</title>
+  <style>
+    *{box-sizing:border-box}body{width:320px;margin:0;padding:20px;background:#f8f9f6;color:#252a24;font:13px/1.45 'DM Sans',Arial,sans-serif}.brand{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:700;letter-spacing:-.4px}.mark{width:27px;height:27px;border-radius:9px;background:#4c8766;color:#fff;display:grid;place-items:center;font-size:17px}.hint{font-size:11px;color:#858b81;margin:10px 0 16px}.connection{padding:11px 12px;border:1px solid #e7eae3;background:#fff;border-radius:8px;display:flex;align-items:center;gap:9px;font-size:11px}.dot{width:7px;height:7px;border-radius:50%;background:#d89553;flex-shrink:0}.connection.ok .dot{background:#63a574}.count{margin-left:auto;color:#5c8063;font-weight:700}.auto{display:flex;gap:10px;align-items:center;margin-top:16px;padding:13px 0;border-top:1px solid #e8ebe4;border-bottom:1px solid #e8ebe4}.auto input{appearance:none;width:30px;height:17px;border-radius:20px;background:#d5d9d2;position:relative;margin:0;cursor:pointer;flex-shrink:0}.auto input:before{content:'';position:absolute;background:white;width:13px;height:13px;border-radius:50%;top:2px;left:2px;transition:.15s}.auto input:checked{background:#579168}.auto input:checked:before{left:15px}.auto strong{display:block;font-size:11px}.auto small{display:block;color:#8e938a;font-size:10px;margin-top:2px}.safe-note{font-size:10px;color:#8c9189;line-height:1.5;margin:12px 0}.actions{display:flex;gap:8px}.button{flex:1;border:1px solid #e2e6df;border-radius:6px;background:#fff;color:#4f7557;height:32px;font-size:10px;font-weight:600;text-align:center;text-decoration:none;display:grid;place-items:center;cursor:pointer}.button.primary{background:#477d5b;border-color:#477d5b;color:#fff}.status{min-height:15px;color:#969b93;font-size:9px;margin-top:11px}
+  </style>
+</head>
+<body>
+  <div class="brand"><span class="mark">q</span> quickreply</div>
+  <p class="hint">Your saved answers, ready when the same question comes up.</p>
+  <div class="connection" id="connection"><span class="dot"></span><span id="connection-text">Connecting to your reply library…</span><strong class="count" id="count"></strong></div>
+  <label class="auto"><input id="auto-send" type="checkbox"><span><strong>Auto-send strong matches</strong><small>Otherwise QuickReply only prepares a draft.</small></span></label>
+  <p class="safe-note">Auto-send is off by default. Only turn it on after reviewing your rules and trying draft mode.</p>
+  <div class="actions"><a class="button primary" href="http://127.0.0.1:8766" target="_blank">Open reply library ↗</a><button class="button" id="refresh">Refresh</button></div>
+  <div class="status" id="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
