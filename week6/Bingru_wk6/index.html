@@ -38,9 +38,28 @@
         <div class="card-copy"><p class="card-label">04 / Light</p><h2>Red</h2><p class="status" id="red-status">Current status: checking...</p></div>
         <div class="light-actions"><button class="control-button on-button" type="button" data-action="light" data-color="red" data-command="on" aria-label="Turn red light on">On</button><button class="control-button off-button" type="button" data-action="light" data-color="red" data-command="off" aria-label="Turn red light off">Off</button></div>
       </article>
+      <article class="control-card keypad-card" aria-labelledby="keypad-title">
+        <div class="keypad-decoration" aria-hidden="true">⌘</div>
+        <div class="card-copy"><p class="card-label">05 / Input</p><h2 id="keypad-title">Keypad</h2><p class="status" id="keypad-status">Waiting for ESP32 keypad...</p></div>
+        <div class="key-display" id="key-display" aria-live="polite" aria-label="No key pressed yet">—</div>
+        <p class="keypad-caption">Last key pressed</p>
+        <p class="keypad-instruction">Type 2872 on the physical keypad, then press # for a cool light pattern: 1 second on, 1 second off, repeated 3 times.</p>
+      </article>
+      <article class="control-card designer-card" aria-labelledby="designer-title">
+        <div class="card-copy"><p class="card-label">06 / Your creation</p><h2 id="designer-title">Design a pattern</h2><p class="status">Click the colored buttons in an order and a rhythm to design your very own pattern!</p></div>
+        <div class="pattern-buttons" aria-label="Record a light pattern">
+          <button type="button" class="pattern-color yellow-choice" data-pattern-color="yellow">Yellow</button>
+          <button type="button" class="pattern-color green-choice" data-pattern-color="green">Green</button>
+          <button type="button" class="pattern-color red-choice" data-pattern-color="red">Red</button>
+          <button type="button" class="pattern-color blue-choice" data-pattern-color="blue">Blue</button>
+        </div>
+        <p class="pattern-sequence" id="pattern-sequence" aria-live="polite">Your pattern will appear here.</p>
+        <div class="pattern-actions"><button type="button" id="play-pattern">Play pattern</button><button type="button" id="clear-pattern">Clear</button></div>
+        <p class="pattern-status" id="pattern-status" aria-live="polite">Press colors to record your rhythm.</p>
+      </article>
       <article class="control-card temperature" data-color="temperature">
         <div class="thermometer" aria-hidden="true"><span></span></div>
-        <div class="card-copy"><p class="card-label">05 / Sensor</p><h2>Temperature</h2><p class="status" id="temperature-status">Current temperature: not checked</p></div>
+        <div class="card-copy"><p class="card-label">07 / Sensor</p><h2>Temperature</h2><p class="status" id="temperature-status">Current temperature: not checked</p></div>
         <button class="control-button" type="button" data-action="temperature" aria-label="Check current temperature">Check <span>↗</span></button>
       </article>
     </section>

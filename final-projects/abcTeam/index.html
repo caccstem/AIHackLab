@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Space</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Study planner</p>
+            <h1>Today’s focus</h1>
+          </div>
+          <button id="study-toggle" class="primary-btn" type="button">Start studying</button>
+        </header>
+
+        <section class="planner-card">
+          <h2>Assignment planner</h2>
+          <ul id="assignment-list">
+            <li>
+              <span>Math quiz review</span>
+              <strong>Due today</strong>
+            </li>
+            <li>
+              <span>Science lab notes</span>
+              <strong>Tomorrow</strong>
+            </li>
+            <li>
+              <span>Reading reflection</span>
+              <strong>Friday</strong>
+            </li>
+          </ul>
+        </section>
+      </main>
+
+      <aside class="study-space" aria-label="Study space sidebar">
+        <div class="study-space-header">
+          <p class="eyebrow">Study space</p>
+          <h2>Your study space</h2>
+        </div>
+
+        <div class="space-nav">
+          <button class="nav-button active" type="button">Assignment planner</button>
+          <button class="nav-button" id="music-button" type="button">Music and sound</button>
+          <button class="nav-button" id="motivation-button" type="button">Motivation</button>
+          <button class="nav-button" id="notebook-button" type="button">My notebook</button>
+        </div>
+
+        <div id="music-panel" class="panel hidden" aria-live="polite">
+          <h3>Music &amp; sound</h3>
+
+          <div class="option-group">
+            <label class="option-title">Background music</label>
+            <div class="choice-row">
+              <label><input type="radio" name="music" value="lofi" checked /> Lofi music</label>
+              <label><input type="radio" name="music" value="none" /> No music</label>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <label class="option-title">Side sounds</label>
+            <div class="choice-row stacked">
+              <label><input type="checkbox" name="ambient" value="fireplace" /> Fireplace</label>
+              <label><input type="checkbox" name="ambient" value="rain" /> Rain sounds</label>
+            </div>
+          </div>
+
+          <div class="status-box">
+            <span class="status-label">Status</span>
+            <strong id="sound-status">Paused</strong>
+          </div>
+        </div>
+
+        <section id="notebook-panel" class="notebook-panel hidden" aria-labelledby="notebook-title">
+          <div class="notebook-heading">
+            <span class="notebook-icon" aria-hidden="true">✎</span>
+            <div>
+              <p class="eyebrow">A place for your ideas</p>
+              <h3 id="notebook-title">My notebook</h3>
+            </div>
+          </div>
+          <p class="notebook-intro">Capture a thought, save a reminder, or keep a little study note.</p>
+
+          <form id="note-form" class="note-composer">
+            <label class="visually-hidden" for="note-title">Note title</label>
+            <input id="note-title" name="title" maxlength="60" placeholder="Give your note a title" />
+            <label class="visually-hidden" for="note-content">Note content</label>
+            <textarea id="note-content" name="content" rows="4" maxlength="500" placeholder="Write something to remember…" required></textarea>
+            <div class="composer-footer">
+              <span id="note-feedback" role="status">Your notes stay saved in this browser.</span>
+              <button class="save-note-btn" type="submit">Save note <span aria-hidden="true">↗</span></button>
+            </div>
+          </form>
+
+          <div class="notes-heading">
+            <h4>Recent notes</h4>
+            <span id="note-count">0 notes</span>
+          </div>
+          <div id="notes-list" class="notes-list" aria-live="polite"></div>
+        </section>
+      </aside>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

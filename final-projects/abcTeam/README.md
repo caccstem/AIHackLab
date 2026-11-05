@@ -53,7 +53,7 @@ MAIN PROJECT IDEA OVERVIEW
     
     General Overview: A study and productivity website designed to help students organize their academic responsibilities, manage their time, study more effectively, and stay motivated. The platform combines productivity tools and interactive learning features into one accessible and engaging website.
 
-    Target Audience: Middle and high school students who
+    Target Audience: Grade 5 to high school students who
         - struggle with time management
         - procrastinate and feel overwhelmed
         - want to improve their study habits

@@ -1,8 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
-:root { --ink: #25251f; --muted: #77766b; --paper: #f5f2e9; --line: #d8d4c9; --yellow: #f4c947; --green: #74a87a; --blue: #6d9fc4; --red: #d97865; --violet: #9d87c5; }
+:root {
+  --handwritten: 'Indie Flower', 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', 'Marker Felt', cursive;
+  --ink: #25251f; --muted: #77766b; --paper: #f5f2e9; --line: #d8d4c9; --yellow: #f4c947; --green: #74a87a; --blue: #6d9fc4; --red: #d97865; --violet: #9d87c5;
+}
 * { box-sizing: border-box; }
-*, *::before, *::after { font-family: 'Indie Flower', cursive !important; }
-body { margin: 0; min-height: 100vh; background: #ebe8de; color: var(--ink); font: 18px/1.35 'Indie Flower', cursive; }
+*, *::before, *::after { font-family: var(--handwritten); }
+body { margin: 0; min-height: 100vh; background: #ebe8de; color: var(--ink); font: 18px/1.35 var(--handwritten); }
 .panel { max-width: 1180px; margin: 0 auto; padding: 58px 5vw 32px; }
 .header { display: flex; justify-content: space-between; align-items: end; gap: 30px; padding-bottom: 48px; }
 .eyebrow, .card-label, footer { color: var(--muted); font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; }
@@ -20,6 +23,26 @@ h1 span { color: var(--red); font-style: italic; }
 .control-card.green { --accent: var(--green); background: #e5eee4; }
 .control-card.blue { --accent: var(--blue); background: #e4edf3; }
 .control-card.red { --accent: var(--red); background: #f6e5df; }
+.keypad-card { --accent: #ce9bb5; background: #f1e3ed; min-height: 255px; }
+.keypad-decoration { position: absolute; top: 10px; right: 22px; color: #d5b5cc; font-size: 100px; line-height: 1; transform: rotate(-12deg); }
+.key-display { position: relative; z-index: 1; color: #9a6f8b; font-size: clamp(54px, 7vw, 76px); line-height: .9; min-height: 68px; }
+.keypad-caption { position: relative; z-index: 1; color: #a4869a; font-size: 13px; margin: 0; }
+.keypad-instruction { position: relative; z-index: 1; margin: 0; color: #8f7284; font-size: 14px; line-height: 1.2; max-width: 420px; }
+.designer-card { --accent: #a798c9; background: #eee9f7; min-height: 300px; }
+.pattern-buttons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; position: relative; z-index: 1; }
+.pattern-color { min-width: 0; border: 1px solid rgba(37, 37, 31, .24); border-radius: 12px; padding: 11px 7px; color: #403a38; font-size: 16px; cursor: pointer; transition: transform .15s, filter .15s; }
+.pattern-color:hover { transform: translateY(-2px); filter: saturate(1.12); }
+.pattern-color:active { transform: scale(.96); }
+.yellow-choice { background: #f5dc85; }
+.green-choice { background: #b8d9b2; }
+.red-choice { background: #edb1aa; }
+.blue-choice { background: #b2d0e5; }
+.pattern-sequence { min-height: 25px; margin: 0; color: #75678d; font-size: 15px; position: relative; z-index: 1; overflow-wrap: anywhere; }
+.pattern-actions { display: flex; gap: 8px; position: relative; z-index: 1; }
+.pattern-actions button { border: 1px solid #8f82ae; border-radius: 20px; background: rgba(255, 255, 255, .55); color: #65577e; padding: 8px 15px; font-size: 15px; cursor: pointer; }
+.pattern-actions button:hover { background: #dcd4ee; }
+.pattern-actions button:disabled, .pattern-color:disabled { opacity: .55; cursor: not-allowed; }
+.pattern-status { margin: 0; min-height: 20px; color: #8c7da0; font-size: 13px; position: relative; z-index: 1; }
 .control-card.temperature { --accent: var(--violet); background: #eee9f5; grid-column: span 2; min-height: 170px; }
 .light-orb { position: absolute; width: 190px; height: 190px; right: -32px; top: -40px; border-radius: 50%; background: var(--accent); opacity: .18; box-shadow: 0 0 70px 22px var(--accent); transition: opacity .2s, box-shadow .2s; }
 .control-card.is-on .light-orb { opacity: .9; box-shadow: 0 0 55px 28px var(--accent); }
@@ -36,10 +59,160 @@ h2 { font: 400 40px/1 'Indie Flower', cursive; margin: 0; }
 .light-actions .off-button { background: rgba(37, 37, 31, .07); }
 .light-actions .on-button:hover { background: var(--accent); color: var(--ink); }
 .light-actions .off-button:hover { background: var(--ink); color: #fff; }
+.light-actions button:disabled { cursor: not-allowed; }
 .thermometer { position: absolute; right: 70px; top: 35px; width: 18px; height: 80px; border: 3px solid var(--violet); border-radius: 14px 14px 12px 12px; }
 .thermometer:before { content: ''; position: absolute; left: 3px; bottom: -19px; width: 27px; height: 27px; border-radius: 50%; background: var(--violet); }
 .thermometer span { position: absolute; left: 5px; bottom: 4px; width: 5px; height: 56px; background: var(--violet); border-radius: 5px; }
 footer { display: flex; justify-content: space-between; align-items: center; padding-top: 34px; }
 #refresh { border: 0; color: var(--muted); padding: 0; }
 #refresh span { font-size: 20px; margin-left: 7px; }
-@media (max-width: 650px) { .panel { padding-top: 35px; } .header { display: block; } .connection { margin-top: 30px; } .controls { grid-template-columns: 1fr; } .control-card.temperature { grid-column: auto; } footer { display: block; } footer button { margin-top: 18px; } }
+@media (max-width: 650px) { .panel { padding-top: 35px; } .header { display: block; } .connection { margin-top: 30px; } .controls { grid-template-columns: 1fr; } .control-card.temperature { grid-column: auto; } .pattern-buttons { gap: 5px; } .pattern-color { padding: 10px 4px; font-size: 14px; } footer { display: block; } footer button { margin-top: 18px; } }
+
+/* A soft scrapbook page, with the original controls kept fully interactive. */
+:root {
+  --ink: #38372f;
+  --muted: #898579;
+  --paper: #fffdf7;
+  --line: #e8e2d6;
+  --handwritten: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --yellow: #e8bd50;
+  --green: #6f9d79;
+  --blue: #6d91b5;
+  --red: #c97b70;
+  --violet: #8e7ba9;
+}
+body {
+  min-height: 100vh;
+  padding: 32px 18px;
+  background-color: #eae5da;
+  background-image: radial-gradient(#d7d0c1 0.7px, transparent 0.7px);
+  background-size: 18px 18px;
+  color: var(--ink);
+  font: 15px/1.55 var(--handwritten);
+}
+.panel {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 62px clamp(24px, 6vw, 78px) 36px;
+  overflow: hidden;
+  border: 1px solid #e5dfd1;
+  border-radius: 8px 8px 20px 8px;
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #dce8ed 32px);
+  box-shadow: 0 18px 55px #4b45351a, 0 3px 8px #4b45350d;
+}
+.panel::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 34px;
+  width: 1px;
+  background: #e9b9ae;
+  content: '';
+  opacity: .8;
+}
+.header { align-items: center; padding-bottom: 36px; }
+.eyebrow, .card-label, footer {
+  color: #999284;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+.eyebrow { margin-bottom: 8px; }
+h1 {
+  color: #39372f;
+  font: 400 clamp(44px, 7vw, 78px)/.95 'Indie Flower', 'Segoe Print', cursive;
+  letter-spacing: -1px;
+}
+h1 span { color: #c97b70; }
+.intro { max-width: 440px; margin-top: 17px; color: #77766d; font-size: 15px; }
+.connection {
+  padding: 9px 14px;
+  border: 1px solid #e8e2d8;
+  border-radius: 999px;
+  background: #fffefa;
+  box-shadow: 0 3px 8px #5a50320d;
+  color: #79766d;
+  font-size: 12px;
+}
+.controls { gap: 18px; }
+.control-card {
+  min-height: 250px;
+  padding: 27px;
+  border: 1px solid #e5e0d6;
+  border-radius: 19px 19px 19px 7px;
+  background-color: #fffefa;
+  box-shadow: 0 7px 18px #5048320c;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.control-card:hover { transform: translateY(-3px) rotate(-.25deg); box-shadow: 0 11px 24px #50483216; }
+.control-card.yellow { background: linear-gradient(145deg, #fffdf7 12%, #faf2dd 100%); }
+.control-card.green { background: linear-gradient(145deg, #fffefa 12%, #eaf1e7 100%); }
+.control-card.blue { background: linear-gradient(145deg, #fffefa 12%, #e8f0f5 100%); }
+.control-card.red { background: linear-gradient(145deg, #fffefa 12%, #f7e9e3 100%); }
+.keypad-card { background: linear-gradient(145deg, #fffefa 10%, #f2e7ee 100%); }
+.designer-card { background: linear-gradient(145deg, #fffefa 10%, #eeeaf6 100%); }
+.control-card.temperature { background: linear-gradient(145deg, #fffefa 10%, #f0ebf5 100%); }
+.card-label { margin-bottom: 11px; font-size: 9px; }
+h2 { color: #39372f; font: 400 36px/1.05 'Indie Flower', 'Segoe Print', cursive; }
+.status { margin-top: 9px; color: #77766d; font-size: 12px; }
+.light-orb { right: -44px; top: -50px; width: 205px; height: 205px; opacity: .13; }
+.control-card.is-on .light-orb { opacity: .65; }
+.control-button, #refresh {
+  border: 1px solid #d5cfc2;
+  border-radius: 999px;
+  background: #fffefa;
+  color: #514e44;
+  padding: 9px 17px;
+  font: 600 13px/1.2 var(--handwritten);
+  transition: background .16s ease, color .16s ease, transform .16s ease;
+}
+.control-button:hover, #refresh:hover { background: #39372f; color: #fffefa; }
+.control-button:active, #refresh:active { transform: scale(.97); }
+.light-actions { gap: 8px; }
+.light-actions .control-button { min-width: 72px; }
+.light-actions .on-button { border-color: color-mix(in srgb, var(--accent) 50%, white); background: color-mix(in srgb, var(--accent) 20%, white); }
+.light-actions .off-button { background: #fffefa99; }
+.keypad-decoration { color: #d3b6c8; font-size: 106px; }
+.key-display { color: #987b93; font: 400 clamp(54px, 7vw, 70px)/.9 'Indie Flower', cursive; }
+.keypad-caption { color: #947f8e; font-size: 12px; }
+.keypad-instruction { max-width: 400px; color: #77716f; font-size: 12px; line-height: 1.45; }
+.pattern-color {
+  border: 1px solid #ffffffb8;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px #5048320d;
+  font: 600 12px/1.2 var(--handwritten);
+}
+.pattern-actions button {
+  border: 1px solid #d6cee2;
+  border-radius: 999px;
+  padding: 9px 16px;
+  background: #fffefa;
+  color: #65577e;
+  font: 600 12px/1.2 var(--handwritten);
+}
+.pattern-actions button:hover { background: #e7e0f0; }
+.pattern-sequence { color: #6e6380; font-size: 12px; }
+.pattern-status { color: #81768f; font-size: 11px; }
+.thermometer { opacity: .75; }
+footer { padding-top: 29px; font-size: 9px; }
+#refresh { border: 0; background: transparent; padding: 7px 10px; color: #77766d; }
+button:focus-visible { outline: 3px solid #8673ad88; outline-offset: 3px; }
+@media (max-width: 650px) {
+  body { padding: 12px 9px; }
+  .panel { padding: 42px 19px 27px; border-radius: 7px 7px 15px 7px; }
+  .panel::before { left: 11px; }
+  .header { padding-bottom: 27px; }
+  .intro { margin-top: 14px; }
+  .connection { display: inline-flex; margin-top: 20px; }
+  .controls { gap: 13px; }
+  .control-card { min-height: 225px; padding: 23px; }
+  .control-card.temperature { min-height: 165px; }
+  .designer-card { min-height: 290px; }
+  footer { display: flex; gap: 12px; font-size: 8px; }
+  footer button { margin-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
