@@ -23,3 +23,5 @@ Earn 100 avatar points the first time a level is mastered, or 25 points for a pe
 Avatar companions include free cats and dogs, plus a rabbit (75 points) and panda (100 points). Animal avatars support fur colors, outfits, accessories, and backgrounds. Existing balances and purchases are preserved.
 
 All six levels are open from the start. Choose any level on the learning path; the app remembers your selection. Vocabulary and writing practice cover all levels. Skipping does not mark levels complete or grant points.
+
+Answer feedback animates the equipped avatar: correct answers trigger a celebratory jump with stars, while mistakes trigger an encouraging sway with hearts. Reactions also appear in guided conversations and respect reduced-motion preferences.
