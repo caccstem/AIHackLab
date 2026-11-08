@@ -37,3 +37,7 @@ Open the same site URL on a phone. Small screens use bottom navigation, 44-pixel
 Writing studio requires two steps: trace the selected character, then write it independently on a cleared pad with the guide and character picker hidden. Both steps require drawing before completion. A reference appears beside the finished writing for self-comparison; no automatic handwriting grading is performed. Trace again restarts both steps.
 
 Name the avatar in My avatar (1–24 characters). The saved name appears in correct and incorrect answer animations, including guided conversations. The default name is Mochi. Names save locally and remain when changing animals or accessories.
+
+## Complete word mastery
+
+Every word now requires four independent checks: meaning, Chinese characters, toned pinyin, and pronunciation through Mandarin speech recognition. Hinted attempts do not complete checks. Unsupported browsers, denied microphones, and skipped checks leave pronunciation pending. Speech recognition checks recognized words, not fine-grained tone accuracy. Existing recognition progress carries over; no pinyin or speech checks are inferred from previous scores. Already earned avatar points and purchases are preserved.
