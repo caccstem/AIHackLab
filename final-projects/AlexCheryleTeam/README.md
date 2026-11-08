@@ -49,3 +49,5 @@ The interface uses rounded Nunito typography and a soft blush, lavender, cream, 
 ## Learning quests
 
 Ten-question sessions have a question trail, live game score, consecutive-answer combos, and a star result (5 independent correct answers = one star, 8 = two, 10 = three). Each new personal-best star for a level gives 5 avatar points once, up to 15 points per level. Game score is separate from spendable points and XP. Partial or review sessions do not grant star treasure. Home shows saved level stars, quest counts, and first-quest, three-combo, and perfect-quest badges. Full word mastery still requires all four skill checks.
+
+Main navigation now sits at the bottom across all screen sizes: a floating rounded dock on desktop and a safe-area-aware tab bar on phones. Branding and point totals appear in the top header.
