@@ -27,3 +27,5 @@ All six levels are open from the start. Choose any level on the learning path; t
 Answer feedback animates the equipped avatar: correct answers trigger a celebratory jump with stars, while mistakes trigger an encouraging sway with hearts. Reactions also appear in guided conversations and respect reduced-motion preferences.
 
 Avatars use a chibi anime style with oversized heads, sparkling eyes, blush, and tiny sweater outfits. All animal choices, accessories, colors, and answer animations remain supported.
+
+Daily visits award 5 avatar points once per local calendar day, with a welcome message and collected indicator. Sign-in is optional; claims are stored in this browser with learning progress.
