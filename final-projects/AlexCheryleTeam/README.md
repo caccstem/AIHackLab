@@ -35,3 +35,5 @@ Daily visits award 5 avatar points once per local calendar day, with a welcome m
 Open the same site URL on a phone. Small screens use bottom navigation, 44-pixel minimum tap targets, 16-pixel input text, scrollable lessons, safe-area spacing, stacked conversation controls, and a fluid touch drawing pad. Avatar purchases and learning progress stay in the browser used on that device.
 
 Writing studio requires two steps: trace the selected character, then write it independently on a cleared pad with the guide and character picker hidden. Both steps require drawing before completion. A reference appears beside the finished writing for self-comparison; no automatic handwriting grading is performed. Trace again restarts both steps.
+
+Name the avatar in My avatar (1–24 characters). The saved name appears in correct and incorrect answer animations, including guided conversations. The default name is Mochi. Names save locally and remain when changing animals or accessories.
