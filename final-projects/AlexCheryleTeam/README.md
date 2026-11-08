@@ -41,3 +41,5 @@ Name the avatar in My avatar (1–24 characters). The saved name appears in corr
 ## Complete word mastery
 
 Every word now requires four independent checks: meaning, Chinese characters, toned pinyin, and pronunciation through Mandarin speech recognition. Hinted attempts do not complete checks. Unsupported browsers, denied microphones, and skipped checks leave pronunciation pending. Speech recognition checks recognized words, not fine-grained tone accuracy. Existing recognition progress carries over; no pinyin or speech checks are inferred from previous scores. Already earned avatar points and purchases are preserved.
+
+Learning-path mini tests and review sessions contain 10 questions. When a level has fewer than 10 words, words return within the test for their next pending skill check.
