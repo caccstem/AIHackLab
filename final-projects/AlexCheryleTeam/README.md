@@ -25,3 +25,5 @@ Avatar companions include free cats and dogs, plus a rabbit (75 points) and pand
 All six levels are open from the start. Choose any level on the learning path; the app remembers your selection. Vocabulary and writing practice cover all levels. Skipping does not mark levels complete or grant points.
 
 Answer feedback animates the equipped avatar: correct answers trigger a celebratory jump with stars, while mistakes trigger an encouraging sway with hearts. Reactions also appear in guided conversations and respect reduced-motion preferences.
+
+Avatars use a chibi anime style with oversized heads, sparkling eyes, blush, and tiny sweater outfits. All animal choices, accessories, colors, and answer animations remain supported.
