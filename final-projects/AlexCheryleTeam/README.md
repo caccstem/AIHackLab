@@ -29,3 +29,7 @@ Answer feedback animates the equipped avatar: correct answers trigger a celebrat
 Avatars use a chibi anime style with oversized heads, sparkling eyes, blush, and tiny sweater outfits. All animal choices, accessories, colors, and answer animations remain supported.
 
 Daily visits award 5 avatar points once per local calendar day, with a welcome message and collected indicator. Sign-in is optional; claims are stored in this browser with learning progress.
+
+## Phone layout
+
+Open the same site URL on a phone. Small screens use bottom navigation, 44-pixel minimum tap targets, 16-pixel input text, scrollable lessons, safe-area spacing, stacked conversation controls, and a fluid touch drawing pad. Avatar purchases and learning progress stay in the browser used on that device.
