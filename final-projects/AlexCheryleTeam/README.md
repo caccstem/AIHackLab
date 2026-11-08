@@ -37,3 +37,5 @@ Each level displays its mastery percentage, progress bar, fully learned words, a
 In My avatar, trade 50 XP for 5 avatar points. Each trade deducts XP and adds points immediately; insufficient balances disable the exchange. Trading does not reduce earned daily-goal progress or word mastery.
 
 The avatar shop has 10 animals plus the human explorer: cat, dog, rabbit, panda, fox, bear, tiger, koala, mouse, and red panda. Choose from 12 outfits (sweaters, hoodies, jacket, raincoat, overalls, dress, T-shirt, sailor), 10 additional clothing colors, and natural or alternate fur colors. Clothing style and color equip separately. Existing names, points, and purchases remain saved.
+
+After each completed 10-question lesson, an optional Snack Match study break offers a six-card, three-pair matching game with the named avatar. Finding all pairs awards 3 avatar points once per lesson. The break can be skipped or resumed from lesson results while the same lesson session remains open. Starting a new quest begins a new session. Breaks do not change word mastery or quest stars.
