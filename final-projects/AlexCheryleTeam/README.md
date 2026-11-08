@@ -2,54 +2,32 @@
 
 Team members: Alex, Cheryl
 
-A Mandarin learning app with six progressive levels, adaptive vocabulary questions, pronunciation audio, guided conversations, and a handwriting practice pad. Progress is saved locally in the browser.
+A mobile-friendly Mandarin learning app with a soft blue theme, a home-page chibi avatar, and bottom navigation for learning, vocabulary, avatars, and conversation.
 
 ## Run locally
 
-From this folder, run:
+From this folder:
 
 ```sh
 python3 -m http.server 8000
 ```
 
-Open http://localhost:8000 in your browser. No installation or build is required.
-
-Speech recognition requires a supported browser and microphone permission; typing is available as a fallback. The handwriting pad supports freehand practice without automatic grading.
-
-## Avatar rewards
-
-Earn 100 avatar points the first time a level is mastered, or 25 points for a perfect replay of a completed level. Spend points in My avatar on hair, outfits, accessories, and backgrounds. Skin tones and starter items are free. Completed levels from earlier versions receive 100 points each. Points, purchases, and the equipped avatar save locally in the browser.
-
-Avatar companions include free cats and dogs, plus a rabbit (75 points) and panda (100 points). Animal avatars support fur colors, outfits, accessories, and backgrounds. Existing balances and purchases are preserved.
-
-All six levels are open from the start. Choose any level on the learning path; the app remembers your selection. Vocabulary and writing practice cover all levels. Skipping does not mark levels complete or grant points.
-
-Answer feedback animates the equipped avatar: correct answers trigger a celebratory jump with stars, while mistakes trigger an encouraging sway with hearts. Reactions also appear in guided conversations and respect reduced-motion preferences.
-
-Avatars use a chibi anime style with oversized heads, sparkling eyes, blush, and tiny sweater outfits. All animal choices, accessories, colors, and answer animations remain supported.
-
-Daily visits award 5 avatar points once per local calendar day, with a welcome message and collected indicator. Sign-in is optional; claims are stored in this browser with learning progress.
-
-## Phone layout
-
-Open the same site URL on a phone. Small screens use bottom navigation, 44-pixel minimum tap targets, 16-pixel input text, scrollable lessons, safe-area spacing, stacked conversation controls, and a fluid touch drawing pad. Avatar purchases and learning progress stay in the browser used on that device.
-
-Writing studio requires two steps: trace the selected character, then write it independently on a cleared pad with the guide and character picker hidden. Both steps require drawing before completion. A reference appears beside the finished writing for self-comparison; no automatic handwriting grading is performed. Trace again restarts both steps.
-
-Name the avatar in My avatar (1–24 characters). The saved name appears in correct and incorrect answer animations, including guided conversations. The default name is Mochi. Names save locally and remain when changing animals or accessories.
-
-## Complete word mastery
-
-Every word now requires four independent checks: meaning, Chinese characters, toned pinyin, and pronunciation through Mandarin speech recognition. Hinted attempts do not complete checks. Unsupported browsers, denied microphones, and skipped checks leave pronunciation pending. Speech recognition checks recognized words, not fine-grained tone accuracy. Existing recognition progress carries over; no pinyin or speech checks are inferred from previous scores. Already earned avatar points and purchases are preserved.
-
-Learning-path mini tests and review sessions contain 10 questions. When a level has fewer than 10 words, words return within the test for their next pending skill check.
-
-The interface uses rounded Nunito typography and a soft blush, lavender, cream, and plum palette. The home page displays the named customized avatar with a shortcut to My avatar and skill progress bars for each level. The home avatar remains visible on phone layouts.
+Open http://localhost:8000. No installation or build is required.
 
 ## Learning quests
 
-Ten-question sessions have a question trail, live game score, consecutive-answer combos, and a star result (5 independent correct answers = one star, 8 = two, 10 = three). Each new personal-best star for a level gives 5 avatar points once, up to 15 points per level. Game score is separate from spendable points and XP. Partial or review sessions do not grant star treasure. Home shows saved level stars, quest counts, and first-quest, three-combo, and perfect-quest badges. Full word mastery still requires all four skill checks.
+All six levels can be selected freely. Each quest has 10 questions, a progress trail, a score, and consecutive-answer combos. Words become fully learned after meaning, Chinese character recognition, writing practice, toned pinyin, and pronunciation checks.
 
-Main navigation now sits at the bottom across all screen sizes: a floating rounded dock on desktop and a safe-area-aware tab bar on phones. Branding and point totals appear in the top header.
+Handwriting is integrated into the learning path. A level’s Practice writing button starts a focused writing quest. Each exercise requires tracing a character and then writing it independently on a cleared pad with the guide hidden. All distinct characters in a word must be practiced to complete its writing check. Drawings are self-checked; the app does not automatically grade shapes or stroke order. The standalone Writing tab has been removed.
 
-The interface now uses a soft sky-blue palette with navy text, blue buttons, pale blue cards, and a blue bottom navigation highlight. Main text and primary button color contrast were checked.
+Microphone pronunciation checks require browser speech-recognition support and permission. Skipping or denying a microphone check leaves that skill pending. Recognition checks spoken words, not individual tone accuracy. Hinted answers do not complete independent skill checks.
+
+## Rewards and avatars
+
+- A daily visit awards 5 avatar points once per local calendar day.
+- First mastering a level awards 100 points; a perfect replay of a mastered level awards 25.
+- Quest stars require 5, 8, or 10 independent correct answers. Each new personal-best star awards 5 points once per level. Review and focused writing quests do not grant star treasure.
+- Game score and XP are separate from spendable avatar points.
+- Name and customize a chibi explorer, cat, dog, rabbit, or panda. Answer animations use the saved name and current appearance.
+
+Progress, rewards, avatar names, purchases, and writing practice save in the current browser. No sign-in is required; progress does not sync across devices. Existing points and purchases are preserved when learning requirements change.
