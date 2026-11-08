@@ -31,3 +31,5 @@ Microphone pronunciation checks require browser speech-recognition support and p
 - Name and customize a chibi explorer, cat, dog, rabbit, or panda. Answer animations use the saved name and current appearance.
 
 Progress, rewards, avatar names, purchases, and writing practice save in the current browser. No sign-in is required; progress does not sync across devices. Existing points and purchases are preserved when learning requirements change.
+
+Each level displays its mastery percentage, progress bar, fully learned words, and remaining skill checks. Expand See skill progress for meaning, characters, writing, pinyin, and pronunciation counts. The selected level also shows progress in the home hero and quest results. Progress updates after leaving an unfinished quest and is independent of quest star ratings.
