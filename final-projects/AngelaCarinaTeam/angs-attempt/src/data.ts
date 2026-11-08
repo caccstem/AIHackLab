@@ -1,27 +1,25 @@
 import vanilla from '../data/trainer.json' with {type:'json'};
+import textureMap from '../data/textures.json' with {type:'json'};
 import type {Recipe} from './engine';
-type Ingredient={item?:string,tag?:string};
-type RawRecipe={type:string,pattern?:string[],key?:Record<string,Ingredient>,ingredients?:Ingredient[],result:{item:string,count?:number}};
+import {SPECIAL,SPECIAL_ITEMS} from './special.ts';
+import {isSpeedrunning} from './preferences.ts';
+type Ingredient={item?:string,tag?:string}|{item?:string,tag?:string}[];
+type RawRecipe={type:string,pattern?:string[],key?:Record<string,Ingredient>,ingredients?:Ingredient[],result?:{item:string,count?:number}};
 const strip=(s:string)=>s.replace('minecraft:','');
 const tags=vanilla.tags as Record<string,string[]>;
-function expand(i:Ingredient):string[]{if(i.item)return [strip(i.item)];return (tags[strip(i.tag||'')]||[]).flatMap(v=>v.startsWith('#')?expand({tag:v.slice(1)}):[strip(v)]);}
+function expand(i:Ingredient):string[]{if(Array.isArray(i))return [...new Set(i.flatMap(expand))];if(i.item)return [strip(i.item)];return (tags[strip(i.tag||'')]||[]).flatMap(v=>v.startsWith('#')?expand({tag:v.slice(1)}):[strip(v)]);}
 export type Lang='en'|'no';
 export const languages=vanilla.languages as Record<Lang,Record<string,string>>;
-export function itemName(id:string,lang:Lang):string{return languages[lang]['item.minecraft.'+id]||languages[lang]['block.minecraft.'+id]||id.replaceAll('_',' ');}
+export function itemName(id:string,lang:Lang):string{const [base,variant]=id.split('#');const name=languages[lang]['item.minecraft.'+base]||languages[lang]['block.minecraft.'+base]||base.replaceAll('_',' ');return name+(variant?' ('+variant.replaceAll('_',' ')+')':'');}
 export const recipes:Recipe[]=Object.entries(vanilla.recipes).map(([id,raw])=>{
- const r=raw as RawRecipe;const shapeless=r.type.endsWith('shapeless');
- const pattern=shapeless?[(r.ingredients||[]).map(expand)]:(r.pattern||[]).map(row=>[...row].map(c=>r.key?.[c]?expand(r.key[c]):null));
+ const r=raw as RawRecipe,special=!r.result?id:undefined,example=special?SPECIAL[special as keyof typeof SPECIAL]:null;
+ if(special&&!example)throw Error('Missing special recipe support: '+id);
+ const shapeless=example?example.shapeless:r.type.endsWith('shapeless');
+ const list=(r.ingredients||[]).map(expand);
+ const pattern:(string[]|null)[][]=example?JSON.parse(JSON.stringify(example.pattern)):shapeless?Array.from({length:Math.ceil(list.length/3)},(_,i)=>list.slice(i*3,i*3+3)):(r.pattern||[]).map(row=>[...row].map(c=>r.key?.[c]?expand(r.key[c]):null));
  const ingredients:{alternatives:string[],quantity:number}[]=[];for(const a of pattern.flat()){if(!a)continue;const found=ingredients.find(i=>i.alternatives.join()===a.join());if(found)found.quantity++;else ingredients.push({alternatives:a,quantity:1});}
- const output=strip(r.result.item);return {id,output,count:r.result.count||1,names:{en:itemName(output,'en'),no:itemName(output,'no')},searchTerms:{en:[itemName(output,'en'),...ingredients.flatMap(i=>i.alternatives.map(id=>itemName(id,'en')))],no:[itemName(output,'no'),...ingredients.flatMap(i=>i.alternatives.map(id=>itemName(id,'no')))]},pattern,shapeless,ingredients,difficulty:/iron_|shield|gold_block/.test(output)?3:/stone_|boat|door|ender_eye|bucket/.test(output)?2:1};
+ const output=example?.output||strip(r.result!.item);
+ return {id,output,count:example?.count||r.result?.count||1,special,note:example?.note,speedrunning:isSpeedrunning(output),names:{en:itemName(output,'en'),no:itemName(output,'no')},pattern,shapeless,ingredients,difficulty:Math.min(3,Math.max(1,Math.ceil(pattern.flat().filter(Boolean).length/3)))};
 });
-export const itemIds=[...new Set(recipes.flatMap(r=>[r.output,...r.ingredients.flatMap(i=>i.alternatives)]))].sort();
-export const terms=[
- ['enchantment.minecraft.looting','Enchantment','Looting III'],
- ['subtitles.block.lava.ambient','Sound subtitle',''],
- ['subtitles.block.lava.extinguish','Sound subtitle',''],
- ['subtitles.entity.silverfish.ambient','Sound subtitle',''],
- ['subtitles.entity.silverfish.hurt','Sound subtitle',''],
- ['subtitles.entity.silverfish.death','Sound subtitle',''],
- ['debug.localDifficulty','World vocabulary',''],
-];
-export function texture(id:string){const blocks=['crafting_table','furnace','gold_block','cobblestone','blackstone','oak_planks','spruce_planks','birch_planks','jungle_planks','acacia_planks','dark_oak_planks','crimson_planks','warped_planks'];let file=id==='crafting_table'?'crafting_table_front':id==='furnace'?'furnace_front':id;return `${import.meta.env?.BASE_URL||'./'}assets/${blocks.includes(id)?'block':'item'}/${file}.png`;}
+export const itemIds=[...new Set([...SPECIAL_ITEMS,...recipes.flatMap(r=>[r.output,...r.ingredients.flatMap(i=>i.alternatives)])])].sort();
+export function texture(id:string){const base=id.split('#')[0];const file=(textureMap as Record<string,string>)[base];return file?`${import.meta.env?.BASE_URL||'./'}assets/${file}`:'';}

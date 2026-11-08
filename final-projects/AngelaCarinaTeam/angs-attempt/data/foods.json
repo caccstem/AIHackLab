@@ -1,0 +1,322 @@
+{
+  "apple": {
+    "edible": true,
+    "note": "",
+    "nutrition": 4,
+    "remainder": null,
+    "saturation": 2.4,
+    "saturationModifier": 0.3
+  },
+  "baked_potato": {
+    "edible": true,
+    "note": "",
+    "nutrition": 5,
+    "remainder": null,
+    "saturation": 6.0,
+    "saturationModifier": 0.6
+  },
+  "beef": {
+    "edible": true,
+    "note": "",
+    "nutrition": 3,
+    "remainder": null,
+    "saturation": 1.8,
+    "saturationModifier": 0.3
+  },
+  "beetroot": {
+    "edible": true,
+    "note": "",
+    "nutrition": 1,
+    "remainder": null,
+    "saturation": 1.2,
+    "saturationModifier": 0.6
+  },
+  "beetroot_soup": {
+    "edible": true,
+    "note": "",
+    "nutrition": 6,
+    "remainder": "bowl",
+    "saturation": 7.2,
+    "saturationModifier": 0.6
+  },
+  "bread": {
+    "edible": true,
+    "note": "",
+    "nutrition": 5,
+    "remainder": null,
+    "saturation": 6.0,
+    "saturationModifier": 0.6
+  },
+  "cake": {
+    "edible": false,
+    "note": "Cake must be placed and eaten in seven separate bites. Placed-block eating is not simulated; earned cakes can be stored but cannot be eaten here. Values shown are per bite.",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 0.4,
+    "saturationModifier": 0.1
+  },
+  "carrot": {
+    "edible": true,
+    "note": "",
+    "nutrition": 3,
+    "remainder": null,
+    "saturation": 3.6,
+    "saturationModifier": 0.6
+  },
+  "chicken": {
+    "edible": true,
+    "note": "30% Hunger effect is not simulated.",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 1.2,
+    "saturationModifier": 0.3
+  },
+  "chorus_fruit": {
+    "edible": true,
+    "note": "Random teleportation is not simulated.",
+    "nutrition": 4,
+    "remainder": null,
+    "saturation": 2.4,
+    "saturationModifier": 0.3
+  },
+  "cod": {
+    "edible": true,
+    "note": "",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 0.4,
+    "saturationModifier": 0.1
+  },
+  "cooked_beef": {
+    "edible": true,
+    "note": "",
+    "nutrition": 8,
+    "remainder": null,
+    "saturation": 12.8,
+    "saturationModifier": 0.8
+  },
+  "cooked_chicken": {
+    "edible": true,
+    "note": "",
+    "nutrition": 6,
+    "remainder": null,
+    "saturation": 7.2,
+    "saturationModifier": 0.6
+  },
+  "cooked_cod": {
+    "edible": true,
+    "note": "",
+    "nutrition": 5,
+    "remainder": null,
+    "saturation": 6.0,
+    "saturationModifier": 0.6
+  },
+  "cooked_mutton": {
+    "edible": true,
+    "note": "",
+    "nutrition": 6,
+    "remainder": null,
+    "saturation": 9.6,
+    "saturationModifier": 0.8
+  },
+  "cooked_porkchop": {
+    "edible": true,
+    "note": "",
+    "nutrition": 8,
+    "remainder": null,
+    "saturation": 12.8,
+    "saturationModifier": 0.8
+  },
+  "cooked_rabbit": {
+    "edible": true,
+    "note": "",
+    "nutrition": 5,
+    "remainder": null,
+    "saturation": 6.0,
+    "saturationModifier": 0.6
+  },
+  "cooked_salmon": {
+    "edible": true,
+    "note": "",
+    "nutrition": 6,
+    "remainder": null,
+    "saturation": 9.6,
+    "saturationModifier": 0.8
+  },
+  "cookie": {
+    "edible": true,
+    "note": "",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 0.4,
+    "saturationModifier": 0.1
+  },
+  "dried_kelp": {
+    "edible": true,
+    "note": "",
+    "nutrition": 1,
+    "remainder": null,
+    "saturation": 0.6,
+    "saturationModifier": 0.3
+  },
+  "enchanted_golden_apple": {
+    "edible": true,
+    "note": "Regeneration II, Absorption IV, Resistance and Fire Resistance effects are not simulated.",
+    "nutrition": 4,
+    "remainder": null,
+    "saturation": 9.6,
+    "saturationModifier": 1.2
+  },
+  "golden_apple": {
+    "edible": true,
+    "note": "Regeneration II (5 seconds) and Absorption I (2 minutes) are not simulated; only nutrition is applied.",
+    "nutrition": 4,
+    "remainder": null,
+    "saturation": 9.6,
+    "saturationModifier": 1.2
+  },
+  "golden_carrot": {
+    "edible": true,
+    "note": "",
+    "nutrition": 6,
+    "remainder": null,
+    "saturation": 14.4,
+    "saturationModifier": 1.2
+  },
+  "honey_bottle": {
+    "edible": true,
+    "note": "Returns a glass bottle. Poison removal has no effect in this trainer, which does not simulate poison.",
+    "nutrition": 6,
+    "remainder": "glass_bottle",
+    "saturation": 1.2,
+    "saturationModifier": 0.1
+  },
+  "melon_slice": {
+    "edible": true,
+    "note": "",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 1.2,
+    "saturationModifier": 0.3
+  },
+  "mushroom_stew": {
+    "edible": true,
+    "note": "",
+    "nutrition": 6,
+    "remainder": "bowl",
+    "saturation": 7.2,
+    "saturationModifier": 0.6
+  },
+  "mutton": {
+    "edible": true,
+    "note": "",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 1.2,
+    "saturationModifier": 0.3
+  },
+  "poisonous_potato": {
+    "edible": true,
+    "note": "60% Poison effect is not simulated.",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 1.2,
+    "saturationModifier": 0.3
+  },
+  "porkchop": {
+    "edible": true,
+    "note": "",
+    "nutrition": 3,
+    "remainder": null,
+    "saturation": 1.8,
+    "saturationModifier": 0.3
+  },
+  "potato": {
+    "edible": true,
+    "note": "",
+    "nutrition": 1,
+    "remainder": null,
+    "saturation": 0.6,
+    "saturationModifier": 0.3
+  },
+  "pufferfish": {
+    "edible": true,
+    "note": "Poison, Hunger and Nausea effects are not simulated.",
+    "nutrition": 1,
+    "remainder": null,
+    "saturation": 0.2,
+    "saturationModifier": 0.1
+  },
+  "pumpkin_pie": {
+    "edible": true,
+    "note": "",
+    "nutrition": 8,
+    "remainder": null,
+    "saturation": 4.8,
+    "saturationModifier": 0.3
+  },
+  "rabbit": {
+    "edible": true,
+    "note": "",
+    "nutrition": 3,
+    "remainder": null,
+    "saturation": 1.8,
+    "saturationModifier": 0.3
+  },
+  "rabbit_stew": {
+    "edible": true,
+    "note": "",
+    "nutrition": 10,
+    "remainder": "bowl",
+    "saturation": 12.0,
+    "saturationModifier": 0.6
+  },
+  "rotten_flesh": {
+    "edible": true,
+    "note": "80% Hunger effect is not simulated.",
+    "nutrition": 4,
+    "remainder": null,
+    "saturation": 0.8,
+    "saturationModifier": 0.1
+  },
+  "salmon": {
+    "edible": true,
+    "note": "",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 0.4,
+    "saturationModifier": 0.1
+  },
+  "spider_eye": {
+    "edible": true,
+    "note": "Poison effect is not simulated.",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 3.2,
+    "saturationModifier": 0.8
+  },
+  "suspicious_stew": {
+    "edible": true,
+    "note": "Flower-dependent status effects are not simulated; only base nutrition is applied.",
+    "nutrition": 6,
+    "remainder": "bowl",
+    "saturation": 7.2,
+    "saturationModifier": 0.6
+  },
+  "sweet_berries": {
+    "edible": true,
+    "note": "",
+    "nutrition": 2,
+    "remainder": null,
+    "saturation": 0.4,
+    "saturationModifier": 0.1
+  },
+  "tropical_fish": {
+    "edible": true,
+    "note": "",
+    "nutrition": 1,
+    "remainder": null,
+    "saturation": 0.2,
+    "saturationModifier": 0.1
+  }
+}

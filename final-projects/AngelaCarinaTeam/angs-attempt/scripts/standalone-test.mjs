@@ -18,7 +18,7 @@ async function waitFor(check){
   while(!check()){if(Date.now()>deadline)throw Error('Timed out waiting for standalone UI');await new Promise(r=>setTimeout(r,10));}
 }
 try{
-  await waitFor(()=>dom.window.document.querySelector('.craft-grid'));
+  await waitFor(()=>dom.window.document.querySelector('[data-zone="inventory"][data-index="0"].filled'));
   const doc=dom.window.document;
   assert.match(doc.querySelector('.target h2').textContent,/Crafting Table/);
   for(const img of doc.querySelectorAll('img')){
@@ -27,8 +27,9 @@ try{
   }
   const slot=(zone,i)=>doc.querySelector(`[data-zone="${zone}"][data-index="${i}"]`);
   async function enter(el,shift=false){
+    const before=el.getAttribute('aria-label');
     el.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Enter',shiftKey:shift,bubbles:true}));
-    await new Promise(r=>setTimeout(r,0));
+    await waitFor(()=>el.getAttribute('aria-label')!==before);
   }
   await enter(slot('inventory',0));
   for(const i of [0,1,3,4])await enter(slot('grid',i),true);

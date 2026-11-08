@@ -1,0 +1,287 @@
+{
+  "version": "1.16.1",
+  "relevantItems": 692,
+  "rendered": 622,
+  "fallbacks": [
+    {
+      "id": "black_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "black_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "black_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "blue_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "blue_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "blue_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "brown_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "brown_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "brown_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "chest",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "conduit",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "creeper_head",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "cyan_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "cyan_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "cyan_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "dragon_head",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "ender_chest",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "filled_map",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "firework_star",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "gray_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "gray_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "gray_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "green_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "green_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "green_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "leather_boots",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "leather_chestplate",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "leather_helmet",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "leather_horse_armor",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "leather_leggings",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "light_blue_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "light_blue_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "light_blue_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "light_gray_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "light_gray_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "light_gray_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "lime_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "lime_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "lime_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "lingering_potion",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "magenta_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "magenta_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "magenta_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "orange_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "orange_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "orange_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "pink_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "pink_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "pink_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "player_head",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "purple_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "purple_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "purple_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "red_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "red_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "red_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "shield",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "skeleton_skull",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "stonecutter",
+      "reason": "Tinted block model needs a verified item color provider"
+    },
+    {
+      "id": "tipped_arrow",
+      "reason": "Item-specific tint/provider requires explicit fallback"
+    },
+    {
+      "id": "trapped_chest",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "white_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "white_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "white_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "wither_skeleton_skull",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "yellow_banner",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "yellow_bed",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "yellow_shulker_box",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    },
+    {
+      "id": "zombie_head",
+      "reason": "Built-in entity model requires Minecraft entity renderer"
+    }
+  ]
+}

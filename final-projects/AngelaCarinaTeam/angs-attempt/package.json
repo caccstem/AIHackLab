@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && npm run build:standalone && vite build",
-    "test": "node --experimental-strip-types --test src/engine.test.mjs",
+    "test": "node --experimental-strip-types --test src/*.test.mjs",
     "test:ui": "node scripts/ui-test.mjs",
     "test:all": "npm test && npm run test:ui && npm run test:standalone",
     "build:standalone": "node scripts/build-standalone.mjs",

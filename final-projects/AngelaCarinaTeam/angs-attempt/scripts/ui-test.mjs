@@ -2,72 +2,84 @@ import {JSDOM} from 'jsdom';
 import {createServer} from 'vite';
 import {createServer as httpServer} from 'node:http';
 import assert from 'node:assert/strict';
+import {emptySaved,resolve,appear,backlogCount,testAvailable,testPool} from '../src/progression.ts';
 const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'http://localhost/'});
 for(const key of ['window','document','localStorage','HTMLElement','Event','MouseEvent','KeyboardEvent'])globalThis[key]=dom.window[key];
 globalThis.IS_REACT_ACT_ENVIRONMENT=true;
 const server=await createServer({server:{middlewareMode:true,hmr:{server:httpServer()}},appType:'custom'});
 const {act}=await import('react');
-const button=(text)=>[...document.querySelectorAll('button')].find(e=>e.textContent.trim().includes(text));
-async function click(el){assert.ok(el,'element exists');await act(async()=>el.dispatchEvent(new MouseEvent('click',{bubbles:true})));}
+const KEY='crafting-fieldnotes-v1';let app,checks=0;
+const saved=()=>JSON.parse(localStorage.getItem(KEY));
+const button=text=>[...document.querySelectorAll('button')].find(e=>e.textContent.trim().includes(text));
+async function click(el){assert.ok(el,'element exists');assert.equal(el.disabled,false);await act(async()=>el.dispatchEvent(new MouseEvent('click',{bubbles:true})));}
 async function key(el,shift=false){assert.ok(el);await act(async()=>el.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',shiftKey:shift,bubbles:true})));}
-const grid=(i)=>document.querySelector(`[data-zone="grid"][data-index="${i}"]`);
+const grid=i=>document.querySelector(`[data-zone="grid"][data-index="${i}"]`),inv=i=>document.querySelector(`[data-zone="inventory"][data-index="${i}"]`);
 const pointer=async(el,type,button=0,x=0,y=0)=>{await act(async()=>el.dispatchEvent(new MouseEvent(type,{bubbles:true,button,clientX:x,clientY:y})));};
-const inv=(i)=>document.querySelector(`[data-zone="inventory"][data-index="${i}"]`);
-let checks=0;
+async function pressSlot(el,right=false){await pointer(el,'pointerdown',right?2:0,100,120);await pointer(el,'pointerup',right?2:0,100,120);}
+async function mode(name){await click([...document.querySelectorAll('.mode-tabs button')].find(e=>e.textContent.includes(name)));}
+async function mount(seed=emptySaved()){
+ await act(async()=>{if(app)app.appRoot.unmount();localStorage.setItem(KEY,JSON.stringify(seed));server.moduleGraph.invalidateAll();app=await server.ssrLoadModule('/src/main.tsx');});
+}
+async function fillEasy(){const data=await server.ssrLoadModule('/src/data.ts');const r=data.recipes.find(r=>r.id===document.querySelector('.target').dataset.recipeId);assert.ok(r);
+ for(const ingredient of r.ingredients){const positions=[];for(let row=0;row<r.pattern.length;row++)for(let col=0;col<r.pattern[row].length;col++)if(r.pattern[row][col]?.[0]===ingredient.alternatives[0])positions.push(row*3+col);
+ for(const position of positions){if(!document.querySelector('.held b')){const source=[...document.querySelectorAll('[data-zone="inventory"].filled')].find(el=>el.getAttribute('aria-label').includes(': '+data.itemName(ingredient.alternatives[0],saved().language)+' × '));assert.ok(source,r.id+' '+ingredient.alternatives[0]);await key(source);}await key(grid(position),true);}}
+ return r;
+}
+async function closeReference(){await click(document.querySelector('[aria-label="Close recipe reference"]'));}
 try{
- await act(async()=>{await server.ssrLoadModule('/src/main.tsx');});
- assert.match(document.body.textContent,/Crafting Table/);checks++;
- // Exact Easy supply; place one in each cell and explicitly check.
- assert.match(inv(0).getAttribute('aria-label'),/4/);await key(inv(0));for(const i of [0,1,3,4])await key(grid(i),true);
- assert.match(document.querySelector('.output').getAttribute('aria-label'),/Crafting Table/);await click(button('Check recipe'));
- assert.match(document.querySelector('[role="status"]').textContent,/Correct/);assert.equal(grid(0).textContent,'');checks++;
- let saved=JSON.parse(localStorage.getItem('crafting-fieldnotes-v1'));assert.equal(saved.progress.crafting_table.attempts,1);
- await click(button('Check retry'));saved=JSON.parse(localStorage.getItem('crafting-fieldnotes-v1'));assert.equal(saved.progress.crafting_table.attempts,1);checks++;
- // A miss reveals reference, persists weakness and cannot be turned into another scored answer.
- await click(button('Continue'));await click(button('I don’t know'));assert.ok(document.querySelector('[role="dialog"]'));saved=JSON.parse(localStorage.getItem('crafting-fieldnotes-v1'));const weakId=Object.keys(saved.progress).find(id=>saved.progress[id].mistakes);assert.ok(weakId);checks++;
- await click(button('Retry this recipe'));assert.equal(document.querySelector('[role="dialog"]'),null);
- // Language changes the item text while keeping the current target and recorded progress.
- const round=document.querySelector('.target .eyebrow').textContent;await click(document.querySelector('[aria-label="Switch item language"]'));
- assert.equal(document.querySelector('.target .eyebrow').textContent,round);assert.equal(JSON.parse(localStorage.getItem('crafting-fieldnotes-v1')).language,'no');checks++;
- await click([...document.querySelectorAll('.mode-tabs button')].find(e=>e.textContent.includes('Review')));
- assert.match(document.querySelector('.panel-heading').textContent,/REVIEW/);await click(button('I don’t know'));assert.match(document.querySelector('.session-stat strong').textContent,/0\/1/);
- await click(button('Retry this recipe'));await click(button('Check retry'));assert.equal(document.querySelector('.session-stat strong').textContent,'0/1');checks++;
- // Consult the active solution in the book before the first submission: cannot earn review credit.
- await click(button('Continue'));await click(button('Recipe book'));
- const targetName=JSON.parse(localStorage.getItem('crafting-fieldnotes-v1')).language==='no'?true:false;assert.ok(targetName);
- const target=await server.ssrLoadModule('/src/data.ts');const r=target.recipes.find(r=>r.id===weakId);
- const detail=[...document.querySelectorAll('.reference-card')].find(e=>e.querySelector('summary').textContent.includes(target.itemName(r.output,'no')));
- await act(async()=>{detail.open=true;detail.dispatchEvent(new Event('toggle'));});await click(button('The workbench'));await click(button('Check recipe'));assert.equal(document.querySelector('.session-stat strong').textContent,'0/2');checks++;
- // A correct independent review answer improves accuracy exactly once.
- await click(document.querySelector('[aria-label="Close recipe reference"]'));await click(button('Continue'));
- const data=await server.ssrLoadModule('/src/data.ts');
- async function fillEasy(){const name=document.querySelector('.target h2').textContent;const r=data.recipes.find(r=>data.itemName(r.output,'no')===name);assert.ok(r,name);
- for(let j=0;j<r.ingredients.length;j++){await key(inv(j));for(let row=0;row<r.pattern.length;row++)for(let col=0;col<r.pattern[row].length;col++)if(r.pattern[row][col]?.[0]===r.ingredients[j].alternatives[0])await key(grid(row*3+col),true);}}
- await fillEasy();await click(button('Check recipe'));assert.equal(document.querySelector('.session-stat strong').textContent,'1/3');await click(button('Check retry'));assert.equal(document.querySelector('.session-stat strong').textContent,'1/3');checks++;
- for(let n=0;n<7;n++){await click(button('Continue'));await click(button('I don’t know'));await click(document.querySelector('[aria-label="Close recipe reference"]'));}
- await click(button('Continue'));assert.match(document.querySelector('.empty').textContent,/1 \/ 10 correct · 10% accuracy/);checks++;
- // Game score is awarded once; inventory gestures and survival supply crafts do not score.
- await click([...document.querySelectorAll('.mode-tabs button')].find(e=>e.textContent.includes('Game')));
- await fillEasy();await click(button('Check recipe'));assert.equal(document.querySelector('.session-stat strong').textContent,'100');assert.equal(button('Check recipe'),undefined);assert.equal(button('Check retry'),undefined);await click(button('Next recipe'));checks++;
- await click(button('Open free supply chest'));
- // Mouse left pickup and right placement, then drag distribution over the helmet pattern.
- await pointer(inv(0),'pointerdown');await pointer(inv(0),'pointerup');
- await pointer(grid(0),'pointerdown',2);await pointer(grid(0),'pointerup',2);assert.match(grid(0).getAttribute('aria-label'),/× 1/);
- await click(button('Clear grid'));await key(inv(0));
- document.elementFromPoint=()=>grid(0);await pointer(grid(0),'pointerdown',2);
- for(const i of [1,2,3,5]){document.elementFromPoint=()=>grid(i);await pointer(grid(i),'pointermove',2,20+i*10,20);}
- await pointer(grid(5),'pointerup',2,70,20);assert.match(document.querySelector('.output').getAttribute('aria-label'),/Jernhjelm/);
- await click(button('Craft survival supply'));await click(button('Equip'));assert.match(document.querySelector('.session').textContent,/2\/20/);assert.equal(document.querySelector('.session-stat strong').textContent,'100');checks++;
- // Eating crafted bread heals without adding target points.
- await click(button('Return to target'));await click(button('I don’t know'));assert.match(document.querySelector('.hearts').textContent,/14.3/);
- await click(button('Open free supply chest'));await key(inv(1));for(const i of [0,1,2])await key(grid(i),true);await click(button('Craft survival supply'));await click(button('Eat'));assert.match(document.querySelector('.hearts').textContent,/16.3/);assert.equal(document.querySelector('.session-stat strong').textContent,'100');checks++;
- await click(button('Return to target'));await click(button('Next recipe'));
- for(let i=0;i<6&&!document.querySelector('.game-end');i++){await click(button('I don’t know'));if(!document.querySelector('.game-end'))await click(button('Next recipe'));}
- assert.match(document.body.textContent,/Run complete/);assert.match(document.body.textContent,/Final score: 100/);checks++;
- await click(button('Restart run'));assert.equal(document.querySelector('.game-end'),null);assert.match(document.querySelector('.hearts').textContent,/20.0/);checks++;
- // Hard inventory is empty; searching in Norwegian finds official labels.
- const select=document.querySelector('select');await act(async()=>{select.value='hard';select.dispatchEvent(new Event('change',{bubbles:true}));});assert.equal(document.querySelectorAll('[data-zone="inventory"].filled').length,0);
- const input=document.querySelector('input[aria-label="Search creative inventory"]');await act(async()=>{Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype,'value').set.call(input,'enderoye');input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));});
- assert.equal(document.querySelectorAll('.creative-items button').length,1);assert.match(document.querySelector('.creative-items').textContent,/Enderøye/);checks++;
- console.log(`${checks} UI flow checks passed.`);
-}finally{await server.close();dom.window.close();}
+ await mount();assert.ok(button('Crafting Table'));assert.ok(button('Recipe Book'));assert.doesNotMatch(document.body.textContent,/free supply chest/i);checks++;
+ // Place-one setting never reduces a left-click pickup to one or half a stack.
+ await click(button('Place one'));await pressSlot(inv(0));assert.match(document.querySelector('.held').textContent,/× 4/);assert.equal(document.querySelector('.held-cursor .qty').textContent,'4');assert.match(inv(0).getAttribute('aria-label'),/empty/);
+ document.elementFromPoint=()=>grid(0);await pointer(grid(0),'pointerdown');for(const i of [1,3]){document.elementFromPoint=()=>grid(i);await pointer(grid(i),'pointermove',0,50+i*10,50);}await pointer(grid(3),'pointerup',0,80,50);
+ for(const i of [0,1,3])assert.match(grid(i).getAttribute('aria-label'),/× 1/);assert.match(document.querySelector('.held').textContent,/× 1/);checks++;
+ await click(button('Clear grid'));assert.match(inv(0).getAttribute('aria-label'),/× 4/);await pressSlot(inv(0),true);assert.match(inv(0).getAttribute('aria-label'),/× 2/);assert.match(document.querySelector('.held').textContent,/× 2/);
+ await pressSlot(grid(0),true);await pressSlot(inv(0));assert.match(inv(0).getAttribute('aria-label'),/× 3/);assert.match(grid(0).getAttribute('aria-label'),/× 1/);checks++;
+ await click(button('Clear grid'));await pressSlot(inv(0));document.elementFromPoint=()=>grid(0);await pointer(grid(0),'pointerdown',2);for(const i of [1,3,4]){document.elementFromPoint=()=>grid(i);await pointer(grid(i),'pointermove',2,100+i*10,70);}await pointer(grid(4),'pointerup',2,140,70);for(const i of [0,1,3,4])assert.match(grid(i).getAttribute('aria-label'),/× 1/);checks++;
+ const context=new MouseEvent('contextmenu',{bubbles:true,cancelable:true});grid(0).dispatchEvent(context);assert.equal(context.defaultPrevented,true);
+ const check=button('Check recipe');await act(async()=>{check.click();check.click();});assert.equal(saved().completedQuestions,1);assert.equal(saved().progress.crafting_table.attempts,1);assert.match(document.querySelector('[role="status"]').textContent,/Correct/);await click(button('Check retry'));assert.equal(saved().completedQuestions,1);checks++;
+ // Both source modes contribute to history, which is visible and persists under language changes.
+ await click(button('Continue'));const data=await server.ssrLoadModule('/src/data.ts');const practiceId=document.querySelector('.target').dataset.recipeId;
+ await click(button('I don’t know'));await closeReference();await mode('Game');const gameId=document.querySelector('.target').dataset.recipeId;await click(button('I don’t know'));assert.equal(saved().progress[gameId].sourceMode,'game');await mode('Review');assert.ok(document.querySelector('.review-history'));assert.ok(document.querySelector(`[data-history-id="${practiceId}"]`));assert.ok(document.querySelector(`[data-history-id="${gameId}"]`));assert.doesNotMatch(document.querySelector('.workbench').textContent,/%|accuracy|Test results|Review session complete/);checks++;
+ await click(document.querySelector('[aria-label="Switch item language"]'));const historyKeys=Object.keys(saved().progress);const persisted=saved();await mount(persisted);await mode('Review');assert.deepEqual(Object.keys(saved().progress),historyKeys);assert.equal(saved().language,'no');checks++;
+ await mode('Test Mode');assert.match(document.querySelector('.test-result').textContent,/locked/);assert.match(document.body.textContent,new RegExp(`${backlogCount(saved())}/10`));checks++;
+ // Hard inventory: full stacks, incompatible swap, right-drag and return conservation.
+ await mount({...emptySaved(),difficulty:'hard'});await click(button('Place one'));const creative=async(id)=>{const input=document.querySelector('[aria-label="Search creative inventory"]');await act(async()=>{Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype,'value').set.call(input,id);input.dispatchEvent(new Event('input',{bubbles:true}));});return [...document.querySelectorAll('.creative-items button')].find(b=>b.title===id);};
+ await click(await creative('Iron Ingot'));assert.match(document.querySelector('.held').textContent,/× 64/);await pressSlot(inv(0));await click(await creative('Wheat'));await pressSlot(inv(0));assert.match(document.querySelector('.held').textContent,/Iron Ingot × 64/);assert.match(inv(0).getAttribute('aria-label'),/Wheat × 64/);await click(button('Clear grid'));assert.match(inv(1).getAttribute('aria-label'),/Iron Ingot × 64/);checks++;
+ // Single weak recipe cannot be assigned again early, even across restarts and refresh.
+ let seed=resolve(emptySaved(),'stick','practice',false);for(const r of data.recipes.filter(r=>!['stick','crafting_table'].includes(r.id)).slice(0,10)){seed=resolve(seed,r.id,'practice',false);for(let j=0;j<2;j++){seed.completedQuestions+=10;seed=resolve(seed,r.id,'review',true);}}seed.completedQuestions+=10;await mount(seed);await mode('Review');assert.equal(document.querySelector('.target h2').textContent,'Stick');await click(button('Reveal answer'));assert.equal(saved().progress.stick.totalMistakes,1);assert.equal(saved().progress.stick.completedReviews,'0');await closeReference();await click(button('Continue'));assert.match(document.querySelector('.empty').textContent,/10 more recipe questions/);const count=saved().completedQuestions;await mode('Review');assert.equal(saved().completedQuestions,count);assert.match(document.querySelector('.empty').textContent,/10 more/);checks++;
+ const afterReveal=saved();await mount(afterReveal);await mode('Review');assert.match(document.querySelector('.empty').textContent,/10 more/);
+ // Complete genuinely different Practice questions to unlock the spaced review.
+ const originalRandom=Math.random;Math.random=()=>.99;
+ try{await mode('Practice');for(let i=0;i<10;i++){const r=await fillEasy();assert.notEqual(r.id,'stick');await click(button('Check recipe'));if(i<9)await click(button('Continue'));}}finally{Math.random=originalRandom;}
+ await mode('Review');assert.equal(document.querySelector('.target h2').textContent,'Stick');await fillEasy();await click(button('Check recipe'));assert.equal(saved().progress.stick.completedReviews,'1');const beforeRetry=saved().completedQuestions;await click(button('Check retry'));assert.equal(saved().completedQuestions,beforeRetry);await click(button('Continue'));assert.match(document.querySelector('.empty').textContent,/10 more/);checks++;
+ // Build ten established mastery records through the progression API, then demaster one.
+ seed=emptySaved();for(const r of data.recipes.slice(0,10)){seed=resolve(seed,r.id,'practice',false);for(let j=0;j<2;j++){for(let k=0;k<15;k++)seed=resolve(seed,'spacing-filler','practice',true);seed=resolve(seed,r.id,'review',true);}}
+ seed=resolve(seed,data.recipes[0].id,'game',false);for(const r of data.recipes.slice(10,19))seed=resolve(seed,r.id,'game',false);assert.equal(testAvailable(seed),true);await mount(seed);await mode('Test Mode');assert.equal(button('Recipe Book').disabled,true);const before=saved();let seen=[],expected=0;
+ for(let i=0;i<9;i++){const r=data.recipes.find(r=>r.id===document.querySelector('.target').dataset.recipeId);assert.ok(!seen.includes(r.id));seen.push(r.id);if(i%2===0){await fillEasy();await click(button('Check recipe'));expected++;}else await click(button('I don’t know'));assert.equal(document.querySelector('[role="dialog"]'),null);assert.equal(button('Check retry'),undefined);assert.equal(document.querySelector('.test-result'),null);await click(button(i===8?'Submit completed test':'Next question'));}
+ assert.match(document.querySelector('.test-result').textContent,new RegExp(`${expected} / 9 correct`));assert.match(document.querySelector('.test-result').textContent,/56%/);assert.equal(document.querySelectorAll('.test-result .reference-card').length,4);assert.deepEqual(saved().progress,before.progress);assert.equal(saved().completedQuestions,before.completedQuestions);assert.equal(saved().testResults[0].answers.length,9);checks++;
+ // Dynamic locks and optional review use real historical states, including non-speedrunning recipes.
+ let optional=emptySaved();for(const r of data.recipes.slice(0,11))optional=resolve(optional,r.id,'practice',false);
+ const nonSpeed=data.recipes[0];optional.completedQuestions+=10;optional=resolve(optional,nonSpeed.id,'review',true);optional.completedQuestions+=10;optional=resolve(optional,nonSpeed.id,'review',true);optional.completedQuestions+=10;
+ await mount(optional);await mode('Review');await click(button('Additional review'));await click(button('Check available reviews'));assert.equal(document.querySelector('.target').dataset.recipeId,nonSpeed.id);await fillEasy();await click(button('Check recipe'));assert.equal(saved().progress[nonSpeed.id].mastered,true);assert.equal(backlogCount(saved()),10);checks++;
+ const optionalAgain=saved();optionalAgain.completedQuestions+=10;await mount(optionalAgain);await mode('Review');await click(button('Additional review'));await click(button('Check available reviews'));await click(button('I don’t know'));assert.equal(saved().progress[nonSpeed.id].mastered,false);assert.equal(saved().progress[nonSpeed.id].requiredReviews,'2');assert.equal(saved().progress[nonSpeed.id].sourceMode,'review');assert.equal(testPool(saved(),data.recipes.map(r=>r.id)).includes(nonSpeed.id),false);await closeReference();assert.match(document.querySelector(`[data-history-id="${nonSpeed.id}"]`).textContent,/Additional review/);checks++;
+ let locked=emptySaved();for(const r of data.recipes.slice(0,10))locked=resolve(locked,r.id,'game',false);await mount(locked);await mode('Review');assert.match(document.querySelector('.empty').textContent,/10\/11/);assert.match(document.querySelector('.empty').textContent,/locked/);await mode('Test Mode');assert.match(document.querySelector('.empty').textContent,/No mastered recipes/);checks++;
+ let nine=optional;const second=data.recipes[1];nine.completedQuestions+=10;nine=resolve(nine,second.id,'review',true);nine.completedQuestions+=10;nine=resolve(nine,second.id,'review',true);await mount(nine);await mode('Test Mode');assert.match(document.querySelector('.empty').textContent,/locked/);assert.match(document.querySelector('.test-unlock').textContent,/9\/10/);checks++;
+ // Literal hint allowlist, no language fallback, and exactly the supplied wiki pairings.
+ async function practiceTarget(id){const current=document.querySelector('.target')?.dataset.recipeId||'crafting_table';const pool=data.recipes.filter(r=>r.id!==current);const prefs=await server.ssrLoadModule('/src/preferences.ts');const total=pool.reduce((n,r)=>n+prefs.recipeWeight(r.output),0);let before=0;for(const r of pool){if(r.id===id)break;before+=prefs.recipeWeight(r.output);}const r=pool.find(r=>r.id===id);const old=Math.random;Math.random=()=>(before+prefs.recipeWeight(r.output)/2)/total;try{await mode('Practice');}finally{Math.random=old;}assert.equal(document.querySelector('.target').dataset.recipeId,id);await click(button('I don’t know'));}
+ await mount({...emptySaved(),language:'no'});await practiceTarget('golden_pickaxe');assert.deepEqual([...document.querySelectorAll('.modal .search-hints code')].map(e=>e.textContent),['Lh','Lma']);await click(document.querySelector('[aria-label="Switch item language"]'));assert.equal(document.querySelector('.modal .search-hints'),null);await closeReference();await practiceTarget('bow');assert.deepEqual([...document.querySelectorAll('.modal .search-hints code')].map(e=>e.textContent),['ow']);await closeReference();await practiceTarget(nonSpeed.id);assert.equal(document.querySelector('.modal .search-hints'),null);await closeReference();checks++;
+ await click(button('Recipe Book'));const prefs=await server.ssrLoadModule('/src/preferences.ts');assert.deepEqual([...document.querySelectorAll('.vocabulary-list>div')].map(el=>[el.children[0].textContent,el.children[2].textContent]),prefs.VOCABULARY);assert.equal(document.querySelectorAll('.vocabulary-list>div').length,11);assert.doesNotMatch(document.querySelector('.book').textContent,/local difficulty|Selected-language search terms|English search terms/i);checks++;
+ // Game hunger counts stable question IDs; food actions and duplicated submissions never count.
+ await mount();
+ async function targetGame(id,start=false){const current=document.querySelector('.target')?.dataset.recipeId;const score=start?0:Number(document.querySelector('.session-stat strong').textContent);const pool=data.recipes.filter(r=>r.difficulty<=Math.min(3,1+Math.floor(score/300))&&r.id!==current);const index=pool.findIndex(r=>r.id===id);assert.ok(index>=0,id);const old=Math.random;Math.random=()=>(index+.5)/pool.length;try{if(start)await mode('Game');else await click(button('Next recipe'));}finally{Math.random=old;}assert.equal(document.querySelector('.target').dataset.recipeId,id);}
+ await targetGame('stick',true);const questionIds=[];
+ for(let i=0;i<5;i++){if(i)await targetGame(i%2?'oak_planks':'stick');questionIds.push(document.querySelector('.target').dataset.questionId);await fillEasy();await click(button('Check recipe'));assert.equal(document.querySelector('.hunger-value').textContent,i<4?'20/20':'19/20');}
+ assert.equal(new Set(questionIds).size,5);assert.match(document.querySelector('.food-schedule').textContent,/5 resolved/);checks++;
+ await targetGame('cookie');await fillEasy();const cookieCheck=button('Check recipe');await act(async()=>{cookieCheck.click();cookieCheck.click();});assert.match(document.querySelector('.pending-food').textContent,/Cookie × 8/);assert.match(document.querySelector('.food-schedule').textContent,/6 resolved/);await click(button('Eat now'));assert.match(document.querySelector('.pending-food').textContent,/Cookie × 7/);assert.equal(document.querySelector('.hunger-value').textContent,'20/20');await click(button('Store food'));assert.equal(document.querySelector('.pending-food'),null);assert.match(document.querySelector('.stored-food').textContent,/Cookie × 7/);assert.equal(button('Eat one').disabled,true);assert.match(document.querySelector('.stored-food').textContent,/Hunger is full/);assert.match(document.querySelector('.food-schedule').textContent,/6 resolved/);checks++;
+ await targetGame('bread');await click(button('Recipe Book'));const bookSearch=document.querySelector('.book input');await act(async()=>{Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype,'value').set.call(bookSearch,'Bread');bookSearch.dispatchEvent(new Event('input',{bubbles:true}));});const breadRef=[...document.querySelectorAll('.reference-card')].find(el=>el.querySelector('summary').textContent.includes('Bread'));assert.ok(breadRef);await act(async()=>{breadRef.open=true;breadRef.dispatchEvent(new Event('toggle'));});await click(button('Crafting Table'));await fillEasy();await click(button('Check recipe'));assert.equal(document.querySelector('.pending-food'),null);assert.match(document.querySelector('.stored-food').textContent,/Cookie × 7/);assert.match(document.querySelector('.food-schedule').textContent,/7 resolved/);checks++;
+ await targetGame('cookie');await click(button('I don’t know'));assert.equal(document.querySelector('.pending-food'),null);assert.match(document.querySelector('.food-schedule').textContent,/8 resolved/);for(const id of ['stick','oak_planks']){await targetGame(id);await fillEasy();await click(button('Check recipe'));}assert.equal(document.querySelector('.hunger-value').textContent,'19/20');assert.match(document.querySelector('.food-schedule').textContent,/10 resolved/);checks++;
+ await mode('Game');assert.match(document.querySelector('.food-schedule').textContent,/0 resolved/);assert.equal(document.querySelector('.stored-food'),null);assert.equal(document.querySelector('.pending-food'),null);assert.equal(document.querySelector('.hunger-value').textContent,'20/20');checks++;
+ // Shared icon failures show a visible explicit fallback instead of an invisible/bogus item.
+ const image=document.querySelector('.intro-art img');await act(async()=>image.dispatchEvent(new Event('error')));assert.ok(document.querySelector('.intro-art .item-fallback'));assert.match(document.querySelector('.intro-art .item-fallback').title,/unavailable/);checks++;
+ globalThis.confirm=()=>true;await click(button('Reset progress'));assert.equal(saved().completedQuestions,0);assert.equal(saved().reviewUnlocked,false);assert.equal(saved().testResults.length,0);assert.ok(Object.values(saved().progress).every(p=>p.totalMistakes===0));checks++;
+ console.log(`${checks} React DOM flow groups passed.`);
+}finally{if(app)await act(async()=>app.appRoot.unmount());await server.close();dom.window.close();}

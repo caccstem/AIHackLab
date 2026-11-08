@@ -1,3 +1,17 @@
 node_modules/
 dist/
 .DS_Store
+
+data/client.jar
+data/client-mappings.txt
+
+data/special-disassembly.txt
+
+data/shulker-disassembly.txt
+
+.tools/
+data/foods-disassembly.txt
+
+data/wood-icon-audit.png
+
+data/cake-disassembly.txt
