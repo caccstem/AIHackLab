@@ -45,3 +45,7 @@ Every word now requires four independent checks: meaning, Chinese characters, to
 Learning-path mini tests and review sessions contain 10 questions. When a level has fewer than 10 words, words return within the test for their next pending skill check.
 
 The interface uses rounded Nunito typography and a soft blush, lavender, cream, and plum palette. The home page displays the named customized avatar with a shortcut to My avatar and skill progress bars for each level. The home avatar remains visible on phone layouts.
+
+## Learning quests
+
+Ten-question sessions have a question trail, live game score, consecutive-answer combos, and a star result (5 independent correct answers = one star, 8 = two, 10 = three). Each new personal-best star for a level gives 5 avatar points once, up to 15 points per level. Game score is separate from spendable points and XP. Partial or review sessions do not grant star treasure. Home shows saved level stars, quest counts, and first-quest, three-combo, and perfect-quest badges. Full word mastery still requires all four skill checks.
