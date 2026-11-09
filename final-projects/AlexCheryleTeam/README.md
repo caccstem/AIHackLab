@@ -75,3 +75,9 @@ All lessons use mixed 10-question practice, pronunciation checks, demonstrated a
 Tap any shop item to open a dressing-room preview on the current avatar. Previewing is free and does not change points, ownership, or the saved avatar. Choose Buy & wear to purchase and equip, Wear this item for owned/free items, or Keep my current look to cancel. Even unaffordable items can be previewed; purchase remains disabled until enough points are available.
 
 Avatars now have gentle idle movement, blinking, ear twitches, and a waving greeting. Use Say hi on the home page, Say hello in My avatar, or See it in motion in a try-on preview. All selected animals, clothes, and accessories remain supported, with reduced-motion preferences disabling decorative animation.
+
+## Avatar playroom and soft artwork
+
+Use Play with your avatar from home or My avatar to pet it, share a snack, and play a five-star catch game. Interactions are free and do not alter learning progress, XP, shop points, names, or purchases. Touch-sized controls and reduced-motion preferences are supported.
+
+Avatar artwork now uses rounded paws and bodies, softer outlines, layered fur and clothing shading, cheek gradients, and subtle fur details. Gradient IDs are unique per rendering so multiple differently customized avatars can appear without color collisions. All animals, outfits, colors, accessories, and earlier answer animations remain supported.
