@@ -73,3 +73,5 @@ All lessons use mixed 10-question practice, pronunciation checks, demonstrated a
 ## Try before buying
 
 Tap any shop item to open a dressing-room preview on the current avatar. Previewing is free and does not change points, ownership, or the saved avatar. Choose Buy & wear to purchase and equip, Wear this item for owned/free items, or Keep my current look to cancel. Even unaffordable items can be previewed; purchase remains disabled until enough points are available.
+
+Avatars now have gentle idle movement, blinking, ear twitches, and a waving greeting. Use Say hi on the home page, Say hello in My avatar, or See it in motion in a try-on preview. All selected animals, clothes, and accessories remain supported, with reduced-motion preferences disabling decorative animation.
