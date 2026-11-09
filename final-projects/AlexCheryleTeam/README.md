@@ -25,7 +25,7 @@ Microphone pronunciation checks require browser speech-recognition support and p
 ## Rewards and avatars
 
 - A daily visit awards 5 avatar points once per local calendar day.
-- First mastering a level awards 100 points; a perfect replay of a mastered level awards 25.
+- First passing a level’s required final test awards 100 points; a perfect replay of a mastered level awards 25.
 - Quest stars require 5, 8, or 10 independent correct answers. Each new personal-best star awards 5 points once per level. Review and focused writing quests do not grant star treasure.
 - Game score and XP are separate from spendable avatar points.
 - Name and customize a chibi explorer, cat, dog, rabbit, or panda. Answer animations use the saved name and current appearance.
@@ -53,3 +53,11 @@ Third-party notices are in `vendor/`: Hanzi Writer uses the MIT license; charact
 Each 10-question quiz now stays within 1–3 vocabulary words or phrases (你好 counts as one target). Every selected target receives pinyin, pronunciation, and checked writing in the same 10-question quiz. Question types are shuffled in short blocks, allowing consecutive questions of the same type, with no run longer than three. Remaining slots reinforce meaning and character recognition. Levels are divided into fixed groups of at most three words; the next quiz stays in the first unfinished group until its required skills are complete. Already mastered targets drop out of that group’s active practice. Meaning and character answer choices come only from the current group, while pinyin questions use tone variations. Mixed review sessions use the same focus grouping. Writing memory checks hide the focus panel so it cannot act as a guide. The path shows the next targets, and test estimates account for group boundaries.
 
 Question plans are fixed when a session starts, so mistakes and hints do not turn the rest of the quiz into a single question type. The normal learning path and Mixed practice shortcut both mix skills; the 1–3-target group and verified-writing mastery requirements remain intact.
+
+## Required level final tests
+
+A level counts as complete only after its practice skills and comprehensive final test are passed. The final unlocks when practice is ready and retakes remain available after an attempt. It covers every vocabulary target’s meaning, Chinese character recognition, pinyin, and microphone pronunciation, plus a separate independent writing check for each distinct character in every target. The first level has 32 checks; final length depends on level content.
+
+Every check must pass in the same final test. Hints and pronunciation model audio are unavailable, skipped checks do not pass, and writing starts on a blank pad with no tracing or stroke hints. Final-test results list checks to review. Passed finals and attempts are saved, and incomplete finals do not count as finished tests.
+
+Practice alone no longer grants level completion or its 100-point reward. Previously earned points remain saved. Final-test completion rewards are issued once, and duplicate result views cannot add points. Learning progress stays below 100% until the final test is passed; ordinary focused practice quizzes remain 10 questions.
