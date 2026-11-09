@@ -16,7 +16,7 @@ Open http://localhost:8000. No installation or build is required.
 
 ## Learning quests
 
-All 18 lessons can be selected freely. Each quest has 10 questions, a progress trail, a score, and consecutive-answer combos. Words and individual characters require meaning, recognition, accurate writing with stroke order, pinyin, and pronunciation. Phrases require the four language checks without writing.
+All 18 lessons can be selected freely. Each quest has 10 questions, a progress trail, a score, and consecutive-answer combos. Words and individual characters require meaning, recognition, accurate writing with stroke order, pinyin, and pronunciation. Phrases remain optional lesson practice without mastery requirements.
 
 Handwriting is integrated into the learning path. A level’s Mixed practice button starts a mixed-skill review quest. Each exercise requires watching an animated stroke-order demonstration, tracing the character in that order, and then writing independently on a cleared pad with the guide hidden. All distinct characters in a word must be practiced to complete its writing check. Hanzi Writer now validates stroke shape, direction, and order in both stages. Only successful independent checks count toward mastery; there is no manual completion button. The standalone Writing tab has been removed.
 
@@ -84,4 +84,10 @@ Avatar artwork now uses rounded paws and bodies, softer outlines, layered fur an
 
 ## Phrase writing exemption
 
-Curriculum entries are explicitly tagged as words or phrases, rather than classified by character count. All 55 phrase/sentence targets are exempt from writing in practice, final tests, progress totals, and mastery. The 91 word/character targets still require demonstrated, traced, and independently checked stroke-order writing. Short phrases such as 你呢 are exempt, while longer words such as 公共汽车 still require writing. Existing learning records, passed final tests, points, and purchases remain saved.
+Curriculum entries are explicitly tagged as words or phrases, rather than classified by character count. All 55 phrase/sentence targets are now excluded from vocabulary mastery and final tests. They remain in optional lesson practice. The 91 word/character targets still require demonstrated, traced, and independently checked stroke-order writing. Short phrases such as 你呢 are exempt, while longer words such as 公共汽车 still require writing. Existing learning records, passed final tests, points, and purchases remain saved.
+
+## Word-only mastery and vocabulary
+
+My vocabulary and mastery counters contain only the 91 vocabulary word/character targets. The 55 phrase/sentence targets remain in lessons via Practice phrases, with focused mixed-skill practice and XP but no mastery records. Word practice and final tests exclude phrases entirely; untouched phrases cannot block word mastery, level completion, or a final-test unlock.
+
+Phrase-only conversation lessons stay open as optional practice without a final test or mastery percentage. The mastery counter covers 17 word-bearing levels while all 18 lessons remain available. Phrase groups rotate after a completed practice session regardless of accuracy; this is practice navigation, not a mastery requirement. Existing records and purchases are preserved, with earlier phrase skill records simply ignored for mastery.
