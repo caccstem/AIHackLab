@@ -16,7 +16,7 @@ Open http://localhost:8000. No installation or build is required.
 
 ## Learning quests
 
-All six levels can be selected freely. Each quest has 10 questions, a progress trail, a score, and consecutive-answer combos. Words become fully learned after meaning, Chinese character recognition, writing practice, toned pinyin, and pronunciation checks.
+All 18 lessons can be selected freely. Each quest has 10 questions, a progress trail, a score, and consecutive-answer combos. Words become fully learned after meaning, Chinese character recognition, writing practice, toned pinyin, and pronunciation checks.
 
 Handwriting is integrated into the learning path. A level’s Mixed practice button starts a mixed-skill review quest. Each exercise requires watching an animated stroke-order demonstration, tracing the character in that order, and then writing independently on a cleared pad with the guide hidden. All distinct characters in a word must be practiced to complete its writing check. Hanzi Writer now validates stroke shape, direction, and order in both stages. Only successful independent checks count toward mastery; there is no manual completion button. The standalone Writing tab has been removed.
 
@@ -44,7 +44,7 @@ Level progress includes completed level-test counts and an “at least” remain
 
 ## Checked handwriting
 
-Hanzi Writer 3.5.0 and local stroke data for all 83 curriculum characters are bundled with the app. Drawings remain in the browser. Tracing must pass before a blank memory check begins; no stroke hints or forced passes are enabled during the memory check. Incorrect strokes must be retried. A failed checker load leaves writing pending. Previous self-marked writing records are reset for verification while points, other skills, and purchases remain saved. This is geometric stroke checking with tolerance, not a guarantee of calligraphic quality.
+Hanzi Writer 3.5.0 and local stroke data for all 214 curriculum characters are bundled with the app. Drawings remain in the browser. Tracing must pass before a blank memory check begins; no stroke hints or forced passes are enabled during the memory check. Incorrect strokes must be retried. A failed checker load leaves writing pending. Previous self-marked writing records are reset for verification while points, other skills, and purchases remain saved. This is geometric stroke checking with tolerance, not a guarantee of calligraphic quality.
 
 Third-party notices are in `vendor/`: Hanzi Writer uses the MIT license; character data from Make Me A Hanzi/Arphic is distributed under the Arphic Public License.
 
@@ -63,3 +63,9 @@ Every check must pass in the same final test. Hints and pronunciation model audi
 Practice alone no longer grants level completion or its 100-point reward. Previously earned points remain saved. Final-test completion rewards are issued once, and duplicate result views cannot add points. Learning progress stays below 100% until the final test is passed; ordinary focused practice quizzes remain 10 questions.
 
 Stroke-order demonstrations animate one numbered stroke at a time before tracing practice unlocks. Students can watch again, which restarts the practice sequence. The writing mastery check validates stroke shape, direction, and order; wrong-order strokes are rejected. Final tests remain independent and offer no demonstrations or tracing hints.
+
+## Expanded curriculum
+
+The app now includes 18 lessons and 146 vocabulary/sentence targets. Twelve added lessons cover weather, colors, everyday items, daily activities, ordering food, shopping and paying, clothing and sizes, time and weekdays, transport, body and asking for help, feelings, and home chores. Each new lesson has six vocabulary targets and three practical sentences, organized into three focused groups.
+
+All lessons use mixed 10-question practice, pronunciation checks, demonstrated and checked stroke-order writing, progress tracking, and required comprehensive final tests. Use Find a lesson to jump to a topic. Existing lesson and word IDs are unchanged, preserving earlier progress. Local stroke data covers all 214 curriculum characters.
