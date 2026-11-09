@@ -69,3 +69,7 @@ Stroke-order demonstrations animate one numbered stroke at a time before tracing
 The app now includes 18 lessons and 146 vocabulary/sentence targets. Twelve added lessons cover weather, colors, everyday items, daily activities, ordering food, shopping and paying, clothing and sizes, time and weekdays, transport, body and asking for help, feelings, and home chores. Each new lesson has six vocabulary targets and three practical sentences, organized into three focused groups.
 
 All lessons use mixed 10-question practice, pronunciation checks, demonstrated and checked stroke-order writing, progress tracking, and required comprehensive final tests. Use Find a lesson to jump to a topic. Existing lesson and word IDs are unchanged, preserving earlier progress. Local stroke data covers all 214 curriculum characters.
+
+## Try before buying
+
+Tap any shop item to open a dressing-room preview on the current avatar. Previewing is free and does not change points, ownership, or the saved avatar. Choose Buy & wear to purchase and equip, Wear this item for owned/free items, or Keep my current look to cancel. Even unaffordable items can be previewed; purchase remains disabled until enough points are available.
