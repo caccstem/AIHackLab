@@ -111,3 +111,9 @@ Pronunciation now has Record answer and Stop & check controls. Only the primary 
 ## Natural animal avatars
 
 Walking animals now stand on four paws with species-specific tails; rabbits and koalas sit naturally. Smaller heads replace the oversized proportions, and pet outfits fit the horizontal bodies. Dog tails wag faster than cat tails; rabbits hop when greeted. Reduced-motion preferences disable the new animations. All 132 species/outfit SVG combinations validate; try-on, purchases, names, and playroom behavior remain covered by checks.
+
+## English-to-Chinese recall
+
+The last focus group of each lesson, and reviews once word practice is complete, include typed and spoken answers to English translation prompts. Quizzes remain ten questions focused on one to three targets. Every vocabulary word in a final now has a typed Chinese recall check instead of multiple-choice character selection, and an English-prompt spoken check instead of reading the displayed Chinese aloud. Pinyin, meaning, and per-character handwriting/stroke-order checks remain. Phrases stay optional and out of word mastery/finals.
+
+Recall questions hide the focus list and skill checklist so they do not reveal Chinese answers. Typed answers require the taught Chinese characters (spacing and punctuation are ignored), reject pinyin-only answers, and respect keyboard composition. Spoken answers use the existing permission-gated Mandarin recognizer. Mismatches can be retried, with no completion credit until the answer matches. New modes credit existing character/pronunciation skills; saved records, purchases, and previous final completions remain intact. Automated checks cover final coverage, 300 ten-question plans, answer visibility, input matching, composition, skill mapping, and microphone controls. Live browser/microphone QA was unavailable.
