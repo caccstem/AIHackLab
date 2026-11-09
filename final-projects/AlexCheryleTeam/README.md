@@ -91,3 +91,7 @@ Curriculum entries are explicitly tagged as words or phrases, rather than classi
 My vocabulary and mastery counters contain only the 91 vocabulary word/character targets. The 55 phrase/sentence targets remain in lessons via Practice phrases, with focused mixed-skill practice and XP but no mastery records. Word practice and final tests exclude phrases entirely; untouched phrases cannot block word mastery, level completion, or a final-test unlock.
 
 Phrase-only conversation lessons stay open as optional practice without a final test or mastery percentage. The mastery counter covers 17 word-bearing levels while all 18 lessons remain available. Phrase groups rotate after a completed practice session regardless of accuracy; this is practice navigation, not a mastery requirement. Existing records and purchases are preserved, with earlier phrase skill records simply ignored for mastery.
+
+## Quest-based daily streak
+
+Today’s streak activates only after finishing a full 10-question mini quest. Completed review and optional phrase mini quests count too. Visits, daily visit bonuses, individual answers, partial quests, final tests, shopping, and avatar games do not activate the streak. The header and daily rhythm card show pending versus earned status. Only one streak day is recorded per local calendar date; historical streak dates are preserved while the current day requires a qualifying completion.
