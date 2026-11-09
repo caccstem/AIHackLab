@@ -47,3 +47,7 @@ Level progress includes completed level-test counts and an “at least” remain
 Hanzi Writer 3.5.0 and local stroke data for all 83 curriculum characters are bundled with the app. Drawings remain in the browser. Tracing must pass before a blank memory check begins; no stroke hints or forced passes are enabled during the memory check. Incorrect strokes must be retried. A failed checker load leaves writing pending. Previous self-marked writing records are reset for verification while points, other skills, and purchases remain saved. This is geometric stroke checking with tolerance, not a guarantee of calligraphic quality.
 
 Third-party notices are in `vendor/`: Hanzi Writer uses the MIT license; character data from Make Me A Hanzi/Arphic is distributed under the Arphic Public License.
+
+## Focused quizzes
+
+Each 10-question quiz now stays within 1–3 vocabulary words or phrases (你好 counts as one target). Targets are practiced in contiguous blocks. Levels are divided into fixed groups of at most three words; the next quiz stays in the first unfinished group until its required skills are complete. Already mastered targets drop out of that group’s active practice. Meaning and character answer choices come only from the current group, while pinyin questions use tone variations. Reviews and writing quests use the same focus grouping. Writing memory checks hide the focus panel so it cannot act as a guide. The path shows the next targets, and test estimates account for group boundaries.
