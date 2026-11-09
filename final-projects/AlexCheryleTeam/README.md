@@ -101,3 +101,7 @@ Today’s streak activates only after finishing a full 10-question mini quest. C
 The writing pad now records the whole character as freehand strokes. Draw anywhere on the pad, large or small, then use Check my writing. Undo removes the last stroke. Before grading, the adapter translates and uniformly scales the whole drawing into reference coordinates, preserving proportions, direction, and stroke sequence. It then runs the pinned local Hanzi Writer 3.5.0 stroke matcher through its quiz input bridge. This dependency is intentionally pinned and its internal bridge is covered by tests.
 
 Size and placement do not determine correctness; general shape, correct stroke count, direction, and order still do. The demonstrated/tracing/independent stages and required word final tests remain enforced. Independent and final writing never reveal the model while checking. Automated checks accepted 36 size/position transformations across representative characters and rejected reversed, reordered, missing, and scribbled strokes.
+
+## Pronunciation microphone permission
+
+Pronunciation checks require a successful microphone access check before Start is enabled. Tap Allow microphone, accept the browser prompt, then tap Start pronunciation check. The permission-test audio stream is closed before speech recognition begins. Blocked permissions, missing devices, unsupported browsers, and revoked speech access leave pronunciation pending and show retry instructions. Permission responses from a previous question cannot enable a later check.
