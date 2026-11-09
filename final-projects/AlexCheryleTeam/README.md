@@ -95,3 +95,9 @@ Phrase-only conversation lessons stay open as optional practice without a final 
 ## Quest-based daily streak
 
 Today’s streak activates only after finishing a full 10-question mini quest. Completed review and optional phrase mini quests count too. Visits, daily visit bonuses, individual answers, partial quests, final tests, shopping, and avatar games do not activate the streak. The header and daily rhythm card show pending versus earned status. Only one streak day is recorded per local calendar date; historical streak dates are preserved while the current day requires a qualifying completion.
+
+## Flexible writing size and position
+
+The writing pad now records the whole character as freehand strokes. Draw anywhere on the pad, large or small, then use Check my writing. Undo removes the last stroke. Before grading, the adapter translates and uniformly scales the whole drawing into reference coordinates, preserving proportions, direction, and stroke sequence. It then runs the pinned local Hanzi Writer 3.5.0 stroke matcher through its quiz input bridge. This dependency is intentionally pinned and its internal bridge is covered by tests.
+
+Size and placement do not determine correctness; general shape, correct stroke count, direction, and order still do. The demonstrated/tracing/independent stages and required word final tests remain enforced. Independent and final writing never reveal the model while checking. Automated checks accepted 36 size/position transformations across representative characters and rejected reversed, reordered, missing, and scribbled strokes.

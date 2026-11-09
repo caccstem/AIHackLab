@@ -72,3 +72,5 @@ nav.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.level button.path-
 .phrase-practice-note{font-size:12px;line-height:1.7;padding:12px 14px;background:#edf6ff;border:1px solid #d8e9f7;border-radius:13px;color:#61849f;margin:12px 0}.level button.path-writing[data-phrases]{margin-left:7px;background:#f1f5fc}
 
 #streak{line-height:1.5}#streak.streak-earned{color:#b17838;font-weight:800}#streak.streak-pending{color:#7b91a3}.streak-mission{padding:12px;border:1px dashed #c7deef;border-radius:12px;background:#f2f8fe;margin-bottom:14px}.streak-mission b{font-size:12px;color:#5481a2}.streak-mission p{font-size:12px;margin:6px 0 0}@media(max-width:760px){#streak{max-width:170px;white-space:normal}.streak-mission b,.streak-mission p{font-size:13px}}
+
+#freehand-writing[hidden],#check-writing[hidden],#undo-writing[hidden]{display:none}#freehand-writing{position:absolute;inset:0;width:100%;height:100%;touch-action:none;z-index:1;background:transparent}.checked-writing-pad{position:relative}.writing-tools button{min-height:44px}
