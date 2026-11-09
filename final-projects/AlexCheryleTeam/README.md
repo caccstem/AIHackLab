@@ -107,3 +107,7 @@ Size and placement do not determine correctness; general shape, correct stroke c
 Pronunciation checks require a successful microphone access check before Start is enabled. Tap Allow microphone, accept the browser prompt, then tap Start pronunciation check. The permission-test audio stream is closed before speech recognition begins. Blocked permissions, missing devices, unsupported browsers, and revoked speech access leave pronunciation pending and show retry instructions. Permission responses from a previous question cannot enable a later check.
 
 Pronunciation now has Record answer and Stop & check controls. Only the primary recognized Mandarin transcript matching the entire target passes; mismatches remain open for retry without mastery credit. This is speech recognition, not individual tone scoring.
+
+## Natural animal avatars
+
+Walking animals now stand on four paws with species-specific tails; rabbits and koalas sit naturally. Smaller heads replace the oversized proportions, and pet outfits fit the horizontal bodies. Dog tails wag faster than cat tails; rabbits hop when greeted. Reduced-motion preferences disable the new animations. All 132 species/outfit SVG combinations validate; try-on, purchases, names, and playroom behavior remain covered by checks.
