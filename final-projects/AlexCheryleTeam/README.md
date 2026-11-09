@@ -18,7 +18,7 @@ Open http://localhost:8000. No installation or build is required.
 
 All six levels can be selected freely. Each quest has 10 questions, a progress trail, a score, and consecutive-answer combos. Words become fully learned after meaning, Chinese character recognition, writing practice, toned pinyin, and pronunciation checks.
 
-Handwriting is integrated into the learning path. A level’s Mixed practice button starts a mixed-skill review quest. Each exercise requires tracing a character and then writing it independently on a cleared pad with the guide hidden. All distinct characters in a word must be practiced to complete its writing check. Hanzi Writer now validates stroke shape, direction, and order in both stages. Only successful independent checks count toward mastery; there is no manual completion button. The standalone Writing tab has been removed.
+Handwriting is integrated into the learning path. A level’s Mixed practice button starts a mixed-skill review quest. Each exercise requires watching an animated stroke-order demonstration, tracing the character in that order, and then writing independently on a cleared pad with the guide hidden. All distinct characters in a word must be practiced to complete its writing check. Hanzi Writer now validates stroke shape, direction, and order in both stages. Only successful independent checks count toward mastery; there is no manual completion button. The standalone Writing tab has been removed.
 
 Microphone pronunciation checks require browser speech-recognition support and permission. Skipping or denying a microphone check leaves that skill pending. Recognition checks spoken words, not individual tone accuracy. Hinted answers do not complete independent skill checks.
 
@@ -61,3 +61,5 @@ A level counts as complete only after its practice skills and comprehensive fina
 Every check must pass in the same final test. Hints and pronunciation model audio are unavailable, skipped checks do not pass, and writing starts on a blank pad with no tracing or stroke hints. Final-test results list checks to review. Passed finals and attempts are saved, and incomplete finals do not count as finished tests.
 
 Practice alone no longer grants level completion or its 100-point reward. Previously earned points remain saved. Final-test completion rewards are issued once, and duplicate result views cannot add points. Learning progress stays below 100% until the final test is passed; ordinary focused practice quizzes remain 10 questions.
+
+Stroke-order demonstrations animate one numbered stroke at a time before tracing practice unlocks. Students can watch again, which restarts the practice sequence. The writing mastery check validates stroke shape, direction, and order; wrong-order strokes are rejected. Final tests remain independent and offer no demonstrations or tracing hints.
