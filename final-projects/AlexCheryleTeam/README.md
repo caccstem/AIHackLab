@@ -151,3 +151,5 @@ Removed the raised paw and its unused animation rules. Pointed right ears now mi
 Animal heads are now uniformly 10% smaller, scaling the face, ears, markings, and head accessories together around the neck attachment. The independent head animation wrapper remains intact. Rendered cat preview inspected; all species/outfit head transforms and SVG structure checked, with shop/playroom regressions passing.
 
 Refined proportions: animal heads are another 11% narrower while keeping their height, and ears scale 15% larger relative to the head around their base. Both pointed ears still share mirrored geometry. The ear scale uses an inner wrapper so ear-twitch animation cannot replace the sizing transform. Rendered cat preview inspected; variant structure, two legs/no raised paw, shop, and playroom checks pass.
+
+Straightened the animal head artwork: symmetrical cheek contours and a centered chin replace the slanted silhouette; eyes, cheeks, mouth, whiskers, and glasses are level. Narrower head proportions and larger mirrored ears remain. Rendered cat preview inspected, eye alignment checked across all animal outfits, and shop/playroom checks pass.
