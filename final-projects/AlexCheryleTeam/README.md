@@ -147,3 +147,5 @@ A free Just fluff outfit exposes the natural fur. The original free sage default
 Avatar anatomy correction: the pointed right ear now uses a separate closed outline whose base sits behind the head. The long center-leg outline was removed; all animal variants now have exactly two short lower-leg shapes. Rendered cat preview inspected, all 143 SVG combinations validate, and shop/playroom regression checks pass.
 
 Removed the raised paw and its unused animation rules. Pointed right ears now mirror the exact left-ear geometry, including the inner ear, so both sides have equal dimensions. Exactly two resting legs remain. Rendered cat preview inspected; all species/outfit SVGs validate and shop/playroom checks pass.
+
+Animal heads are now uniformly 10% smaller, scaling the face, ears, markings, and head accessories together around the neck attachment. The independent head animation wrapper remains intact. Rendered cat preview inspected; all species/outfit head transforms and SVG structure checked, with shop/playroom regressions passing.
