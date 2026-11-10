@@ -155,3 +155,5 @@ Refined proportions: animal heads are another 11% narrower while keeping their h
 Straightened the animal head artwork: symmetrical cheek contours and a centered chin replace the slanted silhouette; eyes, cheeks, mouth, whiskers, and glasses are level. Narrower head proportions and larger mirrored ears remain. Rendered cat preview inspected, eye alignment checked across all animal outfits, and shop/playroom checks pass.
 
 Fixed detached round ears on tiger, panda, and bear avatars. Closed circular outer/inner ears now extend behind the head at their bases, keeping both sides matched. All three rendered previews were inspected; SVG variants and shop/playroom checks pass.
+
+Dog avatars now have long rounded floppy ears beside the cheeks, using closed mirrored shapes and soft inner highlights. Ear colors derive from the selected fur color. Rendered dog preview inspected; every dog outfit has matching ear paths, and SVG/shop/playroom checks pass.
