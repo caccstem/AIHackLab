@@ -149,3 +149,5 @@ Avatar anatomy correction: the pointed right ear now uses a separate closed outl
 Removed the raised paw and its unused animation rules. Pointed right ears now mirror the exact left-ear geometry, including the inner ear, so both sides have equal dimensions. Exactly two resting legs remain. Rendered cat preview inspected; all species/outfit SVGs validate and shop/playroom checks pass.
 
 Animal heads are now uniformly 10% smaller, scaling the face, ears, markings, and head accessories together around the neck attachment. The independent head animation wrapper remains intact. Rendered cat preview inspected; all species/outfit head transforms and SVG structure checked, with shop/playroom regressions passing.
+
+Refined proportions: animal heads are another 11% narrower while keeping their height, and ears scale 15% larger relative to the head around their base. Both pointed ears still share mirrored geometry. The ear scale uses an inner wrapper so ear-twitch animation cannot replace the sizing transform. Rendered cat preview inspected; variant structure, two legs/no raised paw, shop, and playroom checks pass.
