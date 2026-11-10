@@ -127,3 +127,9 @@ Quests retain their ten core checks but expand to 10–19 actual questions when 
 ## Cute anime avatar style
 
 The selected anime direction adds colored reflective eyes, clean lash lines, soft pastel fur palettes, softer shadows, and cleaner outlines. Natural animal poses, smaller heads, clothing, purchases, and animations are retained. All 132 species/outfit SVG combinations validate, alongside existing shop and playroom checks.
+
+## Fluffy storybook avatars and active playroom
+
+Avatars now follow the supplied fluffy-cat reference with tiny dark eyes, rounded fur contours, warm brown outlines, cream/pastel shading, small smiles, and subtle cheek details. Each species retains its own ears, markings, tail, and natural pose. Outfits, colors, accessories, and saved purchases remain supported. Rendered cat/dog/rabbit/fox previews were inspected, and all 132 species/outfit SVGs validate.
+
+The playroom layers travel, facing, whole-body movement, heads, tails, and paws. Pets nuzzle and close their eyes when petted, dip and bob toward snacks, run and pounce toward alternating star positions, and bounce in celebration after five catches. Animal heads and legs move independently; playroom actions no longer trigger the generic greeting wave. Targets stay within mobile-friendly bounds, keyboard focus follows the next catch target, and reduced-motion settings disable movement while retaining controls. No animation timers need cleanup. Checks cover directional chasing, target positions, five-star completion, replay/reset guards, shop previews and purchases, and unchanged points/learning state. Live browser animation QA was unavailable; SVG artwork was rendered locally.
