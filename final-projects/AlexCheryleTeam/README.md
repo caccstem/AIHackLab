@@ -137,3 +137,9 @@ The playroom layers travel, facing, whole-body movement, heads, tails, and paws.
 ## Reference seated pose
 
 All animal avatars now use the supplied picture’s upright seated pose: front paws together, a curled tail beside the body, and a raised paw with visible pads. Clothing fits the front-facing torso. Animal features and fur colors remain distinct, with rabbit head placement adjusted for long ears. The raised paw has separate pet/snack/catch/celebration motions, and tail animation pivots at its attachment. Human avatars retain their existing pose. Cat and rabbit SVG previews were rendered and inspected; all 132 species/outfit variants validate, and shop/purchase/playroom state checks pass.
+
+## Reference-first avatar rebuild
+
+The animal renderer was rebuilt with new organic contours, an integrated fluffy silhouette, asymmetric ears, tiny eyes, a small curled mouth, cream shading, and a subtle procedural paper/pigment texture. The raised paw now sits beside the face, with a round belly and curled tail matching the supplied reference more closely. Each species retains its distinctive ears and markings; existing animation group hooks remain available.
+
+A free Just fluff outfit exposes the natural fur. The original free sage default switches to this option once, while purchased/equipped alternatives and all owned items remain saved. Users can still equip any clothing style, color, and accessory. All 143 species/outfit SVGs validate; rendered cat and rabbit previews were inspected. Rebuild-specific checks cover texture hooks, fur-only rendering, outfit overlays, accessories, preview safety, and unchanged playroom/game state. Live browser animation QA was unavailable.
