@@ -3,12 +3,26 @@ const musicButton = document.getElementById('music-button');
 const musicPanel = document.getElementById('music-panel');
 const notebookButton = document.getElementById('notebook-button');
 const notebookPanel = document.getElementById('notebook-panel');
+const scheduleButton = document.getElementById('schedule-button');
+const schedulePanel = document.getElementById('schedule-panel');
+const scheduleFormToggle = document.getElementById('schedule-form-toggle');
+const scheduleForm = document.getElementById('schedule-form');
+const scheduleList = document.getElementById('schedule-list');
+const scheduleFeedback = document.getElementById('schedule-feedback');
 const noteForm = document.getElementById('note-form');
 const noteTitle = document.getElementById('note-title');
 const noteContent = document.getElementById('note-content');
 const noteFeedback = document.getElementById('note-feedback');
 const notesList = document.getElementById('notes-list');
 const noteCount = document.getElementById('note-count');
+const notebookViewport = document.getElementById('notebook-viewport');
+const notebookPageShell = document.getElementById('notebook-page-shell');
+const notebookPage = document.getElementById('notebook-page');
+const zoomOutButton = document.getElementById('zoom-out');
+const zoomInButton = document.getElementById('zoom-in');
+const zoomLevel = document.getElementById('zoom-level');
+const fitWidthButton = document.getElementById('fit-width');
+const fitHeightButton = document.getElementById('fit-height');
 const soundStatus = document.getElementById('sound-status');
 const musicInputs = document.querySelectorAll('input[name="music"]');
 const ambientInputs = document.querySelectorAll('input[name="ambient"]');
@@ -20,13 +34,34 @@ const state = {
 };
 
 const NOTES_KEY = 'study-space-notes-v1';
+const SCHEDULE_KEY = 'study-space-schedule-v1';
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 let notes = [];
+const NOTEBOOK_PAGE_WIDTH = 680;
+const NOTEBOOK_PAGE_HEIGHT = 880;
+const MIN_ZOOM = 0.25;
+const MAX_ZOOM = 2;
+let notebookZoom = 1;
+let notebookFitMode = null;
+let schedule = [
+  { id: 'sample-math', name: 'Math', day: 'Monday', time: '09:00', type: 'school' },
+  { id: 'sample-science', name: 'Science', day: 'Tuesday', time: '10:30', type: 'school' },
+  { id: 'sample-piano', name: 'Piano lesson', day: 'Wednesday', time: '16:00', type: 'outside' },
+  { id: 'sample-art', name: 'Art class', day: 'Saturday', time: '11:00', type: 'outside' }
+];
 
 try {
   const savedNotes = JSON.parse(localStorage.getItem(NOTES_KEY) || '[]');
   if (Array.isArray(savedNotes)) notes = savedNotes;
 } catch (error) {
   noteFeedback.textContent = 'Could not load saved notes in this browser.';
+}
+
+try {
+  const savedSchedule = JSON.parse(localStorage.getItem(SCHEDULE_KEY) || 'null');
+  if (Array.isArray(savedSchedule)) schedule = savedSchedule;
+} catch (error) {
+  scheduleFeedback.textContent = 'Could not load your saved schedule.';
 }
 
 let audioCtx = null;
@@ -37,9 +72,13 @@ function setStatus(text) {
 }
 
 function showPanel(panelName) {
-  const panels = [musicPanel, notebookPanel];
-  const nextPanel = panelName === 'music' ? musicPanel : notebookPanel;
-  const nextButton = panelName === 'music' ? musicButton : notebookButton;
+  const panelMap = {
+    music: [musicPanel, musicButton],
+    schedule: [schedulePanel, scheduleButton],
+    notebook: [notebookPanel, notebookButton]
+  };
+  const panels = [musicPanel, schedulePanel, notebookPanel];
+  const [nextPanel, nextButton] = panelMap[panelName];
   const shouldOpen = nextPanel.classList.contains('hidden');
 
   panels.forEach((panel) => panel.classList.add('hidden'));
@@ -51,6 +90,69 @@ function showPanel(panelName) {
   } else {
     document.querySelector('.space-nav .nav-button').classList.add('active');
   }
+}
+
+function saveSchedule() {
+  try {
+    localStorage.setItem(SCHEDULE_KEY, JSON.stringify(schedule));
+    return true;
+  } catch (error) {
+    scheduleFeedback.textContent = 'Could not save your schedule in this browser.';
+    return false;
+  }
+}
+
+function formatClassTime(time) {
+  const [hour, minute] = time.split(':').map(Number);
+  return new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
+    .format(new Date(2024, 0, 1, hour, minute));
+}
+
+function renderSchedule() {
+  scheduleList.replaceChildren();
+  const ordered = [...schedule].sort((a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day) || a.time.localeCompare(b.time));
+  const populatedDays = DAYS.filter((day) => ordered.some((item) => item.day === day));
+
+  if (!populatedDays.length) {
+    const empty = document.createElement('p');
+    empty.className = 'empty-schedule';
+    empty.textContent = 'Your week is open. Add your first class to get started.';
+    scheduleList.append(empty);
+    return;
+  }
+
+  populatedDays.forEach((day) => {
+    const dayGroup = document.createElement('section');
+    dayGroup.className = 'schedule-day';
+    const heading = document.createElement('h4');
+    heading.textContent = day;
+    dayGroup.append(heading);
+
+    ordered.filter((item) => item.day === day).forEach((item) => {
+      const row = document.createElement('article');
+      row.className = `class-row ${item.type}`;
+      const time = document.createElement('time');
+      time.textContent = formatClassTime(item.time);
+      const details = document.createElement('div');
+      const name = document.createElement('strong');
+      name.textContent = item.name;
+      const type = document.createElement('span');
+      type.textContent = item.type === 'school' ? 'In school' : 'Outside school';
+      details.append(name, type);
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'delete-class';
+      remove.textContent = '×';
+      remove.setAttribute('aria-label', `Remove ${item.name} from your schedule`);
+      remove.addEventListener('click', () => {
+        schedule = schedule.filter((entry) => entry.id !== item.id);
+        if (saveSchedule()) renderSchedule();
+      });
+      row.append(time, details, remove);
+      dayGroup.append(row);
+    });
+    scheduleList.append(dayGroup);
+  });
 }
 
 function saveNotes() {
@@ -110,6 +212,31 @@ function renderNotes() {
     card.append(remove, title, content, date);
     notesList.append(card);
   });
+}
+
+function setNotebookZoom(nextZoom, fitMode = null) {
+  notebookZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, nextZoom));
+  notebookFitMode = fitMode;
+  notebookPage.style.transform = `scale(${notebookZoom})`;
+  notebookPageShell.style.width = `${NOTEBOOK_PAGE_WIDTH * notebookZoom}px`;
+  notebookPageShell.style.height = `${Math.max(NOTEBOOK_PAGE_HEIGHT, notebookPage.scrollHeight) * notebookZoom}px`;
+  zoomLevel.value = `${Math.round(notebookZoom * 100)}%`;
+  zoomLevel.textContent = zoomLevel.value;
+  fitWidthButton.classList.toggle('active', fitMode === 'width');
+  fitHeightButton.classList.toggle('active', fitMode === 'height');
+  fitWidthButton.setAttribute('aria-pressed', String(fitMode === 'width'));
+  fitHeightButton.setAttribute('aria-pressed', String(fitMode === 'height'));
+}
+
+function fitNotebook(mode) {
+  const styles = getComputedStyle(notebookViewport);
+  const availableWidth = notebookViewport.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+  const availableHeight = notebookViewport.clientHeight - parseFloat(styles.paddingTop) - parseFloat(styles.paddingBottom);
+  const scale = mode === 'width'
+    ? availableWidth / NOTEBOOK_PAGE_WIDTH
+    : availableHeight / NOTEBOOK_PAGE_HEIGHT;
+  setNotebookZoom(scale, mode);
+  notebookViewport.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 }
 
 function createAudioContext() {
@@ -257,7 +384,56 @@ studyToggle.addEventListener('click', () => {
 });
 
 musicButton.addEventListener('click', () => showPanel('music'));
-notebookButton.addEventListener('click', () => showPanel('notebook'));
+scheduleButton.addEventListener('click', () => showPanel('schedule'));
+notebookButton.addEventListener('click', () => {
+  const opening = notebookPanel.classList.contains('hidden');
+  showPanel('notebook');
+  if (opening) requestAnimationFrame(() => fitNotebook('width'));
+});
+
+zoomOutButton.addEventListener('click', () => setNotebookZoom(notebookZoom - 0.1));
+zoomInButton.addEventListener('click', () => setNotebookZoom(notebookZoom + 0.1));
+fitWidthButton.addEventListener('click', () => fitNotebook('width'));
+fitHeightButton.addEventListener('click', () => fitNotebook('height'));
+
+notebookViewport.addEventListener('wheel', (event) => {
+  if (!event.ctrlKey && !event.metaKey) return;
+  event.preventDefault();
+  setNotebookZoom(notebookZoom + (event.deltaY < 0 ? 0.1 : -0.1));
+}, { passive: false });
+
+window.addEventListener('resize', () => {
+  if (notebookFitMode) fitNotebook(notebookFitMode);
+});
+
+new ResizeObserver(() => {
+  notebookPageShell.style.height = `${Math.max(NOTEBOOK_PAGE_HEIGHT, notebookPage.scrollHeight) * notebookZoom}px`;
+}).observe(notebookPage);
+
+scheduleFormToggle.addEventListener('click', () => {
+  const opening = scheduleForm.classList.contains('hidden');
+  scheduleForm.classList.toggle('hidden', !opening);
+  scheduleFormToggle.setAttribute('aria-expanded', String(opening));
+  scheduleFormToggle.textContent = opening ? 'Close' : '+ Add class';
+  if (opening) document.getElementById('class-name').focus();
+});
+
+scheduleForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const formData = new FormData(scheduleForm);
+  schedule.push({
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    name: formData.get('name').trim(),
+    day: formData.get('day'),
+    time: formData.get('time'),
+    type: formData.get('type')
+  });
+  if (saveSchedule()) {
+    renderSchedule();
+    scheduleForm.reset();
+    scheduleFeedback.textContent = 'Class added to your week.';
+  }
+});
 
 noteForm.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -311,4 +487,6 @@ ambientInputs.forEach((input) => {
 });
 
 renderNotes();
+renderSchedule();
 updateAudioState();
+setNotebookZoom(1);

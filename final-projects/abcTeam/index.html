@@ -47,6 +47,7 @@
           <button class="nav-button" id="music-button" type="button">Music and sound</button>
           <button class="nav-button" id="motivation-button" type="button">Motivation</button>
           <button class="nav-button" id="rewards-button" type="button">Small rewards and motivation</button>
+          <button class="nav-button" id="schedule-button" type="button">My schedule</button>
           <button class="nav-button" id="notebook-button" type="button">My notebook</button>
         </div>
 
@@ -75,6 +76,56 @@
           </div>
         </div>
 
+        <section id="schedule-panel" class="schedule-panel hidden" aria-labelledby="schedule-title">
+          <div class="schedule-heading">
+            <div>
+              <p class="eyebrow">Personalized for your week</p>
+              <h3 id="schedule-title">My schedule</h3>
+            </div>
+            <button id="schedule-form-toggle" class="add-class-btn" type="button" aria-expanded="false" aria-controls="schedule-form">
+              + Add class
+            </button>
+          </div>
+          <p class="schedule-intro">Keep school classes and everything you learn after school in one place.</p>
+
+          <form id="schedule-form" class="schedule-form hidden">
+            <label>
+              Class name
+              <input id="class-name" name="name" maxlength="50" placeholder="e.g. Algebra" required />
+            </label>
+            <div class="schedule-form-row">
+              <label>
+                Day
+                <select id="class-day" name="day" required>
+                  <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+                  <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+                </select>
+              </label>
+              <label>
+                Starts at
+                <input id="class-time" name="time" type="time" required />
+              </label>
+            </div>
+            <label>
+              Class type
+              <select id="class-type" name="type">
+                <option value="school">In school</option>
+                <option value="outside">Outside school</option>
+              </select>
+            </label>
+            <div class="schedule-form-actions">
+              <span id="schedule-feedback" role="status"></span>
+              <button class="save-class-btn" type="submit">Save class</button>
+            </div>
+          </form>
+
+          <div class="schedule-legend" aria-label="Schedule categories">
+            <span><i class="school-dot"></i> In school</span>
+            <span><i class="outside-dot"></i> Outside school</span>
+          </div>
+          <div id="schedule-list" class="schedule-list" aria-live="polite"></div>
+        </section>
+
         <section id="notebook-panel" class="notebook-panel hidden" aria-labelledby="notebook-title">
           <div class="notebook-heading">
             <span class="notebook-icon" aria-hidden="true">✎</span>
@@ -85,6 +136,21 @@
           </div>
           <p class="notebook-intro">Capture a thought, save a reminder, or keep a little study note.</p>
 
+          <div class="notebook-toolbar" role="toolbar" aria-label="Notebook page zoom">
+            <div class="zoom-stepper">
+              <button id="zoom-out" type="button" aria-label="Zoom out">−</button>
+              <output id="zoom-level" aria-live="polite">100%</output>
+              <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+            </div>
+            <div class="fit-options">
+              <button id="fit-width" type="button">Fit to width</button>
+              <button id="fit-height" type="button">Fit to height</button>
+            </div>
+          </div>
+
+          <div id="notebook-viewport" class="notebook-viewport" tabindex="0" aria-label="Notebook page viewer">
+            <div id="notebook-page-shell" class="notebook-page-shell">
+              <div id="notebook-page" class="notebook-page">
           <form id="note-form" class="note-composer">
             <label class="visually-hidden" for="note-title">Note title</label>
             <input id="note-title" name="title" maxlength="60" placeholder="Give your note a title" />
@@ -101,6 +167,9 @@
             <span id="note-count">0 notes</span>
           </div>
           <div id="notes-list" class="notes-list" aria-live="polite"></div>
+              </div>
+            </div>
+          </div>
         </section>
       </aside>
     </div>
