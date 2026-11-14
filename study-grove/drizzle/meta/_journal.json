@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1793567592737,
+      "tag": "0000_cloudy_arachne",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1793568027193,
+      "tag": "0001_puzzling_the_anarchist",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793569178731,
+      "tag": "0002_same_mother_askani",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1793570403565,
+      "tag": "0003_gigantic_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1793570676028,
+      "tag": "0004_light_chat",
+      "breakpoints": true
+    }
+  ]
+}

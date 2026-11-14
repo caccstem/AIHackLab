@@ -1,0 +1,14 @@
+import {getStudyUser,json,sameOrigin} from '../../study-auth';
+import {friendDb,pairId,canMessage,allowAction} from '../../friend-store';
+export const dynamic='force-dynamic';
+export async function GET(request:Request){const user=await getStudyUser(request);if(!user)return json({error:'Sign in required'},401);const url=new URL(request.url),peer=url.searchParams.get('friend');if(!peer||peer.length>100)return json({error:'Choose a friend'},400);if(!await canMessage(user.id,peer))return json({error:'Messages are available only between accepted friends.'},403);
+const raw=url.searchParams.get('before'),before=raw===null?Number.MAX_SAFE_INTEGER:Number(raw);if(!Number.isSafeInteger(before)||before<1)return json({error:'Invalid message cursor'},400);
+const results=await friendDb().prepare('SELECT id,sender_id AS senderId,body,created_at AS createdAt FROM study_messages WHERE pair_id=? AND id<? ORDER BY id DESC LIMIT 51').bind(pairId(user.id,peer),before).all();const rows=results.results;return json({messages:rows.slice(0,50).reverse(),hasOlder:rows.length>50});}
+export async function POST(request:Request){const raw=await request.text();if(!sameOrigin(request))return json({error:'Invalid origin'},403);const user=await getStudyUser(request);if(!user)return json({error:'Sign in required'},401);let body;try{if(raw.length>8000||!request.headers.get('content-type')?.startsWith('application/json'))throw Error();body=JSON.parse(raw);if(!body||typeof body!=='object')throw Error()}catch{return json({error:'Invalid request'},400)}
+const peer=body.friend,text=typeof body.message==='string'?body.message.trim():'';if(typeof peer!=='string'||peer.length>100||!text||text.length>1000||typeof body.nonce!=='string'||!/^[a-zA-Z0-9-]{16,64}$/.test(body.nonce))return json({error:'Write a message of 1–1,000 characters.'},400);
+if(!await canMessage(user.id,peer))return json({error:'Messages are available only between accepted friends.'},403);
+if(!await allowAction(user.id,'message',60,60000))return json({error:'You’re sending messages quickly. Try again in a minute.'},429);
+// Recheck friendship and blocking in the insert so revocation wins a concurrent send.
+const result=await friendDb().prepare(`INSERT INTO study_messages (pair_id,sender_id,receiver_id,body,nonce,created_at) SELECT ?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM study_friendships WHERE id=? AND status='accepted') AND NOT EXISTS (SELECT 1 FROM study_blocks WHERE id IN (?,?)) ON CONFLICT(sender_id,nonce) DO NOTHING RETURNING id`).bind(pairId(user.id,peer),user.id,peer,text,body.nonce,Date.now(),pairId(user.id,peer),user.id+'|'+peer,peer+'|'+user.id).first();
+if(!result){const previous=await friendDb().prepare('SELECT id FROM study_messages WHERE sender_id=? AND nonce=? AND pair_id=?').bind(user.id,body.nonce,pairId(user.id,peer)).first();if(!previous)return json({error:'The connection changed. Refresh your friends list.'},409)}
+return json({ok:true});}
