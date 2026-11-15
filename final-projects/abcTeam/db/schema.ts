@@ -74,3 +74,11 @@ export const groupMessages = sqliteTable('study_group_messages', {
  nonce:text('nonce').notNull(),
  createdAt:integer('created_at').notNull(),
 },t=>[index('group_messages_group').on(t.groupId,t.id),uniqueIndex('group_messages_nonce').on(t.senderId,t.nonce)]);
+
+export const taskLists = sqliteTable('study_task_lists', {
+ id:text('id').primaryKey(), ownerId:text('owner_id').notNull().references(()=>accounts.id),
+ name:text('name').notNull(),data:text('data').notNull().default('[]'),revision:integer('revision').notNull().default(1),createdAt:integer('created_at').notNull(),
+});
+export const taskListMembers = sqliteTable('study_task_list_members', {
+ id:text('id').primaryKey(),listId:text('list_id').notNull().references(()=>taskLists.id),userId:text('user_id').notNull().references(()=>accounts.id),status:text('status').notNull().default('invited'),
+},table=>[index('task_list_member_user').on(table.userId)]);

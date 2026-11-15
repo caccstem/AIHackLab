@@ -2,7 +2,8 @@ const fs=require('node:fs'),crypto=require('node:crypto');
 const source=fs.readFileSync('app/workspace/html.ts','utf8');
 const html=JSON.parse(source.slice('export const workspaceHtml='.length).trim().replace(/;$/,''));
 fs.writeFileSync('public/offline.html',html.replace('<body>','<body><script>window.studyOfflinePage=true;</script>'));
-const assets=['/offline',...fs.readdirSync('public/study-assets').filter(name=>/\.(js|css)$/.test(name)).map(name=>'/study-assets/'+name)].sort();
+function walk(path){return fs.readdirSync('public'+path,{withFileTypes:true}).flatMap(entry=>entry.isDirectory()?walk(path+'/'+entry.name):/\.(js|css)$/.test(entry.name)?[path+'/'+entry.name]:[])}
+const assets=['/offline',...walk('/study-assets')].sort();
 const hash=crypto.createHash('sha256');for(const path of assets)hash.update(fs.readFileSync(path==='/offline'?'public/offline.html':'public'+path));const version='grove-offline-'+hash.digest('hex').slice(0,16);
 fs.writeFileSync('public/study-sw.js',`const VERSION=${JSON.stringify(version)},ASSETS=${JSON.stringify(assets)},FONTS='grove-fonts-v1';
 self.addEventListener('install',event=>event.waitUntil(caches.open(VERSION).then(cache=>cache.addAll(ASSETS.map(url=>new Request(url,{cache:'reload'})))).then(()=>self.skipWaiting())));

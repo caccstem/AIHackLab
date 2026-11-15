@@ -57,3 +57,10 @@ A small practice stopwatch sits in the corner, auto-starts with practice, and su
 
 ## Friend identity layout
 Friend rows use a fixed circular picture/initial and a separate flex text block containing nickname and username. Long names truncate without wrapping around pictures; buttons wrap onto a separate line on narrow screens. Missing or failed pictures keep a nickname-initial placeholder, including non-Latin names. `tests/chat-ui.cjs` covers pictured and unpictured contacts and failed-image fallback.
+
+## Tasks, personal lists, and shared lists
+Tasks & planner combines undated to-dos and assignments. Tasks can be edited without resetting completion and include optional subject, assignee, description, deadline date/time, and timezone. Personal tasks default to the My tasks list and assignee Me; a deadline time without a date uses today. Personal lists can be created, renamed, and used offline. The task editor can move tasks between personal lists.
+
+Sharing moves a personal list's current tasks into D1-backed shared storage and invites an accepted friend by username. Invitations must be accepted before reading or editing tasks. All active members can add, edit, complete, or remove tasks. Only the owner can rename or share the list and revoke membership. Assignees use stable account IDs, with current usernames displayed by the client. Blocked owners and removed members cannot access the list. Atomic revision checks reject stale writes. Downloaded shared-list snapshots are read-only in offline study; shared changes require the online app.
+
+The schema is appended in migration 0005. `node tests/planner-ui.cjs` checks editing, defaults, moving tasks, and offline personal lists. With local migrations and Worker on port 8787, `python3 tests/task-lists.py` checks invitations, access isolation, edits, assignee validation, deadlines, conflicts, owner permissions, revocation, and blocking.
