@@ -171,3 +171,9 @@ Guided writing preserves accepted user-drawn strokes at their original coordinat
 Animal outfits now use sleeveless torso-only silhouettes. Removed side sleeve extensions, sweater cuffs, and undershirt sleeves from overalls, while preserving collars, hood details, pockets, dress skirts, colors, and torso clipping. Rendered sweater/hoodie/overalls previews inspected; all species/outfit SVGs and preview/purchase checks pass.
 
 Removed the Clothing color category and color items from the shop. Animal and human renderers now use each outfit’s own color, ignoring old saved overrides while retaining existing owned-item records. Outfit styles and fur colors remain available. Checks verify category/item removal, legacy override behavior, try-on and purchase/equip.
+
+## Optional beginner foundations
+
+A Mandarin basics card appears before the numbered path. Seven short guide pages introduce pinyin, all four tones, neutral tone, and initials/finals, with visual pitch contours and device Mandarin speech examples. Third tone is explained as low/dipping, including its common low realization in connected speech. Tone reference: https://web.mit.edu/~jinzhang/www/pinyin/tones/ .
+
+Ten practice questions cover tone marks, pitch patterns, neutral tone, pinyin structure, and two listening examples with a visual pinyin alternative. Incorrect answers can be retried but cannot advance. Progress saves separately and resumes; ten correct checks complete the optional lesson. The first completion earns 20 XP and 5 avatar points once. Replay earns no duplicate bonus. Numbered levels, word mastery, selected lesson, and mini-quest streak remain unchanged. Tests cover entry/guide/quiz flow, retries, resume, completion, replay, reward idempotency, and existing progress preservation. Live browser/audio QA was unavailable.
