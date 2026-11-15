@@ -1,5 +1,6 @@
 (() => {
-  const API = 'http://127.0.0.1:8766/api/rules';
+  const LOCAL_API = 'http://127.0.0.1:8766/api/rules';
+  const configuredCloud = Boolean(QUICKREPLY_SUPABASE?.url && QUICKREPLY_SUPABASE?.anonKey);
   const MIN_MATCH = 0.72;
   let rules = [];
   let lastFingerprint = '';
@@ -141,13 +142,24 @@
   async function checkMessage() {
     const email = currentEmail();
     if (!email) return;
+    const settings = await chrome.storage.local.get({ authToken: '' });
+    if (!settings.authToken) {
+      lastFingerprint = '';
+      panel?.remove();
+      return;
+    }
     const key = fingerprint(email);
     if (key === lastFingerprint) return;
     lastFingerprint = key;
     try {
-      const response = await fetch(API, { cache: 'no-store' });
+      const cloud = configuredCloud && (await chrome.storage.local.get({ cloud: false })).cloud;
+      if (cloud) await quickReplyRefreshSession();
+      const fresh = await chrome.storage.local.get({ authToken: settings.authToken });
+      const endpoint = cloud ? `${QUICKREPLY_SUPABASE.url}/rest/v1/reply_rules?select=id,question,response,enabled,created_at` : LOCAL_API;
+      const response = await fetch(endpoint, { cache: 'no-store', headers: { ...(cloud ? { apikey: QUICKREPLY_SUPABASE.anonKey } : {}), Authorization: `Bearer ${fresh.authToken}` } });
       if (!response.ok) throw new Error('offline');
-      rules = (await response.json()).rules || [];
+      const data = await response.json();
+      rules = cloud ? data : data.rules || [];
       const match = bestMatch(email);
       if (!match || match.score < MIN_MATCH) { panel?.remove(); return; }
       await showMatch(email, match, key);
@@ -155,6 +167,14 @@
       panel?.remove();
     }
   }
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.authToken) {
+      lastFingerprint = '';
+      if (!changes.authToken.newValue) panel?.remove();
+      else checkMessage();
+    }
+  });
 
   let timer;
   new MutationObserver(() => {

@@ -4,17 +4,14 @@
   "version": "0.1.0",
   "description": "Suggest saved answers for frequently asked questions in Gmail.",
   "permissions": ["storage"],
-  "host_permissions": [
-    "http://127.0.0.1:8766/*",
-    "https://mail.google.com/*"
-  ],
+  "host_permissions": ["http://127.0.0.1:8766/*", "https://*.supabase.co/*", "https://mail.google.com/*"],
   "action": {
     "default_title": "QuickReply",
     "default_popup": "popup.html"
   },
   "content_scripts": [{
     "matches": ["https://mail.google.com/*"],
-    "js": ["content.js"],
+    "js": ["config.js", "content.js"],
     "run_at": "document_idle"
   }]
 }
