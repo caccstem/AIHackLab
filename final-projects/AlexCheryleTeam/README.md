@@ -1,5 +1,7 @@
 # Small Steps · Learn Mandarin
 
+[Open the live Small Steps website](https://small-steps-mandarin-alex.blackfirewin.chatgpt.site)
+
 Team members: Alex, Cheryl
 
 A mobile-friendly Mandarin learning app with a soft blue theme, a home-page chibi avatar, and bottom navigation for learning, vocabulary, avatars, and conversation.
