@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://quickreply-answers.jenniferzhou2021.chatgpt.site/sitemap.xml

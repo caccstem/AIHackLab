@@ -9,6 +9,7 @@ const authScreen = document.querySelector('#auth-screen');
 const appShell = document.querySelector('#app-shell');
 const cloud = Boolean(window.QUICKREPLY_SUPABASE?.url && window.QUICKREPLY_SUPABASE?.anonKey);
 const sb = window.QUICKREPLY_SUPABASE || {};
+const localDevelopment = ['localhost', '127.0.0.1'].includes(location.hostname);
 
 async function supabase(path, options = {}) {
   await refreshCloudSession();
@@ -265,7 +266,16 @@ async function initialize() {
   consumeOAuthHash();
   document.querySelector('#google-signin').hidden = !cloud;
   document.querySelector('#auth-divider').hidden = !cloud;
-  document.querySelector('#local-note').textContent = cloud ? 'Your replies sync securely to your account.' : 'Configure Supabase to enable cloud accounts and syncing.';
+  document.querySelector('#local-note').textContent = cloud ? 'Your replies sync securely to your account.' : localDevelopment ? 'Local development mode: accounts and replies stay on this computer.' : 'Cloud accounts are not configured yet. Account creation and sign-in are temporarily unavailable.';
+  if (!cloud && !localDevelopment) {
+    document.querySelector('#auth-copy').textContent = 'QuickReply is online, but account setup must be completed before sign-in is available.';
+    document.querySelector('#auth-submit').disabled = true;
+    document.querySelector('#auth-submit').textContent = 'Account setup required';
+    document.querySelector('#auth-toggle').disabled = true;
+    document.querySelector('#auth-email').disabled = true;
+    document.querySelector('#auth-password').disabled = true;
+    document.querySelector('#confirm-password').disabled = true;
+  }
   document.querySelector('#google-signin').addEventListener('click', () => { location.href = `${sb.url}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(location.origin)}`; });
   setAuthMode('login');
   const token = localStorage.getItem('quickreplyToken');
