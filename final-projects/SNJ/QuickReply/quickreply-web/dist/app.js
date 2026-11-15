@@ -1,6 +1,7 @@
 const API = '/api/rules';
 let rules = [];
 let authMode = 'login';
+let guestMode = false;
 const list = document.querySelector('#rule-list');
 const dialog = document.querySelector('#rule-dialog');
 const form = document.querySelector('#rule-form');
@@ -69,8 +70,9 @@ function showAuth(message = '') {
 function showApp(email) {
   authScreen.hidden = true;
   appShell.hidden = false;
-  document.querySelector('#account-name').textContent = email;
-  document.querySelector('#account-avatar').textContent = email[0].toUpperCase();
+  document.querySelector('#account-name').textContent = guestMode ? 'My workspace' : email;
+  document.querySelector('#account-avatar').textContent = guestMode ? 'G' : email[0].toUpperCase();
+  document.querySelector('.footer-note').innerHTML = guestMode ? '<i></i> Saved on this device; cloud sync is not configured' : '<i></i> Saved replies sync to your extension';
   loadRules();
 }
 
@@ -97,6 +99,13 @@ function setAuthMode(mode) {
 }
 
 async function loadRules() {
+  if (guestMode) {
+    try { rules = JSON.parse(localStorage.getItem('quickreplyGuestRules') || '[]'); } catch { rules = []; }
+    document.querySelector('#sync-label').textContent = 'Saved on this device';
+    document.querySelector('.sync-state i').style.background = '#4f8dd1';
+    render();
+    return;
+  }
   const token = localStorage.getItem('quickreplyToken');
   if (!token) return;
   try {
@@ -115,6 +124,11 @@ async function loadRules() {
 }
 
 async function saveRules() {
+  if (guestMode) {
+    localStorage.setItem('quickreplyGuestRules', JSON.stringify(rules));
+    document.querySelector('#sync-label').textContent = 'Saved on this device';
+    render(); return;
+  }
   if (cloud) {
     const userId = currentUserId();
     await supabase('reply_rules?on_conflict=id', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(rules.map(rule => ({ id: rule.id, user_id: userId, question: rule.question, response: rule.response, enabled: rule.enabled, created_at: rule.createdAt || new Date().toISOString() }))) });
@@ -170,6 +184,11 @@ function showToast(message) {
 }
 
 document.querySelector('#auth-toggle').addEventListener('click', () => setAuthMode(authMode === 'login' ? 'register' : 'login'));
+document.querySelector('#guest-open').addEventListener('click', () => {
+  guestMode = true;
+  localStorage.setItem('quickreplyGuestMode', 'true');
+  showApp('My workspace');
+});
 document.querySelector('#password-toggle').addEventListener('click', () => {
   const password = document.querySelector('#auth-password');
   const confirmation = document.querySelector('#confirm-password');
@@ -216,6 +235,11 @@ document.querySelector('#auth-form').addEventListener('submit', async event => {
 });
 
 document.querySelector('#logout').addEventListener('click', async () => {
+  if (guestMode) {
+    guestMode = false;
+    localStorage.removeItem('quickreplyGuestMode');
+    return showAuth();
+  }
   try { if (cloud) await fetch(`${sb.url}/auth/v1/logout`, { method: 'POST', headers: { apikey: sb.anonKey, Authorization: `Bearer ${localStorage.getItem('quickreplyToken')}` } }); else await fetch('/api/auth/logout', { method: 'POST', headers: authHeaders() }); } catch { /* Local sign-out still works offline. */ }
   localStorage.removeItem('quickreplyToken');
   localStorage.removeItem('quickreplyRefreshToken');
@@ -240,7 +264,7 @@ form.addEventListener('submit', async event => {
   try {
     await saveRules();
     dialog.close();
-    showToast(id ? 'Reply updated and synced' : 'Reply saved and synced');
+    showToast(guestMode ? (id ? 'Reply updated on this device' : 'Reply saved on this device') : (id ? 'Reply updated and synced' : 'Reply saved and synced'));
   } catch {
     showToast('Could not save. Check your connection and sign-in.');
   }
@@ -266,9 +290,10 @@ async function initialize() {
   consumeOAuthHash();
   document.querySelector('#google-signin').hidden = !cloud;
   document.querySelector('#auth-divider').hidden = !cloud;
-  document.querySelector('#local-note').textContent = cloud ? 'Your replies sync securely to your account.' : localDevelopment ? 'Local development mode: accounts and replies stay on this computer.' : 'Cloud accounts are not configured yet. Account creation and sign-in are temporarily unavailable.';
+  document.querySelector('#local-note').textContent = cloud ? 'Your replies sync securely to your account.' : localDevelopment ? 'Local development mode: accounts and replies stay on this computer.' : 'Use this device to manage replies. They stay in this browser until cloud accounts are configured.';
   if (!cloud && !localDevelopment) {
-    document.querySelector('#auth-copy').textContent = 'QuickReply is online, but account setup must be completed before sign-in is available.';
+    document.querySelector('#auth-copy').textContent = 'Create and manage your saved replies on this device.';
+    document.querySelector('#guest-open').hidden = false;
     document.querySelector('#auth-submit').disabled = true;
     document.querySelector('#auth-submit').textContent = 'Account setup required';
     document.querySelector('#auth-toggle').disabled = true;
@@ -278,6 +303,10 @@ async function initialize() {
   }
   document.querySelector('#google-signin').addEventListener('click', () => { location.href = `${sb.url}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(location.origin)}`; });
   setAuthMode('login');
+  if (!cloud && localStorage.getItem('quickreplyGuestMode') === 'true') {
+    guestMode = true;
+    return showApp('My workspace');
+  }
   const token = localStorage.getItem('quickreplyToken');
   if (!token) return showAuth();
   let response;
