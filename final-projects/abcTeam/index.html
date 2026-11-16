@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Space</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Study planner</p>
+            <h1>Today’s focus</h1>
+          </div>
+          <button id="study-toggle" class="primary-btn" type="button">Start studying</button>
+        </header>
+
+        <section class="planner-card">
+          <h2>Assignment planner</h2>
+          <ul id="assignment-list">
+            <li>
+              <span>Math quiz review</span>
+              <strong>Due today</strong>
+            </li>
+            <li>
+              <span>Science lab notes</span>
+              <strong>Tomorrow</strong>
+            </li>
+            <li>
+              <span>Reading reflection</span>
+              <strong>Friday</strong>
+            </li>
+          </ul>
+        </section>
+      </main>
+
+      <aside class="study-space" aria-label="Study space sidebar">
+        <div class="study-space-header">
+          <p class="eyebrow">Study space</p>
+          <h2>Your study space</h2>
+        </div>
+
+        <div class="space-nav">
+          <button class="nav-button active" type="button">Assignment planner</button>
+          <button class="nav-button" id="music-button" type="button">Music and sound</button>
+          <button class="nav-button" id="motivation-button" type="button">Motivation</button>
+          <button class="nav-button" id="rewards-button" type="button">Small rewards and motivation</button>
+          <button class="nav-button" id="notebook-button" type="button">My notebook</button>
+          <button class="nav-button" id="settings-button" type="button">Settings</button>
+        </div>
+
+        <div id="music-panel" class="panel hidden" aria-live="polite">
+          <h3>Music &amp; sound</h3>
+
+          <div class="option-group">
+            <label class="option-title">Background music</label>
+            <div class="choice-row">
+              <label><input type="radio" name="music" value="lofi" checked /> Lofi music</label>
+              <label><input type="radio" name="music" value="none" /> No music</label>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <label class="option-title">Side sounds</label>
+            <div class="choice-row stacked">
+              <label><input type="checkbox" name="ambient" value="fireplace" /> Fireplace</label>
+              <label><input type="checkbox" name="ambient" value="rain" /> Rain sounds</label>
+            </div>
+          </div>
+
+          <div class="status-box">
+            <span class="status-label">Status</span>
+            <strong id="sound-status">Paused</strong>
+          </div>
+        </div>
+
+        <section id="notebook-panel" class="notebook-panel hidden" aria-labelledby="notebook-title">
+          <div class="notebook-heading">
+            <span class="notebook-icon" aria-hidden="true">✎</span>
+            <div>
+              <p class="eyebrow">A place for your ideas</p>
+              <h3 id="notebook-title">My notebook</h3>
+            </div>
+          </div>
+          <p class="notebook-intro">Capture a thought, save a reminder, or keep a little study note.</p>
+
+          <form id="note-form" class="note-composer">
+            <label class="visually-hidden" for="note-title">Note title</label>
+            <input id="note-title" name="title" maxlength="60" placeholder="Give your note a title" />
+            <label class="visually-hidden" for="note-content">Note content</label>
+            <textarea id="note-content" name="content" rows="4" maxlength="500" placeholder="Write something to remember…" required></textarea>
+            <div class="composer-footer">
+              <span id="note-feedback" role="status">Your notes stay saved in this browser.</span>
+              <button class="save-note-btn" type="submit">Save note <span aria-hidden="true">↗</span></button>
+            </div>
+          </form>
+
+          <div class="notes-heading">
+            <h4>Recent notes</h4>
+            <span id="note-count">0 notes</span>
+          </div>
+          <div id="notes-list" class="notes-list" aria-live="polite"></div>
+        </section>
+
+        <section id="settings-panel" class="panel settings-panel hidden" aria-labelledby="settings-title">
+          <p class="eyebrow">Make your study space work for you</p>
+          <h3 id="settings-title">Settings</h3>
+          <div class="setting-card">
+            <div class="setting-heading">
+              <span class="setting-icon" aria-hidden="true">◷</span>
+              <div>
+                <h4>Time limit</h4>
+                <p>Get a gentle reminder after your daily website time is up.</p>
+              </div>
+            </div>
+            <div class="time-limit-toggle-row">
+              <span id="time-limit-toggle-label" class="time-limit-toggle-label">Enable daily time limit?</span>
+              <label class="switch" for="time-limit-enabled">
+                <input id="time-limit-enabled" type="checkbox" role="switch" aria-labelledby="time-limit-toggle-label" />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+                <span class="switch-value" aria-hidden="true"><span>No</span><span>Yes</span></span>
+              </label>
+            </div>
+            <form id="time-limit-form" class="time-limit-form time-limit-details hidden">
+              <label for="time-limit-minutes">Daily website time (minutes)</label>
+              <div class="time-limit-controls">
+                <input id="time-limit-minutes" name="minutes" type="number" min="1" max="480" step="1" value="50" required />
+                <button class="save-note-btn" type="submit">Confirm</button>
+              </div>
+              <p class="setting-hint">Time adds up while this page is open and visible, and resets each day.</p>
+            </form>
+            <p id="timer-status" class="timer-status" role="status">No time limit set yet.</p>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <aside id="time-limit-reminder" class="time-limit-reminder hidden" role="alert" aria-live="assertive">
+      <div>
+        <strong>Time for a screen break</strong>
+        <p>You’ve reached your time limit. Step away from screens and take a short break.</p>
+      </div>
+      <button id="dismiss-reminder" type="button" aria-label="Dismiss break reminder">×</button>
+    </aside>
+
+    <script src="app.js"></script>
+  </body>
+</html>

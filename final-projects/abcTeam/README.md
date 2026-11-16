@@ -64,3 +64,25 @@ Tasks & planner combines undated to-dos and assignments. Tasks can be edited wit
 Sharing moves a personal list's current tasks into D1-backed shared storage and invites an accepted friend by username. Invitations must be accepted before reading or editing tasks. All active members can add, edit, complete, or remove tasks. Only the owner can rename or share the list and revoke membership. Assignees use stable account IDs, with current usernames displayed by the client. Blocked owners and removed members cannot access the list. Atomic revision checks reject stale writes. Downloaded shared-list snapshots are read-only in offline study; shared changes require the online app.
 
 The schema is appended in migration 0005. `node tests/planner-ui.cjs` checks editing, defaults, moving tasks, and offline personal lists. With local migrations and Worker on port 8787, `python3 tests/task-lists.py` checks invitations, access isolation, edits, assignee validation, deadlines, conflicts, owner permissions, revocation, and blocking.
+
+## Local deployment checkout
+
+The separate account-owned Study Grove deployment checkout is at
+`work/study-grove-abc/` (previously at repository-root `sites/study-grove-abc/`).
+This folder is local-only: Git, TypeScript, and ESLint already exclude `work/`.
+It retains its own Git repository and `.openai/hosting.json`.
+
+| Checkout | Site | Project ID |
+| --- | --- | --- |
+| `abcTeam/` | https://study-grove-charlene.lingteck810.chatgpt.site | `appgprj_6ae7a7a0aae48191a67ea530ff3144dd` |
+| `abcTeam/work/study-grove-abc/` | https://study-grove-abc-vic.sagelavender8.chatgpt.site | `appgprj_6afa877f964081918dc55f0f98965476` |
+
+Run Sites build and publishing helpers from the checkout for the intended site.
+Preserve each checkout's project ID; do not copy hosting manifests between them.
+The two sites have separate databases, uploads, and access settings. Moving a
+local checkout does not move or change either hosted deployment.
+
+Application edits in the parent checkout do not automatically update the local
+deployment copy. Transfer reviewed application changes explicitly while retaining
+the destination hosting manifest. The local deployment copy is not included when
+other developers clone AIHackLab.
